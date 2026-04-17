@@ -1509,22 +1509,42 @@
     /* ── コンテンツフィルタ ── */
     const HATE_PATTERNS = [
       '死ね','死にろ','氏ね','市ね','殺す','殺せ','殺すぞ','消えろ','消えうせろ',
-      'ゴミ人間','ゴミ野郎','クズ野郎','カス野郎',
-      'hate','kill yourself','kys',
+      'ゴミ人間','ゴミ野郎','クズ野郎','カス野郎','うせろ','失せろ',
+      'バカ野郎','アホ野郎','死ぬべき','存在するな',
+      'hate','kill yourself','kys','die',
     ];
     const ADULT_PATTERNS = [
-      'セックス','セクックス','sex','porn','ポルノ','エロ動画','えろ動画',
+      'セックス','sex','porn','ポルノ','エロ動画','えろ動画',
       'アダルト動画','nude','裸','フェラ','オナニー','射精','勃起',
       'おっぱい','ちんこ','まんこ','陰茎','陰部','性器',
     ];
 
+    // 電話番号・メール・個人情報の正規表現
+    const PERSONAL_INFO_PATTERNS = [
+      // 日本の携帯・固定電話（ハイフンあり/なし）
+      /0[789]0[-\s]?\d{4}[-\s]?\d{4}/,
+      /0\d{1,4}[-\s]?\d{1,4}[-\s]?\d{4}/,
+      // メールアドレス
+      /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/,
+      // LINE ID っぽいパターン（line.me/ti/p/ など）
+      /line\.me\//i,
+      // 住所っぽいパターン（〒xxx-xxxx）
+      /〒?\d{3}[-\s]?\d{4}/,
+    ];
+
     function checkContent(text) {
       const t = text.toLowerCase();
+      // ヘイト
       for (const w of HATE_PATTERNS) {
         if (t.includes(w.toLowerCase())) return 'hate';
       }
+      // アダルト
       for (const w of ADULT_PATTERNS) {
         if (t.includes(w.toLowerCase())) return 'adult';
+      }
+      // 個人情報（電話番号・メール・住所など）
+      for (const re of PERSONAL_INFO_PATTERNS) {
+        if (re.test(text)) return 'personal';
       }
       return null;
     }
@@ -2014,13 +2034,18 @@
         const t = setTimeout(onClose, 3800);
         return () => clearTimeout(t);
       }, []);
-      const isHate = type === 'hate';
+      const MSG = {
+        hate:     { title: 'ヘイトコンテンツは投稿できません',   sub: 'さら砂は誰もが安心できる場所を目指しています。' },
+        adult:    { title: 'アダルトコンテンツは投稿できません', sub: 'このサービスはアダルトコンテンツを許可していません。' },
+        personal: { title: '個人情報は投稿できません',           sub: '電話番号・メールアドレス・住所などの投稿はお断りしています。' },
+      };
+      const m = MSG[type] || MSG.hate;
       return (
         <div className="filter-toast">
           <span className="filter-toast-icon" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'14px', fontWeight:500, color:'#C84040' }}>禁</span>
           <div className="filter-toast-body">
-            <p className="filter-toast-title">{isHate ? 'ヘイトコンテンツは投稿できません' : 'アダルトコンテンツは投稿できません'}</p>
-            <p className="filter-toast-msg">{isHate ? 'さら砂は誰もが安心できる場所を目指しています。' : 'このサービスはアダルトコンテンツを許可していません。'}</p>
+            <p className="filter-toast-title">{m.title}</p>
+            <p className="filter-toast-msg">{m.sub}</p>
           </div>
         </div>
       );
