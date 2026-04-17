@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>さら砂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400&family=Noto+Sans+JP:wght@300;400&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #E8F5EE;
+      --surface:     #FAFFFE;
+      --ocean:       #3A9FD8;
+      --ocean-l:     #60B8E8;
+      --ocean-pale:  #DBF0FA;
+      --ocean-mid:   #9ED0EC;
+      --fire:        #D45872;
+      --fire-pale:   #FEF0F4;
+      --fire-mid:    #F0B8C8;
+      --ink:         #162820;
+      --ink-2:       #2E4E40;
+      --ink-3:       #608878;
+      --rule:        #C4E4D4;
+      --sand:        #A4CCBC;
+      --night:       #0A1E14;
+      --manu-bg:     #F0FBF6;
+      --sepia:       rgba(60,140,110,.12);
+
+      --shadow:      0 8px 24px rgba(30,110,80,.08);
+      --shadow-lift: 0 14px 40px rgba(30,110,80,.13);
+    }
+
+    html, body {
+      height: 100%; height: 100dvh;
+      width: 100%; overflow: hidden;
+      background: #9AC4B0;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── 平成レトロ ドット壁紙 ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(40,140,100,.07) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      opacity: .018;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    #root {
+      height: 100%; height: 100dvh;
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    .app-shell {
+      width: 100%; max-width: 390px;
+      height: 100%; height: 100dvh; max-height: 844px;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(30,100,70,.22), 0 0 0 1px rgba(40,140,100,.08);
+    }
+
+    /* スクロール可能な通常スクリーン */
+    .screen {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .screen::-webkit-scrollbar { display: none; }
+
+    /* 書くスクリーン専用シェル（内部レイアウト制御） */
+    .write-shell {
+      flex: 1;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* ════════════════════════════════════
+       SPLASH
+    ════════════════════════════════════ */
+    .splash {
+      width: 100%; height: 100%;
+      background: linear-gradient(160deg, #D4F2E8 0%, #C4EAF8 32%, #D0F4F0 65%, #C8EEE0 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+
+    /* 光沢シャイン */
+    .splash::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,.35) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .splash-horizon {
+      position: absolute; top: 60%; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 5%, rgba(50,180,140,.28) 35%, rgba(58,160,216,.22) 65%, transparent 95%);
+    }
+    .splash-waveline {
+      position: absolute; top: calc(60% + 8px); left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 15%, rgba(50,170,130,.10) 45%, transparent 90%);
+    }
+
+    .splash-center { text-align: center; position: relative; z-index: 1; top: -20px; }
+
+    .splash-logo {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 36px; font-weight: 300;
+      letter-spacing: .55em; text-indent: .55em;
+      background: linear-gradient(135deg, #38BF80 0%, #3AACDC 50%, #2E90D4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .splash-en {
+      font-size: 9px; font-weight: 400;
+      letter-spacing: .78em; text-indent: .78em;
+      color: var(--ink-3); margin-top: 10px;
+      text-transform: uppercase;
+    }
+
+    .splash-divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 32px auto; width: fit-content;
+    }
+    .splash-d-line { width: 22px; height: 1px; background: linear-gradient(90deg, #38BF80, #3AACDC); }
+    .splash-d-dot  { width: 4px;  height: 4px;  border-radius: 50%;
+      background: linear-gradient(135deg, #38BF80, #3AACDC); }
+
+    .splash-tagline {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 300;
+      color: var(--ink-2); letter-spacing: .1em; line-height: 2;
+    }
+    .splash-sub { font-size: 11px; color: var(--ink-3); margin-top: 4px; letter-spacing: .1em; }
+
+    .enter-btn {
+      margin-top: 48px;
+      background: linear-gradient(135deg, rgba(56,191,128,.12) 0%, rgba(58,172,220,.12) 100%);
+      border: 1px solid rgba(50,170,130,.32);
+      border-radius: 20px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px; font-weight: 300;
+      letter-spacing: .44em; text-indent: .44em;
+      color: var(--ink-2); cursor: pointer;
+      padding: 12px 32px;
+      transition: all .3s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .enter-btn:hover { background: linear-gradient(135deg, rgba(56,191,128,.22) 0%, rgba(58,172,220,.22) 100%); border-color: rgba(50,170,130,.58); }
+
+    /* ════════════════════════════════════
+       NAV
+    ════════════════════════════════════ */
+    .nav {
+      display: flex; align-items: stretch;
+      background: linear-gradient(0deg, rgba(255,255,255,.98) 0%, rgba(248,244,255,.95) 100%);
+      border-top: 1px solid var(--rule);
+      flex-shrink: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px; padding: 10px 0 16px;
+      border: none; background: none; cursor: pointer;
+      position: relative; transition: opacity .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-item:not(.active) { opacity: .4; }
+    .nav-item.active::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 24px; height: 3px;
+      background: linear-gradient(90deg, #38BF80, #3AACDC);
+      border-radius: 0 0 3px 3px;
+    }
+    .nav-item.fire-active::before { background: linear-gradient(90deg, var(--fire), #FF8CA0); }
+    .nav-icon {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 15px; font-weight: 500; line-height: 1;
+    }
+    .nav-label { font-size: 9px; letter-spacing: .1em; color: var(--ink-3); }
+    .nav-item.active .nav-label { color: var(--ocean); font-weight: 400; }
+    .nav-item.fire-active .nav-label { color: var(--fire); font-weight: 400; }
+
+    /* ════════════════════════════════════
+       SHARED
+    ════════════════════════════════════ */
+    .screen-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 19px; font-weight: 300;
+      letter-spacing: .05em; color: var(--ink);
+    }
+    .screen-sub { font-size: 11px; color: var(--ink-3); margin-top: 3px; letter-spacing: .07em; }
+
+    /* ════════════════════════════════════
+       OCEAN — 海
+    ════════════════════════════════════ */
+    .ocean-screen { min-height: 100%; background: var(--ocean-pale); padding-bottom: 48px; }
+
+    .ocean-header {
+      padding: 20px 20px 0;
+      background: linear-gradient(180deg, #C4DCF8 0%, #D4E8FF 50%, #E4F0FF 100%);
+      position: relative;
+    }
+    .ocean-header::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,.28) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .ocean-header-top { padding-bottom: 16px; }
+
+    .ocean-tabs { display: flex; border-bottom: 1px solid rgba(91,144,208,.18); }
+    .ocean-tab {
+      padding: 9px 16px 10px; border: none; background: none; cursor: pointer;
+      font-size: 11px; font-weight: 300; letter-spacing: .1em; color: var(--ink-3);
+      position: relative; transition: color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ocean-tab.active { color: var(--ocean); }
+    .ocean-tab.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 8px; right: 8px;
+      height: 2px;
+      background: linear-gradient(90deg, #38BF80, #3AACDC);
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* ════════════════════════════════════
+       LETTER CARDS — 漂着したメッセージ
+    ════════════════════════════════════ */
+    .letter-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 14px; }
+
+    .letter-card {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 22px 20px 18px;
+      position: relative; overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 5種の漂着バリアント */
+    .letter-card[data-v="0"] { transform: rotate(-0.5deg); margin-right: 20px; }
+    .letter-card[data-v="1"] { transform: rotate(0.65deg);  margin-left: 20px; }
+    .letter-card[data-v="2"] { transform: rotate(-0.4deg); margin-right: 12px; margin-left: 8px; }
+    .letter-card[data-v="3"] { transform: rotate(0.38deg);  margin-left: 16px; margin-right: 4px; }
+    .letter-card[data-v="4"] { transform: rotate(-0.58deg); margin-right: 18px; }
+
+    /* 平成レトロ 虹色シマー */
+    .letter-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(56,191,128,.35) 20%,
+        rgba(58,172,220,.30) 50%,
+        rgba(58,160,216,.25) 80%,
+        transparent 100%
+      );
+    }
+    /* カード上部シャイン */
+    .letter-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* 波が引くアニメーション — タップ時 */
+    @keyframes waveRecede {
+      0%   { opacity: 1; }
+      26%  { opacity: .46; filter: brightness(.95) saturate(.8); }
+      70%  { opacity: .80; }
+      100% { opacity: 1;   filter: none; }
+    }
+    .letter-card.receding { animation: waveRecede .65s cubic-bezier(.22,.68,0,1.2) both; }
+
+    .letter-from { font-size: 10px; letter-spacing: .16em; color: var(--ink-3); margin-bottom: 13px; }
+    .letter-body {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 300; line-height: 2.15; color: var(--ink);
+    }
+    .letter-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 16px; padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,.05);
+    }
+    .letter-time { font-size: 10px; color: var(--ink-3); }
+
+    /* いいね不在 — 波（共鳴）のみ */
+    .wave-btn {
+      display: flex; align-items: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 2px 7px 2px 5px; border-radius: 10px;
+      font-size: 11px; color: var(--ocean-l); letter-spacing: .06em;
+      transition: background .2s, color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wave-btn:hover { background: rgba(44,95,120,.08); }
+    .wave-btn.waved { color: var(--ocean); background: rgba(44,95,120,.1); }
+
+    /* ════════════════════════════════════
+       AD CARD — 広告（インフィード）
+    ════════════════════════════════════ */
+    .ad-card {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      margin: 0 2px; /* 広告は傾きなし */
+    }
+
+    .ad-promo-label {
+      position: absolute; top: 9px; right: 11px;
+      font-size: 8px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--ink-3); font-weight: 300;
+    }
+
+    /* 広告ビジュアル — grayscale + sepia で砂浜に馴染む */
+    .ad-visual {
+      width: 100%; height: 68px;
+      filter: grayscale(20%) sepia(10%);
+    }
+
+    .ad-body { padding: 14px 18px 16px; }
+
+    .ad-copy {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px; color: var(--ink-2);
+      letter-spacing: .1em; line-height: 1.9;
+    }
+
+    .ad-brand { font-size: 10px; color: var(--ink-3); margin-top: 8px; letter-spacing: .14em; }
+
+    /* ── 横長バナー広告（波音・自分・送信完了） ── */
+    .ad-banner {
+      margin: 14px 14px 0;
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden; position: relative;
+      display: flex; align-items: stretch;
+    }
+    .ad-banner-visual {
+      width: 64px; flex-shrink: 0;
+    }
+    .ad-banner-body {
+      flex: 1; padding: 12px 14px 10px;
+    }
+    .ad-banner-copy {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px; color: var(--ink-2);
+      letter-spacing: .06em; line-height: 1.7;
+    }
+    .ad-banner-brand {
+      font-size: 9px; color: var(--ink-3);
+      margin-top: 5px; letter-spacing: .14em;
+    }
+    .ad-banner-promo {
+      position: absolute; top: 6px; right: 9px;
+      font-size: 8px; letter-spacing: .16em;
+      color: var(--ink-3); font-weight: 300;
+    }
+    /* デスクトップ：バナーも中央寄せ */
+    @media (min-width: 768px) {
+      .ad-banner {
+        max-width: 680px;
+        margin-left: auto; margin-right: auto;
+        width: auto;
+      }
+    }
+
+    /* ════════════════════════════════════
+       NOVEL CARDS — 日記小説
+    ════════════════════════════════════ */
+    .novel-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 10px; }
+
+    .novel-card {
+      background: var(--surface); border-radius: 14px;
+      box-shadow: var(--shadow); overflow: hidden; position: relative;
+    }
+    .novel-card::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+      background: linear-gradient(180deg, #38BF80, rgba(58,172,220,.18));
+    }
+    .novel-body { padding: 18px 18px 0 22px; }
+    .novel-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 15px; font-weight: 400; color: var(--ink); letter-spacing: .05em; line-height: 1.7;
+    }
+    .novel-excerpt {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 300; color: var(--ink-2); line-height: 2.1; margin-top: 10px;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .novel-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 18px 14px 22px; margin-top: 10px; border-top: 1px solid var(--rule);
+    }
+    .novel-from { font-size: 10px; color: var(--ink-3); letter-spacing: .12em; }
+    .novel-time { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+    .novel-read { font-size: 10px; color: var(--ocean-l); letter-spacing: .1em; font-family: 'Noto Serif JP', serif; }
+
+    /* ════════════════════════════════════
+       BONFIRE — 焚き火
+    ════════════════════════════════════ */
+    .bonfire-screen { min-height: 100%; background: #211608; padding-bottom: 48px; }
+    .bonfire-header {
+      padding: 20px 20px 16px;
+      background: linear-gradient(180deg, #2E1E0A 0%, #241608 60%, #1C1208 100%);
+      border-bottom: 1px solid rgba(232,110,30,.18);
+      position: relative;
+    }
+    .bonfire-header::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(180deg, rgba(255,160,60,.06) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .bonfire-header .screen-title { color: #EEE0CC; }
+    .bonfire-header .screen-sub   { color: #7A6A52; }
+
+    .room-card {
+      margin: 14px 14px 0;
+      background: #2A1C0A;
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 0 1px rgba(232,110,30,.12);
+    }
+    .room-head {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+      border-bottom: 1px solid rgba(232,110,30,.10);
+    }
+    .room-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 300; color: #EEE0CC; letter-spacing: .05em;
+    }
+    .room-meta { font-size: 10px; color: #6A5A44; margin-top: 2px; letter-spacing: .06em; }
+    .post-card { padding: 15px 16px 13px; border-bottom: 1px solid rgba(232,110,30,.08); position: relative; }
+    .post-card:last-child { border-bottom: none; }
+    .post-card::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+      background: linear-gradient(180deg, #E87828, rgba(232,120,40,.08));
+    }
+    .post-from { font-size: 10px; letter-spacing: .12em; color: #6A5A44; margin-bottom: 10px; padding-left: 8px; }
+    .post-body {
+      font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 300;
+      line-height: 2.1; color: #DDD0B8; padding-left: 8px;
+    }
+    .post-foot {
+      margin-top: 8px; padding: 8px 0 0 8px;
+      display: flex; justify-content: space-between; border-top: 1px solid rgba(232,110,30,.08);
+    }
+    .post-time { font-size: 10px; color: #6A5A44; }
+    .post-wave { font-size: 11px; color: #E87828; }
+
+    /* ════════════════════════════════════
+       BONFIRE — チャット・コミュニティ作成
+    ════════════════════════════════════ */
+
+    /* ─ チャット画面（夜の焚き火） ─ */
+    .chat-shell {
+      display: flex; flex-direction: column;
+      height: 100%; background: #211608;
+    }
+    .chat-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 18px 14px;
+      background: linear-gradient(180deg, #2E1E0A 0%, #1C1208 100%);
+      border-bottom: 1px solid rgba(232,110,30,.16);
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .chat-header::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 45%;
+      background: linear-gradient(180deg, rgba(255,140,40,.05) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .chat-back {
+      background: none; border: none; cursor: pointer;
+      font-size: 20px; line-height: 1; color: #E87828;
+      padding: 4px 8px 4px 2px;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity .2s; flex-shrink: 0;
+    }
+    .chat-back:hover { opacity: .6; }
+    .chat-room-info { flex: 1; }
+    .chat-room-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 300; color: #EEE0CC; letter-spacing: .04em;
+    }
+    .chat-room-meta { font-size: 10px; color: #6A5A44; margin-top: 2px; }
+
+    .chat-messages {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      padding: 16px 14px 12px;
+      display: flex; flex-direction: column; gap: 10px;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+      background: #211608;
+    }
+    .chat-messages::-webkit-scrollbar { display: none; }
+
+    .chat-msg { display: flex; flex-direction: column; max-width: 80%; }
+    .chat-msg.me    { align-self: flex-end;   align-items: flex-end;   }
+    .chat-msg.other { align-self: flex-start; align-items: flex-start; }
+
+    .chat-msg-handle {
+      font-size: 10px; color: #6A5A44; letter-spacing: .08em;
+      margin-bottom: 4px; padding: 0 4px;
+    }
+    .chat-msg-bubble {
+      padding: 10px 14px; border-radius: 16px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 300; line-height: 1.9;
+      position: relative; word-break: break-all;
+    }
+    .chat-msg.other .chat-msg-bubble {
+      background: #2E2010;
+      border-radius: 4px 16px 16px 16px;
+      color: #DDD0B8;
+      box-shadow: 0 2px 8px rgba(0,0,0,.36);
+    }
+    .chat-msg.me .chat-msg-bubble {
+      background: linear-gradient(135deg, rgba(232,120,40,.28) 0%, rgba(200,90,20,.22) 100%);
+      border: 1px solid rgba(232,120,40,.30);
+      border-radius: 16px 16px 4px 16px;
+      color: #EEE0CC;
+    }
+    .chat-msg-time {
+      font-size: 9px; color: #5A4A36; margin-top: 4px; padding: 0 4px;
+    }
+
+    .chat-input-area {
+      flex-shrink: 0;
+      display: flex; align-items: flex-end; gap: 10px;
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+      background: #2A1C0A;
+      border-top: 1px solid rgba(232,110,30,.14);
+    }
+    .chat-textarea {
+      flex: 1; resize: none; border: none; outline: none;
+      background: #181008;
+      border: 1px solid rgba(232,110,30,.24);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 300; color: #EEE0CC; line-height: 1.7;
+      max-height: 100px; overflow-y: auto;
+      caret-color: #E87828;
+      -webkit-overflow-scrolling: touch;
+    }
+    .chat-textarea::placeholder { color: #4A3C2C; }
+    .chat-send-btn {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: 50%; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #C86018, #E87828, #F0A030);
+      color: #fff; font-size: 16px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 14px rgba(200,96,24,.45);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chat-send-btn:disabled { opacity: .25; cursor: default; box-shadow: none; }
+    .chat-send-btn:not(:disabled):hover { transform: scale(1.07); }
+
+    /* ─ ルーム一覧下部「新規作成」ボタン ─ */
+    .room-create-card {
+      margin: 14px 14px 0;
+      background: none;
+      border: 1px dashed rgba(232,110,30,.32);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; font-size: 13px; color: #C86018;
+      font-family: 'Noto Serif JP', serif; letter-spacing: .06em;
+      transition: background .2s; -webkit-tap-highlight-color: transparent;
+    }
+    .room-create-card:hover { background: rgba(232,110,30,.06); }
+
+    /* ─ コミュニティ作成画面（夜の焚き火） ─ */
+    .create-shell {
+      display: flex; flex-direction: column;
+      height: 100%; background: #211608;
+    }
+    .create-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 18px 14px;
+      background: linear-gradient(180deg, #2E1E0A 0%, #1C1208 100%);
+      border-bottom: 1px solid rgba(232,110,30,.16);
+      flex-shrink: 0;
+    }
+    .create-title-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 15px; font-weight: 300; color: #EEE0CC; letter-spacing: .04em;
+    }
+    .create-body {
+      flex: 1; overflow-y: auto; padding: 26px 18px 40px;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .create-body::-webkit-scrollbar { display: none; }
+    .create-label {
+      font-size: 9px; letter-spacing: .22em; color: #6A5A44;
+      text-transform: uppercase; margin-bottom: 12px; margin-top: 24px;
+    }
+    .create-label:first-child { margin-top: 0; }
+    .create-input {
+      width: 100%;
+      border: 1px solid rgba(232,110,30,.22);
+      border-radius: 12px; outline: none;
+      background: #2A1C0A;
+      padding: 14px 16px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 15px; font-weight: 300; color: #EEE0CC;
+      caret-color: #E87828; letter-spacing: .04em;
+    }
+    .create-input::placeholder { color: #4A3C2C; }
+    .create-input:focus { border-color: rgba(232,110,30,.55); }
+    .create-submit-btn {
+      margin-top: 28px; width: 100%;
+      padding: 15px 0; border: none; cursor: pointer;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #C86018, #E87828, #F0A030);
+      color: #FFF8F0; font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 300; letter-spacing: .14em;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 6px 24px rgba(200,96,24,.40);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .create-submit-btn:disabled { opacity: .25; cursor: default; box-shadow: none; }
+    .create-submit-btn:not(:disabled):hover { transform: translateY(-1px); }
+
+    /* 焚き火タブ内の広告テキスト色 */
+    .bonfire-screen .ad-card { background: #181208; box-shadow: 0 8px 24px rgba(0,0,0,.40), 0 0 0 1px rgba(232,110,30,.10); }
+    .bonfire-screen .ad-copy  { color: #C8B89A; }
+    .bonfire-screen .ad-brand { color: #6A5A44; }
+    .bonfire-screen .ad-promo-label { color: #6A5A44; }
+
+    /* デスクトップ：チャット・作成画面も中央寄せ */
+    @media (min-width: 768px) {
+      .chat-header, .chat-messages, .chat-input-area,
+      .create-header, .create-body {
+        max-width: 680px; margin-left: auto; margin-right: auto;
+        width: 100%; box-sizing: border-box;
+      }
+      .chat-shell, .create-shell { background: #0C0906; }
+    }
+
+    /* ════════════════════════════════════
+       WRITE — 書く
+    ════════════════════════════════════ */
+    .write-header {
+      background: var(--surface); border-bottom: 1px solid var(--rule);
+      flex-shrink: 0; padding: 20px 20px 0;
+    }
+    .write-header-top { padding-bottom: 14px; }
+
+    .write-mode-tabs { display: flex; border-bottom: 1px solid var(--rule); }
+    .write-mode-tab {
+      padding: 9px 18px 10px; border: none; background: none; cursor: pointer;
+      font-size: 11px; letter-spacing: .1em; color: var(--ink-3);
+      position: relative; transition: color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .write-mode-tab.active { color: var(--ink); }
+    .write-mode-tab.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 6px; right: 6px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--ocean), #38BF80);
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* スクロール領域 */
+    .write-body {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 18px 14px;
+      scrollbar-width: none;
+    }
+    .write-body::-webkit-scrollbar { display: none; }
+
+    /* ─ ショートモード ─ */
+    .write-paper {
+      background: var(--surface); border-radius: 14px;
+      box-shadow: var(--shadow); overflow: hidden; position: relative;
+    }
+    .write-paper::before {
+      content: ''; position: absolute;
+      top: 0; left: 44px; bottom: 0; width: 1px;
+      background: rgba(201,109,64,.12); pointer-events: none; z-index: 1;
+    }
+    .write-area {
+      width: 100%; min-height: 260px;
+      background: transparent; border: none;
+      padding: 22px 20px 22px 56px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 15px; font-weight: 300; line-height: 2.2; color: var(--ink);
+      resize: none; outline: none; caret-color: var(--ocean);
+      background-image: repeating-linear-gradient(
+        transparent, transparent calc(2.2em - 1px),
+        rgba(0,0,0,.04) calc(2.2em - 1px), rgba(0,0,0,.04) 2.2em
+      );
+      background-attachment: local;
+    }
+    .write-area::placeholder { color: var(--ink-3); }
+    .write-count {
+      display: flex; justify-content: flex-end;
+      padding: 8px 18px 12px; font-size: 10px; color: var(--ink-3);
+      border-top: 1px solid var(--rule);
+    }
+
+    /* ─ 原稿用紙モード ─ */
+    .manuscript-paper {
+      background: var(--manu-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .manuscript-title {
+      width: 100%; border: none; outline: none;
+      background: transparent;
+      border-bottom: 1px solid var(--sepia);
+      padding: 18px 22px 16px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 17px; font-weight: 500;
+      color: var(--ink); letter-spacing: .06em;
+      caret-color: var(--ocean);
+    }
+    .manuscript-title::placeholder { color: var(--ink-3); font-weight: 400; }
+
+    /* 横罫線 — セピア色 */
+    .novel-area {
+      width: 100%; min-height: 360px;
+      border: none; outline: none; resize: none;
+      background-color: var(--manu-bg);
+      background-image: repeating-linear-gradient(
+        transparent 0,
+        transparent calc(2.8em - 1px),
+        var(--sepia) calc(2.8em - 1px),
+        var(--sepia) 2.8em
+      );
+      background-attachment: local;
+      padding: 1.4em 22px 22px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px; line-height: 2.8em;
+      color: var(--ink); letter-spacing: .08em;
+      caret-color: var(--ocean);
+      -webkit-overflow-scrolling: touch;
+    }
+    .novel-area::placeholder { color: var(--ink-3); }
+
+    .novel-count {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 22px 14px;
+      background: var(--manu-bg);
+      border-top: 1px solid rgba(180,140,100,.18);
+      font-size: 10px; color: var(--ink-3); letter-spacing: .1em;
+    }
+
+    .autosave-indicator {
+      opacity: 0; transition: opacity .4s;
+      font-size: 10px; color: var(--ink-3); letter-spacing: .1em;
+    }
+    .autosave-indicator.on { opacity: 1; }
+
+    /* ─ 送信エリア ─ */
+    .send-area {
+      flex-shrink: 0;
+      padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: var(--surface);
+      border-top: 1px solid var(--rule);
+    }
+    .send-label {
+      font-size: 10px; letter-spacing: .16em; color: var(--ink-3);
+      text-align: center; margin-bottom: 10px; text-transform: uppercase;
+    }
+    .send-btns { display: flex; gap: 10px; }
+    .send-btn {
+      flex: 1; padding: 13px 8px;
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 12px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px; font-weight: 300; letter-spacing: .1em; color: var(--ink-2);
+      cursor: pointer; transition: all .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      -webkit-tap-highlight-color: transparent;
+      position: relative; overflow: hidden;
+    }
+    .send-btn::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,.22) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .send-btn-icon { font-size: 16px; }
+    .send-btn.ocean {
+      border-top: 3px solid transparent;
+      background-image: linear-gradient(var(--surface), var(--surface)),
+                        linear-gradient(90deg, var(--ocean), #38BF80);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+    .send-btn.fire  {
+      border-top: 3px solid transparent;
+      background-image: linear-gradient(var(--surface), var(--surface)),
+                        linear-gradient(90deg, var(--fire), #FF8CA0);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+    .send-btn:hover:not(:disabled) { background: var(--bg); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .send-btn:disabled { opacity: .28; cursor: default; }
+
+    .sent-view {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 18px; padding: 40px 36px; text-align: center;
+    }
+    .sent-icon { font-size: 44px; }
+    .sent-title {
+      font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 300;
+      color: var(--ink); line-height: 2.3; white-space: pre-line;
+    }
+    .sent-note { font-size: 11px; color: var(--ink-3); letter-spacing: .12em; }
+
+    /* ════════════════════════════════════
+       NAMINOTO — 波音（儚さ演出）
+    ════════════════════════════════════ */
+    .naminoto-screen { min-height: 100%; background: var(--ocean-pale); padding-bottom: 48px; }
+    .naminoto-header {
+      padding: 20px 20px 16px;
+      background: linear-gradient(180deg, #C4DCF8 0%, #D4E8FF 50%, #E4F0FF 100%);
+      border-bottom: 1px solid rgba(91,144,208,.18);
+      position: relative;
+    }
+    .naminoto-header::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(180deg, rgba(255,255,255,.28) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .wave-count-card {
+      margin: 16px 14px 20px; background: var(--surface);
+      border-radius: 14px; box-shadow: var(--shadow);
+      padding: 30px 24px 26px; text-align: center; position: relative; overflow: hidden;
+    }
+    .wave-count-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent 5%, #38BF80 30%, #3AACDC 55%, var(--ocean) 80%, transparent 95%);
+    }
+    .wave-big {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 72px; font-weight: 200; color: var(--ocean);
+      line-height: 1; letter-spacing: -.03em;
+    }
+    .wave-label { font-size: 10px; color: var(--ink-3); margin-top: 10px; letter-spacing: .2em; text-transform: uppercase; }
+    .wave-detail { font-size: 12px; color: var(--ink-2); margin-top: 14px; line-height: 2; }
+    .wave-expire {
+      display: inline-block; margin-top: 10px; padding: 4px 10px;
+      background: rgba(44,95,120,.06); border-radius: 10px;
+      font-size: 10px; color: var(--ink-3); letter-spacing: .08em;
+    }
+    .wave-section { font-size: 9px; letter-spacing: .22em; color: var(--ink-3); padding: 0 16px 10px; text-transform: uppercase; }
+    .wave-list { display: flex; flex-direction: column; gap: 1px; padding: 0 14px; }
+
+    /* 儚さ：不透明度を落とし、hover で少し浮く */
+    .wave-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 14px; background: var(--surface);
+      opacity: .58;        /* 名も知らぬ波は薄め */
+      transition: opacity .25s;
+    }
+    .wave-item.sunatomo { opacity: .84; } /* スナトモは少し濃いめ */
+    .wave-item:first-child { border-radius: 12px 12px 0 0; }
+    .wave-item:last-child  { border-radius: 0 0 12px 12px; }
+    .wave-item:hover { opacity: 1; }
+
+    .wave-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--ocean-pale); font-size: 15px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(44,95,120,.18);
+    }
+    .wave-avatar.unknown {
+      background: var(--bg); border-color: var(--rule);
+      font-size: 10px; color: var(--ink-3);
+    }
+    .wave-info { flex: 1; }
+    .wave-name { font-size: 13px; color: var(--ink); letter-spacing: .04em; }
+    .wave-note { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+    .wave-time { font-size: 10px; color: var(--ink-3); }
+    .wave-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ocean); flex-shrink: 0; }
+    .naminoto-note {
+      font-size: 11px; color: var(--ink-3); text-align: center;
+      margin-top: 28px; line-height: 2.2; letter-spacing: .08em; padding: 0 28px;
+    }
+
+    /* ════════════════════════════════════
+       MY PAGE
+    ════════════════════════════════════ */
+    .my-screen { min-height: 100%; background: var(--bg); padding-bottom: 48px; }
+    .my-head {
+      background: var(--surface); padding: 36px 24px 28px;
+      border-bottom: 1px solid var(--rule);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .my-av {
+      width: 70px; height: 70px; border-radius: 50%;
+      background: linear-gradient(135deg, #C4EED8 0%, #C4EAF8 50%, #C8F0E8 100%);
+      border: 2px solid rgba(56,191,128,.28);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(40,140,100,.14);
+    }
+    .my-name {
+      font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 300;
+      color: var(--ink); letter-spacing: .08em;
+    }
+    .my-since { font-size: 10px; color: var(--ink-3); margin-top: 5px; letter-spacing: .1em; }
+
+    .my-stats { display: flex; background: var(--surface); border-bottom: 1px solid var(--rule); }
+    .stat { flex: 1; padding: 20px 6px; text-align: center; }
+    .stat + .stat { border-left: 1px solid var(--rule); }
+    .stat-n {
+      font-family: 'Noto Serif JP', serif; font-size: 26px; font-weight: 200; color: var(--ink);
+    }
+    .stat-l { font-size: 10px; color: var(--ink-3); margin-top: 4px; letter-spacing: .07em; }
+
+    .my-section { padding: 20px 14px 0; }
+    .my-section-label {
+      font-size: 9px; letter-spacing: .22em; color: var(--ink-3);
+      margin-bottom: 14px; text-transform: uppercase;
+    }
+    .log-card {
+      background: var(--surface); border-left: 3px solid var(--rule);
+      padding: 14px 16px 12px; margin-bottom: 8px;
+      box-shadow: var(--shadow); border-radius: 0 12px 12px 0;
+    }
+    .log-card.ocean-dest { border-color: var(--ocean); }
+    .log-card.fire-dest  { border-color: var(--fire); }
+    .log-text {
+      font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 300;
+      line-height: 2; color: var(--ink-2);
+    }
+    .log-meta {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 10px; color: var(--ink-3); letter-spacing: .05em;
+    }
+    .log-dest-ocean { color: var(--ocean-l); }
+    .log-dest-fire  { color: var(--fire); }
+
+    /* ── 編集・削除 ── */
+    .log-actions {
+      display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end;
+    }
+    .log-action-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 10px; letter-spacing: .1em; padding: 3px 10px;
+      border-radius: 8px; transition: background .18s;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Noto Serif JP', serif;
+    }
+    .log-action-btn.edit   { color: var(--ocean); }
+    .log-action-btn.edit:hover   { background: var(--ocean-pale); }
+    .log-action-btn.del    { color: #C04040; }
+    .log-action-btn.del:hover    { background: rgba(192,64,64,.07); }
+    .log-edit-area {
+      width: 100%; min-height: 90px; resize: vertical;
+      border: 1px solid rgba(50,170,130,.32); border-radius: 10px;
+      padding: 10px 12px; margin-top: 8px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 300; color: var(--ink);
+      background: rgba(255,255,255,.85); outline: none;
+      caret-color: var(--ocean); line-height: 1.9;
+    }
+    .log-edit-btns { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+    .log-save-btn {
+      padding: 5px 16px; border-radius: 8px; cursor: pointer;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 11px; letter-spacing: .1em; color: var(--ink-2);
+      background: linear-gradient(135deg, rgba(56,191,128,.15), rgba(58,172,220,.15));
+      border: 1px solid rgba(50,170,130,.36);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .log-cancel-btn {
+      padding: 5px 12px; border-radius: 8px; cursor: pointer;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 11px; letter-spacing: .08em; color: var(--ink-3);
+      background: none; border: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .log-del-confirm {
+      margin-top: 8px; padding: 10px 12px;
+      background: rgba(192,64,64,.06); border-radius: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .log-del-msg { font-size: 11px; color: #C04040; letter-spacing: .06em; }
+    .log-del-yes {
+      padding: 4px 14px; border-radius: 8px; cursor: pointer;
+      font-size: 11px; color: #fff; background: #C04040; border: none;
+      font-family: 'Noto Serif JP', serif; letter-spacing: .08em;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 設定 — SNS連携・ID検索 なし を明示 */
+    .settings-list {
+      border-radius: 14px; overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface); padding: 15px 16px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-key { font-size: 13px; color: var(--ink-2); letter-spacing: .03em; }
+    .no-badge {
+      font-size: 8px; letter-spacing: .14em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 10px;
+      background: rgba(44,95,120,.07); color: var(--ink-3);
+    }
+    .settings-arrow { font-size: 12px; color: var(--ink-3); }
+
+    /* ════════════════════════════════════
+       SIDEBAR（デスクトップ用）
+    ════════════════════════════════════ */
+    .sidebar {
+      display: none; /* モバイルでは非表示 */
+      flex-direction: column;
+      width: 224px; min-width: 224px;
+      background: linear-gradient(180deg, #BEE8D4 0%, #C8EEE8 50%, #D0F2F0 100%);
+      border-right: 1px solid rgba(48,165,120,.16);
+      overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    /* サイドバー上部シャイン */
+    .sidebar::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 160px;
+      background: linear-gradient(180deg, rgba(255,255,255,.36) 0%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .sidebar-logo-area {
+      padding: 40px 26px 26px;
+      position: relative; z-index: 1;
+      border-bottom: 1px solid rgba(48,165,120,.14);
+    }
+    .sidebar-logo-ja {
+      display: block;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 18px; font-weight: 300; letter-spacing: .48em;
+      background: linear-gradient(135deg, #38BF80 15%, #3AACDC 55%, #2E90D4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .sidebar-logo-en {
+      display: block;
+      font-size: 8px; font-weight: 400; letter-spacing: .62em;
+      color: var(--ink-3); margin-top: 7px;
+    }
+    .sidebar-tagline {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 11px; font-weight: 300;
+      color: var(--ink-3); margin-top: 14px; line-height: 2; letter-spacing: .05em;
+    }
+
+    .sidebar-nav {
+      flex: 1; padding: 16px 10px;
+      display: flex; flex-direction: column; gap: 2px;
+      position: relative; z-index: 1;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 13px;
+      padding: 12px 16px; border: none; background: none;
+      cursor: pointer; border-radius: 10px; width: 100%; text-align: left;
+      transition: background .18s; -webkit-tap-highlight-color: transparent;
+    }
+    .sidebar-item:hover   { background: rgba(44,155,100,.08); }
+    .sidebar-item.active  { background: rgba(44,155,100,.13); }
+
+    .sidebar-icon  {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 15px; font-weight: 500;
+      flex-shrink: 0; line-height: 1;
+      width: 20px; text-align: center;
+    }
+    .sidebar-label { font-size: 13px; letter-spacing: .06em; color: var(--ink-2); font-weight: 300; }
+    .sidebar-item.active  .sidebar-label { color: var(--ink); font-weight: 500; }
+    .sidebar-item.active  .sidebar-icon  { filter: drop-shadow(0 0 4px rgba(91,144,208,.45)); }
+    .sidebar-item.fire-active.active .sidebar-icon { filter: drop-shadow(0 0 4px rgba(212,88,114,.45)); }
+
+    .sidebar-divider {
+      height: 1px; margin: 6px 14px;
+      background: linear-gradient(90deg, transparent, rgba(48,165,120,.22), transparent);
+    }
+
+    .sidebar-footer {
+      padding: 16px 26px 34px; position: relative; z-index: 1;
+      border-top: 1px solid rgba(48,165,120,.12);
+    }
+    .sidebar-footer p {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 10px; font-weight: 300;
+      color: var(--ink-3); letter-spacing: .1em; line-height: 2.2;
+    }
+
+    /* ════════════════════════════════════
+       CONTENT WRAP
+    ════════════════════════════════════ */
+    .content-wrap {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ════════════════════════════════════
+       DESKTOP ≥ 768px
+    ════════════════════════════════════ */
+    @media (min-width: 768px) {
+      html, body { background: #8ABFAA; }
+
+      #root { align-items: stretch; }
+
+      .app-shell {
+        max-width: 100%; max-height: 100%;
+        height: 100vh; height: 100dvh;
+        flex-direction: row;
+        box-shadow: none; border-radius: 0;
+        background: var(--bg);
+      }
+
+      .sidebar { display: flex; }
+      .nav { display: none !important; }
+
+      /* コンテンツを中央寄せ（max 680px） */
+      .ocean-header, .bonfire-header, .naminoto-header, .my-head, .my-stats {
+        max-width: 680px; margin-left: auto; margin-right: auto;
+        width: 100%; box-sizing: border-box;
+      }
+      .letter-list, .novel-list, .bonfire-posts,
+      .wave-count-card, .wave-section, .wave-list, .naminoto-note,
+      .my-section, .room-card {
+        max-width: 680px; margin-left: auto; margin-right: auto;
+        width: 100%;
+      }
+      .room-card { width: auto; }
+
+      /* デスクトップではカードを傾けない */
+      .letter-card[data-v="0"],
+      .letter-card[data-v="1"],
+      .letter-card[data-v="2"],
+      .letter-card[data-v="3"],
+      .letter-card[data-v="4"] {
+        transform: none; margin: 0;
+      }
+
+      /* カード余白を少し広げる */
+      .letter-card { padding: 26px 24px 20px; }
+
+      /* 書くスクリーン */
+      .write-header, .write-body, .send-area {
+        max-width: 640px; margin-left: auto; margin-right: auto;
+        width: 100%; box-sizing: border-box;
+      }
+
+      /* タイトルを少し大きく */
+      .screen-title { font-size: 22px; }
+
+      /* マイページ stats横幅 */
+      .my-stats { display: flex; }
+
+      /* wave-count-card は margin 調整 */
+      .wave-count-card { width: auto; }
+    }
+
+    /* ════════════════════════════════════
+       FILTER ERROR TOAST
+    ════════════════════════════════════ */
+    .filter-toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 9000;
+      background: #1A0C0C;
+      border: 1px solid rgba(220,60,60,.35);
+      border-radius: 12px;
+      padding: 12px 18px 12px 14px;
+      display: flex; align-items: flex-start; gap: 10px;
+      max-width: 320px; width: calc(100% - 40px);
+      box-shadow: 0 8px 32px rgba(0,0,0,.40);
+      animation: toastIn .28s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .filter-toast-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .filter-toast-body { flex: 1; }
+    .filter-toast-title {
+      font-size: 12px; font-weight: 400; color: #F0C0B0;
+      letter-spacing: .06em; margin-bottom: 3px;
+    }
+    .filter-toast-msg {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 11px; font-weight: 300; color: #8A7A72;
+      line-height: 1.8; letter-spacing: .04em;
+    }
+    @media (min-width: 768px) {
+      .filter-toast { bottom: 32px; }
+    }
+
+    /* ════════════════════════════════════
+       平成レトロ EXTRAS
+    ════════════════════════════════════ */
+
+    /* ✦ キラキラ浮遊アニメーション */
+    @keyframes sparkleFloat {
+      0%,100% { opacity: .3;  transform: scale(1)    rotate(0deg);   }
+      33%     { opacity: .85; transform: scale(1.2)  rotate(15deg);  }
+      66%     { opacity: .45; transform: scale(.88)  rotate(-10deg); }
+    }
+    .splash-sparkle {
+      position: absolute;
+      animation: sparkleFloat 3.5s ease-in-out infinite;
+      pointer-events: none; z-index: 0; user-select: none;
+      line-height: 1;
+    }
+
+    /* ナビ アイコングロウ */
+    .nav-item.active .nav-icon {
+      filter: drop-shadow(0 0 5px rgba(91,144,208,.55));
+    }
+    .nav-item.fire-active .nav-icon {
+      filter: drop-shadow(0 0 5px rgba(212,88,114,.55));
+    }
+
+    /* マイページ ヘッダー */
+    .my-head {
+      background: linear-gradient(180deg, #C8EED8 0%, #D0F0EC 50%, var(--surface) 100%);
+      position: relative;
+    }
+    .my-head::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 35%;
+      background: linear-gradient(180deg, rgba(255,255,255,.30) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* 波音 ビッグカウント グラデテキスト */
+    .wave-big {
+      background: linear-gradient(135deg, #38BF80 0%, #3AACDC 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* スナトモ アバター グラデ枠 */
+    .wave-avatar {
+      background: linear-gradient(135deg, var(--ocean-pale), #C8EED8);
+      border: 1.5px solid rgba(52,175,125,.25);
+    }
+
+    /* write ヘッダー */
+    .write-header {
+      background: linear-gradient(180deg, #CCF0E0 0%, var(--surface) 100%);
+    }
+
+    /* ════════════════════════════════════
+       REGISTER / VERIFY
+    ════════════════════════════════════ */
+    .register-shell {
+      width: 100%; height: 100%;
+      background: linear-gradient(160deg, #D4F2E8 0%, #C4EAF8 32%, #D0F4F0 65%, #C8EEE0 100%);
+      display: flex; flex-direction: column;
+      overflow: hidden; position: relative;
+    }
+    .register-scroll {
+      flex: 1; overflow-y: auto;
+      padding: 0 28px 48px;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .register-scroll::-webkit-scrollbar { display: none; }
+
+    .register-logo-area {
+      text-align: center; padding: 44px 0 28px;
+    }
+    .register-subtitle {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px; font-weight: 300;
+      color: var(--ink-3); letter-spacing: .12em;
+      margin-top: 12px; line-height: 2;
+    }
+    .register-divider-line {
+      display: flex; align-items: center; gap: 10px;
+      margin: 4px 0 24px;
+    }
+    .register-divider-line::before,
+    .register-divider-line::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(50,170,130,.28), transparent);
+    }
+    .register-divider-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: linear-gradient(135deg, #38BF80, #3AACDC);
+    }
+
+    .form-field { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 9px; letter-spacing: .22em; color: var(--ink-3);
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .form-input, .form-select {
+      width: 100%; padding: 13px 14px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(50,170,130,.22);
+      border-radius: 12px; outline: none;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 300; color: var(--ink);
+      caret-color: var(--ocean);
+      transition: border-color .2s, background .2s;
+      -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: rgba(50,170,130,.55);
+      background: rgba(255,255,255,.90);
+    }
+    .form-input::placeholder { color: var(--ink-3); }
+    .form-select { color: var(--ink-2); cursor: pointer; }
+    .form-select option { color: var(--ink); background: #fff; }
+
+    .pw-wrap { position: relative; }
+    .pw-toggle {
+      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      font-size: 10px; color: var(--ink-3); letter-spacing: .08em;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .form-hint {
+      font-size: 10px; color: var(--ink-3);
+      margin-top: 5px; letter-spacing: .05em; line-height: 1.8;
+    }
+    .form-error {
+      font-size: 10px; color: #C04040;
+      margin-top: 5px; letter-spacing: .05em;
+    }
+
+    .form-check {
+      display: flex; align-items: flex-start; gap: 11px;
+      margin-bottom: 20px;
+    }
+    .form-check input[type="checkbox"] {
+      margin-top: 3px; flex-shrink: 0;
+      width: 16px; height: 16px;
+      accent-color: var(--ocean); cursor: pointer;
+    }
+    .form-check-label {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px; font-weight: 300;
+      color: var(--ink-2); line-height: 2; letter-spacing: .04em;
+    }
+    .form-check-link {
+      color: var(--ocean); text-decoration: underline;
+      text-underline-offset: 3px; background: none; border: none;
+      cursor: pointer; font-size: inherit; font-family: inherit;
+      letter-spacing: inherit; padding: 0;
+    }
+
+    .register-btn {
+      width: 100%; padding: 15px 0;
+      background: linear-gradient(135deg, rgba(56,191,128,.14) 0%, rgba(58,172,220,.14) 100%);
+      border: 1px solid rgba(50,170,130,.36);
+      border-radius: 14px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 300;
+      letter-spacing: .20em; color: var(--ink-2);
+      cursor: pointer; transition: all .25s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .register-btn:not(:disabled):hover {
+      background: linear-gradient(135deg, rgba(56,191,128,.24) 0%, rgba(58,172,220,.24) 100%);
+      border-color: rgba(50,170,130,.60);
+    }
+    .register-btn:disabled { opacity: .32; cursor: default; }
+
+    .register-login-wrap {
+      text-align: center; margin-top: 20px;
+      font-size: 11px; color: var(--ink-3); letter-spacing: .06em;
+    }
+    .register-login-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 12px; color: var(--ocean); letter-spacing: .06em;
+      font-family: 'Noto Serif JP', serif;
+      text-decoration: underline; text-underline-offset: 3px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ─ 認証メール待ち画面 ─ */
+    .verify-screen {
+      width: 100%; height: 100%;
+      background: linear-gradient(160deg, #D4F2E8 0%, #C4EAF8 32%, #D0F4F0 65%, #C8EEE0 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 36px; text-align: center;
+      position: relative;
+    }
+    .verify-icon { font-size: 46px; margin-bottom: 24px; }
+    .verify-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 16px; font-weight: 300;
+      color: var(--ink); letter-spacing: .06em;
+      line-height: 2.2; margin-bottom: 12px;
+    }
+    .verify-email-addr {
+      font-size: 13px; color: var(--ocean);
+      letter-spacing: .04em; margin-bottom: 6px;
+    }
+    .verify-note {
+      font-size: 11px; color: var(--ink-3);
+      line-height: 2.2; letter-spacing: .06em; margin-bottom: 36px;
+    }
+    .verify-hint {
+      font-size: 10px; color: var(--ink-3);
+      letter-spacing: .04em; margin-top: 20px; opacity: .7;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    /* ── Supabase ── */
+    const SUPA_URL = 'https://rzbibvdjevrszvzqrlws.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6YmlidmRqZXZyc3p2enFybHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNzk3NTIsImV4cCI6MjA5MTk1NTc1Mn0.7DNF6P8Ev-9flalRaBOYTFCB-WmGKGbxHgoWG5PflJg';
+    const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    function timeAgo(ts) {
+      const diff = (Date.now() - new Date(ts).getTime()) / 1000;
+      if (diff < 60)    return 'さっき';
+      if (diff < 3600)  return `${Math.floor(diff / 60)}分前`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}時間前`;
+      return `${Math.floor(diff / 86400)}日前`;
+    }
+
+    /* ── フォールバック用静的データ ── */
+    const SHORT_DIARIES = [
+      { id:1, handle:'砂時計',   text:'今日は雨だった。コーヒーを飲みながら、窓の外をずっと見ていた。何も考えていないようで、いろんなことを考えていた気がする。', time:'2時間前', waves:3 },
+      { id:2, handle:'夜の波',   text:'久しぶりに昔の曲を聴いたら、あの頃のことが蘇った。遠い記憶なのに、まだ温かかった。', time:'5時間前', waves:7 },
+      { id:3, handle:'白い霧',   text:'誰かに話しかけたいわけじゃない。ただ、誰かに聞こえてほしかった。それだけ。', time:'昨日', waves:12 },
+      { id:4, handle:'月光',     text:'失敗した。でも明日も生きる。それだけでいい。そう思えるようになった。', time:'昨日', waves:5 },
+      { id:5, handle:'砂のくず', text:'桜を見た。一人で見た。それが良かった。', time:'2日前', waves:2 },
+      { id:6, handle:'遠い灯台', text:'今日、誰とも話さなかった。それが今日一番の安息だったかもしれない。', time:'2日前', waves:8 },
+      { id:7, handle:'波の跡',   text:'夏の匂いが少しだけした。まだ春なのに。記憶って不思議だな。', time:'3日前', waves:4 },
+      { id:8, handle:'砂鉄',     text:'また眠れなかった。でも朝は来る。それで十分だ、今は。', time:'4日前', waves:6 },
+    ];
+
+    const DIARY_NOVELS = [
+      { id:1, handle:'鳥籠の風', title:'雨の日の喫茶店で、十年後の自分と話した気がした', excerpt:'窓の外で傘が揺れていた。私はいつも、雨の日に一番本当のことを考える。あの頃とは違う自分が、今ここにいる。なぜだろう、その事実が少しだけ悲しい。', time:'3時間前' },
+      { id:2, handle:'曇りの棚', title:'退職届を書いた夜のこと', excerpt:'封筒に入れた瞬間、不思議と涙は出なかった。十二年分の何かが、音もなく沈んでいく感じだった。それは後悔ではなく、むしろ——', time:'昨日' },
+    ];
+
+    /* 広告データ: 海 — 3番目・7番目の後 */
+    const ADS = {
+      3: { id:'ad-1', copy:'静かな朝に、ひとつのコーヒー。', brand:'— 珈琲専門店 砂時計 —', bg:'linear-gradient(120deg,#C4EED8 0%,#C4EAF8 100%)' },
+      7: { id:'ad-2', copy:'言葉を、丁寧に纏める。',         brand:'— 文具店 波待ち —',     bg:'linear-gradient(120deg,#C8EEF0 0%,#D0F0E8 100%)' },
+    };
+
+    /* 広告データ: 各タブ用 */
+    const AD_BONFIRE = { copy:'今夜、本と静かに過ごしませんか。', brand:'— 書店 夜の本棚 —', bg:'linear-gradient(120deg,#2A1C0C 0%,#1C1008 100%)' };
+    const AD_NAMINOTO = { copy:'あなたの声を、届けたい人へ。',    brand:'— 音楽配信 砂の音 —', bg:'linear-gradient(120deg,#C8EEE8 0%,#D0F0E0 100%)' };
+    const AD_MY       = { copy:'毎日の記録を、もっと美しく。',    brand:'— 手帳専門店 砂と紙 —', bg:'linear-gradient(120deg,#D0F0E8 0%,#C8EAF8 100%)' };
+    const AD_SENT     = { copy:'言葉を纏う、上質な万年筆。',      brand:'— 文具 砂時計 —',     bg:'linear-gradient(120deg,#C4EED8 0%,#D0EEF8 100%)' };
+
+
+    const NAMINOTO_STATIC = [
+      { id:1, handle:'夜の波', note:'あなたの瓶に波を返した',       time:'さっき',  isSunatomo:true  },
+      { id:2, handle:'白い霧', note:'日記小説を最後まで読んだ',     time:'1時間前', isSunatomo:true  },
+      { id:3, handle:null,     note:'名も知らぬ波',                 time:'3時間前', isSunatomo:false },
+      { id:4, handle:null,     note:'名も知らぬ波',                 time:'昨日',    isSunatomo:false },
+    ];
+
+    const SAVE_SHORT = 'ss_short';
+    const SAVE_TITLE = 'ss_title';
+    const SAVE_NOVEL = 'ss_novel';
+
+    /* ── コンテンツフィルタ ── */
+    const HATE_PATTERNS = [
+      '死ね','死にろ','氏ね','市ね','殺す','殺せ','殺すぞ','消えろ','消えうせろ',
+      'ゴミ人間','ゴミ野郎','クズ野郎','カス野郎',
+      'hate','kill yourself','kys',
+    ];
+    const ADULT_PATTERNS = [
+      'セックス','セクックス','sex','porn','ポルノ','エロ動画','えろ動画',
+      'アダルト動画','nude','裸','フェラ','オナニー','射精','勃起',
+      'おっぱい','ちんこ','まんこ','陰茎','陰部','性器',
+    ];
+
+    function checkContent(text) {
+      const t = text.toLowerCase();
+      for (const w of HATE_PATTERNS) {
+        if (t.includes(w.toLowerCase())) return 'hate';
+      }
+      for (const w of ADULT_PATTERNS) {
+        if (t.includes(w.toLowerCase())) return 'adult';
+      }
+      return null;
+    }
+
+    /* ── Splash ── */
+    const SPARKLE_POS = [
+      { top:'10%', left:'10%',  fontSize:'14px', delay:'0s',    color:'#38BF80' },
+      { top:'16%', right:'13%', fontSize:'10px', delay:'0.8s',  color:'#3AACDC' },
+      { top:'32%', left:'6%',   fontSize:'8px',  delay:'2.1s',  color:'#2EB888' },
+      { top:'40%', right:'8%',  fontSize:'12px', delay:'1.5s',  color:'#60C8E8' },
+      { top:'66%', left:'12%',  fontSize:'11px', delay:'1.1s',  color:'#38BF80' },
+      { top:'74%', right:'16%', fontSize:'9px',  delay:'0.4s',  color:'#3AACDC' },
+      { top:'55%', left:'18%',  fontSize:'7px',  delay:'2.7s',  color:'#2EC898' },
+      { top:'24%', right:'22%', fontSize:'8px',  delay:'1.9s',  color:'#50D0C0' },
+    ];
+
+    function Splash({ onEnter }) {
+      return (
+        <div className="splash">
+          {SPARKLE_POS.map((s, i) => (
+            <span
+              key={i}
+              className="splash-sparkle"
+              style={{
+                top: s.top, left: s.left, right: s.right,
+                fontSize: s.fontSize, color: s.color,
+                animationDelay: s.delay,
+              }}
+            >✦</span>
+          ))}
+          <div className="splash-horizon" />
+          <div className="splash-waveline" />
+          <div className="splash-center">
+            <h1 className="splash-logo">SARASUNA</h1>
+            <div className="splash-divider">
+              <div className="splash-d-line" />
+              <div className="splash-d-dot" />
+              <div className="splash-d-line" />
+            </div>
+            <p className="splash-tagline">もう一度、人に戻るSNS</p>
+            <button className="enter-btn" onClick={onEnter}>砂浜へ</button>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Sidebar（デスクトップ） ── */
+    function Sidebar({ current, onChange }) {
+      const SIDE_SPARKLES = [
+        { top:'22%', left:'76%', size:'9px',  delay:'0s',   color:'#38BF80' },
+        { top:'48%', left:'82%', size:'7px',  delay:'1.6s', color:'#3AACDC' },
+        { top:'70%', left:'78%', size:'8px',  delay:'2.8s', color:'#2EC898' },
+      ];
+      return (
+        <aside className="sidebar">
+          {SIDE_SPARKLES.map((s, i) => (
+            <span key={i} className="splash-sparkle"
+              style={{ top:s.top, left:s.left, fontSize:s.size, color:s.color, animationDelay:s.delay }}>✦</span>
+          ))}
+          <div className="sidebar-logo-area">
+            <span className="sidebar-logo-ja">SARASUNA</span>
+            <p className="sidebar-tagline">もう一度、人に戻るSNS</p>
+          </div>
+          <nav className="sidebar-nav">
+            {NAV.map(item => {
+              const active = current === item.id;
+              return (
+                <button
+                  key={item.id}
+                  className={`sidebar-item${active ? (item.fire ? ' active fire-active' : ' active') : ''}`}
+                  onClick={() => onChange(item.id)}
+                >
+                  <span className="sidebar-icon">{item.icon}</span>
+                  <span className="sidebar-label">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+          <div className="sidebar-footer">
+          </div>
+        </aside>
+      );
+    }
+
+    /* ── Nav ── */
+    const NAV = [
+      { id:'ocean',    icon:'海', label:'海'    },
+      { id:'bonfire',  icon:'火', label:'焚き火', fire:true },
+      { id:'write',    icon:'書', label:'書く'  },
+      { id:'naminoto', icon:'波', label:'波音'  },
+      { id:'my',       icon:'己', label:'自分'  },
+    ];
+
+    function NavBar({ current, onChange }) {
+      return (
+        <nav className="nav">
+          {NAV.map(item => {
+            const active = current === item.id;
+            return (
+              <button
+                key={item.id}
+                className={`nav-item${active ? (item.fire ? ' active fire-active' : ' active') : ''}`}
+                onClick={() => onChange(item.id)}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span className="nav-label">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      );
+    }
+
+    /* ── AdBanner ── 横長コンパクト広告（波音・自分・送信完了） */
+    function AdBanner({ data }) {
+      return (
+        <div className="ad-banner">
+          <div className="ad-banner-promo">Promotion</div>
+          <div className="ad-banner-visual" style={{ background: data.bg }} />
+          <div className="ad-banner-body">
+            <p className="ad-banner-copy">{data.copy}</p>
+            <p className="ad-banner-brand">{data.brand}</p>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── LetterCard ── 波が引くアニメーション付き */
+    function LetterCard({ data, index, receding, onTap }) {
+      const [waved, setWaved] = useState(false);
+      const [count, setCount] = useState(data.waves || data.waves_count || 0);
+
+      async function handleWave(e) {
+        e.stopPropagation();
+        if (waved) return;
+        setWaved(true);
+        setCount(c => c + 1);
+        if (data.id && typeof data.id === 'string' && data.id.includes('-')) {
+          await sb.from('posts').update({ waves: (data.waves || 0) + 1 }).eq('id', data.id);
+        }
+      }
+
+      return (
+        <div
+          className={`letter-card${receding ? ' receding' : ''}`}
+          data-v={index % 5}
+          onClick={() => onTap(data.id)}
+        >
+          <div className="letter-from">{data.handle}</div>
+          <p className="letter-body">{data.body || data.text}</p>
+          <div className="letter-foot">
+            <span className="letter-time">{data.time || timeAgo(data.created_at)}</span>
+            <button className={`wave-btn${waved ? ' waved' : ''}`} onClick={handleWave}>
+              <span>〰</span><span>{count}</span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── AdCard ── インフィード広告（海・焚き火） */
+    function AdCard({ data }) {
+      return (
+        <div className="ad-card">
+          <div className="ad-promo-label">Promotion</div>
+          <div className="ad-visual" style={{ background: data.bg }} />
+          <div className="ad-body">
+            <p className="ad-copy">{data.copy}</p>
+            <p className="ad-brand">{data.brand}</p>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Ocean ── */
+    function Ocean() {
+      const [tab, setTab]             = useState('short');
+      const [recedingId, setReceding] = useState(null);
+      const [dbPosts,  setDbPosts]    = useState(null); // null = 読込中
+      const [dbNovels, setDbNovels]   = useState(null);
+
+      useEffect(() => {
+        // titleがnullのものをショート日記、titleがあるものを日記小説とみなす
+        sb.from('posts').select('*').eq('dest', 'ocean')
+          .order('created_at', { ascending: false }).limit(50)
+          .then(({ data, error }) => {
+            if (error) console.error('posts fetch error:', error);
+            const all = data || [];
+            // 【タイトル】で始まるものを日記小説、それ以外をショート日記に分類
+            setDbPosts(all.filter(p => !(p.body || '').startsWith('【')));
+            setDbNovels(all.filter(p => (p.body || '').startsWith('【')));
+          });
+      }, []);
+
+      function handleTap(id) {
+        setReceding(id);
+        setTimeout(() => setReceding(null), 700);
+      }
+
+      // DBが空のときは静的フォールバックを使う
+      const shortItems = (dbPosts  && dbPosts.length  > 0) ? dbPosts  : (dbPosts  === null ? [] : SHORT_DIARIES);
+      const novelItems = (dbNovels && dbNovels.length > 0) ? dbNovels : (dbNovels === null ? [] : DIARY_NOVELS);
+
+      function buildTimeline() {
+        const nodes = [];
+        shortItems.forEach((item, i) => {
+          nodes.push(
+            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} />
+          );
+          const adKey = i + 1;
+          if (ADS[adKey]) nodes.push(<AdCard key={ADS[adKey].id} data={ADS[adKey]} />);
+        });
+        return nodes;
+      }
+
+      return (
+        <div className="screen ocean-screen">
+          <div className="ocean-header">
+            <div className="ocean-header-top">
+              <div className="screen-title">海</div>
+              <div className="screen-sub">漂着したメッセージ</div>
+            </div>
+            <div className="ocean-tabs">
+              <button className={`ocean-tab${tab==='short'?' active':''}`} onClick={() => setTab('short')}>ショート日記</button>
+              <button className={`ocean-tab${tab==='novel'?' active':''}`} onClick={() => setTab('novel')}>日記小説</button>
+            </div>
+          </div>
+
+          {tab === 'short' && (
+            dbPosts === null ? (
+              <p style={{ textAlign:'center', padding:'40px 20px', color:'var(--ink-3)', fontSize:'12px', letterSpacing:'.1em', fontFamily:"'Noto Serif JP',serif" }}>読み込み中…</p>
+            ) : shortItems.length === 0 ? (
+              <p style={{ textAlign:'center', padding:'48px 24px', color:'var(--ink-3)', fontSize:'13px', lineHeight:2.2, letterSpacing:'.08em', fontFamily:"'Noto Serif JP',serif" }}>
+                まだ瓶は届いていない。<br />最初の一通を流してみよう。
+              </p>
+            ) : (
+              <div className="letter-list">{buildTimeline()}</div>
+            )
+          )}
+
+          {tab === 'novel' && (
+            dbNovels === null ? (
+              <p style={{ textAlign:'center', padding:'40px 20px', color:'var(--ink-3)', fontSize:'12px', letterSpacing:'.1em', fontFamily:"'Noto Serif JP',serif" }}>読み込み中…</p>
+            ) : (
+              <div className="novel-list">
+                {novelItems.map(n => (
+                  <div key={n.id} className="novel-card">
+                    <div className="novel-body">
+                      {(() => {
+                        const raw = n.body || n.text || '';
+                        const m = raw.match(/^【(.+?)】\n?([\s\S]*)/);
+                        return <>
+                          <div className="novel-title">{m ? m[1] : (n.title || raw.slice(0,30))}</div>
+                          <p className="novel-excerpt">{n.excerpt || (m ? m[2] : raw)}</p>
+                        </>;
+                      })()}
+                    </div>
+                    <div className="novel-foot">
+                      <div>
+                        <div className="novel-from">{n.handle}</div>
+                        <div className="novel-time">{n.time || timeAgo(n.created_at)}</div>
+                      </div>
+                      <span className="novel-read">続きを読む →</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+        </div>
+      );
+    }
+
+    /* ── Bonfire ── */
+    function Bonfire({ session }) {
+      const [view,        setView]       = useState('list');
+      const [rooms,       setRooms]      = useState(null); // null = 読込中
+      const [activeRoom,  setActiveRoom] = useState(null);
+      const [messages,    setMessages]   = useState([]);
+      const [newMsg,      setNewMsg]     = useState('');
+      const [newName,     setNewName]    = useState('');
+      const [filterErr,   setFilterErr]  = useState(null);
+      const [sending,     setSending]    = useState(false);
+      const [deletingRoom, setDeletingRoom] = useState(null);
+      const messagesEndRef = useRef(null);
+
+      /* ルーム一覧を読み込む */
+      useEffect(() => {
+        sb.from('rooms').select('*').order('created_at', { ascending: false })
+          .then(({ data }) => setRooms(data || []));
+      }, []);
+
+      /* チャット表示時：既存メッセージ読み込み ＋ リアルタイム購読 */
+      useEffect(() => {
+        if (view !== 'chat' || !activeRoom) return;
+        setMessages([]);
+        sb.from('messages').select('*').eq('room_id', activeRoom.id)
+          .order('created_at', { ascending: true }).limit(100)
+          .then(({ data }) => setMessages(data || []));
+        const channel = sb.channel(`room:${activeRoom.id}`)
+          .on('postgres_changes', {
+            event: 'INSERT', schema: 'public', table: 'messages',
+            filter: `room_id=eq.${activeRoom.id}`,
+          }, payload => setMessages(prev => [...prev, payload.new]))
+          .subscribe();
+        return () => { sb.removeChannel(channel); };
+      }, [view, activeRoom?.id]);
+
+      /* チャット最下部へスクロール */
+      useEffect(() => {
+        if (view === 'chat' && messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, [messages, view]);
+
+      /* メッセージ送信 */
+      async function handleSendMsg() {
+        const text = newMsg.trim();
+        if (!text || !activeRoom || sending) return;
+        const violation = checkContent(text);
+        if (violation) { setFilterErr(violation); return; }
+        if (!session) { setFilterErr('login_required'); return; }
+        setSending(true);
+        const { data: prof } = await sb.from('profiles').select('handle').eq('id', session.user.id).single();
+        const handle = prof?.handle || session.user.user_metadata?.handle || '砂流れ';
+        await sb.from('messages').insert({ room_id: activeRoom.id, user_id: session.user.id, handle, body: text });
+        setSending(false);
+        setNewMsg('');
+      }
+
+      /* ルーム削除 */
+      async function handleDeleteRoom(roomId) {
+        // メッセージを先に削除してからルームを削除
+        await sb.from('messages').delete().eq('room_id', roomId);
+        const { error } = await sb.from('rooms').delete().eq('id', roomId).eq('created_by', session.user.id);
+        if (!error) {
+          setRooms(prev => prev.filter(r => r.id !== roomId));
+          setDeletingRoom(null);
+        }
+      }
+
+      /* ルーム作成 */
+      async function handleCreateRoom() {
+        if (!newName.trim() || !session) return;
+        const violation = checkContent(newName);
+        if (violation) { setFilterErr(violation); return; }
+        const { data, error } = await sb.from('rooms')
+          .insert({ created_by: session.user.id, name: newName.trim() }).select().single();
+        if (!error && data) {
+          setRooms(prev => [data, ...(prev || [])]);
+          setNewName('');
+          setView('list');
+        }
+      }
+
+      /* ─ チャット画面 ─ */
+      if (view === 'chat' && activeRoom) {
+        return (
+          <div className="chat-shell">
+            {filterErr && <FilterToast type={filterErr} onClose={() => setFilterErr(null)} />}
+            <div className="chat-header">
+              <button className="chat-back" onClick={() => { setView('list'); setMessages([]); }}>←</button>
+              <div className="chat-room-info">
+                <div className="chat-room-name">{activeRoom.name}</div>
+                <div className="chat-room-meta">焚き火を囲んでいる</div>
+              </div>
+            </div>
+            <div className="chat-messages">
+              {messages.length === 0 && (
+                <p style={{ textAlign:'center', color:'#6A5A44', fontSize:'12px', marginTop:'24px', letterSpacing:'.08em', fontFamily:"'Noto Serif JP',serif" }}>
+                  まだ誰もいない。<br />最初の言葉を灯してみよう。
+                </p>
+              )}
+              {messages.map(m => {
+                const isMe = session && m.user_id === session.user.id;
+                return (
+                  <div key={m.id} className={`chat-msg${isMe ? ' me' : ' other'}`}>
+                    {!isMe && <div className="chat-msg-handle">{m.handle}</div>}
+                    <div className="chat-msg-bubble">{m.body || m.text}</div>
+                    <div className="chat-msg-time">{timeAgo(m.created_at)}</div>
+                  </div>
+                );
+              })}
+              <div ref={messagesEndRef} />
+            </div>
+            <div className="chat-input-area">
+              <textarea
+                className="chat-textarea"
+                placeholder={session ? '焚き火に言葉を灯す…' : 'ログインすると発言できます'}
+                rows={1}
+                value={newMsg}
+                onChange={e => setNewMsg(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMsg(); } }}
+                disabled={!session}
+              />
+              <button className="chat-send-btn" onClick={handleSendMsg} disabled={!newMsg.trim() || sending || !session}>↑</button>
+            </div>
+          </div>
+        );
+      }
+
+      /* ─ コミュニティ作成画面 ─ */
+      if (view === 'create') {
+        return (
+          <div className="create-shell">
+            {filterErr && <FilterToast type={filterErr} onClose={() => setFilterErr(null)} />}
+            <div className="create-header">
+              <button className="chat-back" onClick={() => setView('list')}>←</button>
+              <span className="create-title-text">新しい焚き火を作る</span>
+            </div>
+            <div className="create-body">
+              <p className="create-label">焚き火の名前</p>
+              <input
+                className="create-input" type="text"
+                placeholder="例：深夜に絵を描く人たち"
+                value={newName} onChange={e => setNewName(e.target.value)} maxLength={30}
+              />
+              <button className="create-submit-btn" onClick={handleCreateRoom} disabled={!newName.trim()}>
+                焚き火を囲む
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      /* ─ ルーム一覧 ─ */
+      const roomList = rooms || [];
+      return (
+        <div className="screen bonfire-screen">
+          <div className="bonfire-header">
+            <div className="screen-title">焚き火</div>
+            <div className="screen-sub">共通の趣味だけで集まる場所</div>
+          </div>
+          {rooms === null && (
+            <p style={{ textAlign:'center', padding:'30px 20px', color:'#6A5A44', fontSize:'12px', letterSpacing:'.08em', fontFamily:"'Noto Serif JP',serif" }}>読み込み中…</p>
+          )}
+          {roomList.map((room, i) => (
+            <div key={room.id}>
+              <div className="room-card">
+                <div className="room-head" style={{ cursor:'pointer' }} onClick={() => { setActiveRoom(room); setView('chat'); setDeletingRoom(null); }}>
+                  <div>
+                    <div className="room-name">{room.name}</div>
+                    <div className="room-meta">焚き火を囲む</div>
+                  </div>
+                  <span style={{ marginLeft:'auto', fontSize:'13px', color:'#6A5A44', flexShrink:0 }}>›</span>
+                </div>
+                {session && room.created_by === session.user.id && (
+                  <div style={{ padding:'8px 16px 10px', borderTop:'1px solid rgba(232,110,30,.08)', display:'flex', justifyContent:'flex-end' }}>
+                    {deletingRoom === room.id ? (
+                      <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                        <span style={{ fontSize:'11px', color:'#C86018', letterSpacing:'.06em' }}>削除しますか？</span>
+                        <button onClick={() => setDeletingRoom(null)}
+                          style={{ background:'none', border:'none', cursor:'pointer', fontSize:'11px', color:'#6A5A44', fontFamily:"'Noto Serif JP',serif" }}>いいえ</button>
+                        <button onClick={() => handleDeleteRoom(room.id)}
+                          style={{ background:'#C86018', border:'none', cursor:'pointer', fontSize:'11px', color:'#FFF8F0', padding:'3px 12px', borderRadius:'8px', fontFamily:"'Noto Serif JP',serif", letterSpacing:'.08em' }}>削除</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setDeletingRoom(room.id)}
+                        style={{ background:'none', border:'none', cursor:'pointer', fontSize:'10px', color:'#6A5A44', letterSpacing:'.1em', fontFamily:"'Noto Serif JP',serif" }}>
+                        この焚き火を消す
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+              {i === 0 && <AdCard data={AD_BONFIRE} />}
+            </div>
+          ))}
+          {rooms !== null && roomList.length === 0 && (
+            <p style={{ textAlign:'center', padding:'30px 20px', color:'#6A5A44', fontSize:'13px', lineHeight:2.2, letterSpacing:'.08em', fontFamily:"'Noto Serif JP',serif" }}>
+              まだ焚き火がない。<br />最初に灯してみよう。
+            </p>
+          )}
+          <button className="room-create-card" onClick={() => setView('create')}>
+            <span style={{ fontSize:'18px' }}>＋</span>
+            <span>新しい焚き火を作る</span>
+          </button>
+          <div style={{ height:'24px' }} />
+        </div>
+      );
+    }
+
+    /* ── Write ── */
+    /* ── FilterToast ── */
+    function FilterToast({ type, onClose }) {
+      useEffect(() => {
+        const t = setTimeout(onClose, 3800);
+        return () => clearTimeout(t);
+      }, []);
+      const isHate = type === 'hate';
+      return (
+        <div className="filter-toast">
+          <span className="filter-toast-icon" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'14px', fontWeight:500, color:'#C84040' }}>禁</span>
+          <div className="filter-toast-body">
+            <p className="filter-toast-title">{isHate ? 'ヘイトコンテンツは投稿できません' : 'アダルトコンテンツは投稿できません'}</p>
+            <p className="filter-toast-msg">{isHate ? 'さら砂は誰もが安心できる場所を目指しています。' : 'このサービスはアダルトコンテンツを許可していません。'}</p>
+          </div>
+        </div>
+      );
+    }
+
+    function Write({ session, onSent }) {
+      const [mode, setMode]           = useState('short');
+      const [shortText, setShort]     = useState(() => localStorage.getItem(SAVE_SHORT) || '');
+      const [novelTitle, setTitle]    = useState(() => localStorage.getItem(SAVE_TITLE) || '');
+      const [novelText, setNovel]     = useState(() => localStorage.getItem(SAVE_NOVEL) || '');
+      const [savedMsg, setSaved]      = useState(false);
+      const [sent, setSent]           = useState(null);
+      const [filterErr, setFilterErr] = useState(null);
+      const [sending, setSending]     = useState(false);
+      const timer = useRef(null);
+
+      function autosave(key, val) {
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => {
+          localStorage.setItem(key, val);
+          setSaved(true);
+          setTimeout(() => setSaved(false), 1600);
+        }, 700);
+      }
+
+      const today = new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+      const canSend = mode === 'short' ? shortText.trim().length > 0 : novelText.trim().length > 0 && novelTitle.trim().length > 0;
+
+      async function handleSend(dest) {
+        if (!canSend || sending) return;
+        const target = mode === 'short' ? shortText : novelTitle + ' ' + novelText;
+        const violation = checkContent(target);
+        if (violation) { setFilterErr(violation); return; }
+        setSending(true);
+        if (session) {
+          const { data: prof } = await sb.from('profiles').select('handle').eq('id', session.user.id).single();
+          const handle = prof?.handle || session.user.user_metadata?.handle || '砂流れ';
+          const body = mode === 'novel' && novelTitle
+            ? `【${novelTitle}】\n${novelText}`
+            : (mode === 'short' ? shortText : novelText);
+          const { error: insertErr } = await sb.from('posts').insert({
+            user_id: session.user.id,
+            handle,
+            dest: dest === '海' ? 'ocean' : 'bonfire',
+            body,
+          });
+          if (insertErr) console.error('insert error:', insertErr);
+        }
+        setSending(false);
+        setSent(dest);
+        setTimeout(() => {
+          if (mode === 'short') { setShort(''); localStorage.removeItem(SAVE_SHORT); }
+          else { setNovel(''); setTitle(''); localStorage.removeItem(SAVE_NOVEL); localStorage.removeItem(SAVE_TITLE); }
+          setSent(null);
+          onSent(dest);
+        }, 2600);
+      }
+
+      if (sent) {
+        return (
+          <div className="write-shell">
+            <div className="sent-view">
+              <div className="sent-icon" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'52px', fontWeight:300, color: sent==='海' ? 'var(--ocean)' : '#E87828' }}>
+                {sent === '海' ? '海' : '火'}
+              </div>
+              <p className="sent-title">{sent === '海' ? '瓶を海に流しました。\nどこかの浜辺に届くかもしれない。' : '焚き火に流しました。\n仲間に届きますように。'}</p>
+              <p className="sent-note">さらさらと、手放せた。</p>
+              <AdBanner data={AD_SENT} />
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="write-shell">
+          {filterErr && <FilterToast type={filterErr} onClose={() => setFilterErr(null)} />}
+          {/* ヘッダー（固定） */}
+          <div className="write-header">
+            <div className="write-header-top">
+              <div className="screen-title">書く</div>
+              <div className="screen-sub">{today}</div>
+            </div>
+            <div className="write-mode-tabs">
+              <button className={`write-mode-tab${mode==='short'?' active':''}`} onClick={() => setMode('short')}>ショート日記</button>
+              <button className={`write-mode-tab${mode==='novel'?' active':''}`} onClick={() => setMode('novel')}>日記小説</button>
+            </div>
+          </div>
+
+          {/* スクロール領域 */}
+          <div className="write-body">
+            {mode === 'short' && (
+              <div className="write-paper">
+                <textarea
+                  className="write-area"
+                  placeholder="さらさらと、流してみる。"
+                  value={shortText}
+                  onChange={e => { setShort(e.target.value); autosave(SAVE_SHORT, e.target.value); }}
+                  maxLength={300}
+                />
+                <div className="write-count">{shortText.length} / 300</div>
+              </div>
+            )}
+
+            {mode === 'novel' && (
+              <div className="manuscript-paper">
+                <input
+                  className="manuscript-title"
+                  placeholder="タイトル"
+                  value={novelTitle}
+                  onChange={e => { setTitle(e.target.value); autosave(SAVE_TITLE, e.target.value); }}
+                  maxLength={60}
+                />
+                <textarea
+                  className="novel-area"
+                  placeholder={"自分の経験や思考を、\n物語のように綴る。"}
+                  value={novelText}
+                  onChange={e => { setNovel(e.target.value); autosave(SAVE_NOVEL, e.target.value); }}
+                  maxLength={5000}
+                />
+                <div className="novel-count">
+                  <span className={`autosave-indicator${savedMsg ? ' on' : ''}`}>✓ 自動保存済み</span>
+                  <span>{novelText.length} / 5000</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 送信（固定） */}
+          <div className="send-area">
+            <p className="send-label">どこへ流しますか</p>
+            <div className="send-btns">
+              <button className="send-btn fire"  onClick={() => handleSend('焚き火')} disabled={!canSend || sending}>
+                <span className="send-btn-icon" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'18px', fontWeight:400 }}>火</span>
+                焚き火に流す
+              </button>
+              <button className="send-btn ocean" onClick={() => handleSend('海')}    disabled={!canSend || sending}>
+                <span className="send-btn-icon" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'18px', fontWeight:400 }}>海</span>
+                海に流す
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Naminoto ── */
+    function Naminoto() {
+      const total    = NAMINOTO_STATIC.length;
+      const sunatomo = NAMINOTO_STATIC.filter(i => i.isSunatomo).length;
+      return (
+        <div className="screen naminoto-screen">
+          <div className="naminoto-header">
+            <div className="screen-title">波音</div>
+            <div className="screen-sub">浜辺に届いた気配</div>
+          </div>
+          <div className="wave-count-card">
+            <div className="wave-big">{total}</div>
+            <p className="wave-label">今日の波音</p>
+            <p className="wave-detail">スナトモ {sunatomo} 件 · 名も知らぬ波 {total - sunatomo} 件</p>
+            <div><span className="wave-expire">48時間後に消えていく</span></div>
+          </div>
+          <p className="wave-section">ひとつひとつの波音</p>
+          <div className="wave-list">
+            {NAMINOTO_STATIC.map(item => (
+              <div key={item.id} className={`wave-item${item.isSunatomo ? ' sunatomo' : ''}`}>
+                <div className={`wave-avatar${item.isSunatomo ? '' : ' unknown'}`}
+                  style={ item.isSunatomo ? { fontFamily:"'Shippori Mincho',serif", fontSize:'13px', fontWeight:500 } : {} }>
+                  {item.isSunatomo ? item.handle.charAt(0) : '—'}
+                </div>
+                <div className="wave-info">
+                  <p className="wave-name">{item.isSunatomo ? item.handle : '名も知らぬ波'}</p>
+                  <p className="wave-note">{item.note}</p>
+                </div>
+                <span className="wave-time">{item.time}</span>
+                {item.isSunatomo && <div className="wave-dot" />}
+              </div>
+            ))}
+          </div>
+          <AdBanner data={AD_NAMINOTO} />
+          <p className="naminoto-note">波音は48時間で消えていく。<br />執着せず、さらさらと。</p>
+        </div>
+      );
+    }
+
+    /* ── Register ── */
+    function Register({ onRegistered, onLogin }) {
+      const [email,     setEmail]    = useState('');
+      const [password,  setPassword] = useState('');
+      const [showPw,    setShowPw]   = useState(false);
+      const [birthYear, setBirth]    = useState('');
+      const [handle,    setHandle]   = useState('');
+      const [agreed,    setAgreed]   = useState(false);
+      const [errors,    setErrors]   = useState({});
+      const [loading,   setLoading]  = useState(false);
+
+      const maxYear = new Date().getFullYear() - 13;
+      const years = [];
+      for (let y = maxYear; y >= 1924; y--) years.push(y);
+
+      function validate() {
+        const e = {};
+        if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'メールアドレスの形式が正しくありません';
+        if (password.length < 8) e.password = '8文字以上で設定してください';
+        if (!birthYear) e.birth = '生まれた年を選んでください';
+        if (!handle.trim()) e.handle = 'ハンドルネームを入力してください';
+        if (!agreed) e.agreed = '利用規約への同意が必要です';
+        return e;
+      }
+
+      async function handleSubmit() {
+        const e = validate();
+        if (Object.keys(e).length) { setErrors(e); return; }
+        setLoading(true);
+        const { error } = await sb.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { handle: handle.trim(), birth_year: parseInt(birthYear) },
+          },
+        });
+        setLoading(false);
+        if (error) {
+          const msg = error.message.includes('already') ? 'このメールアドレスはすでに登録されています' : error.message;
+          setErrors({ email: msg });
+          return;
+        }
+        onRegistered();
+      }
+
+      const canSubmit = email && password.length >= 8 && birthYear && handle.trim() && agreed && !loading;
+
+      return (
+        <div className="register-shell">
+          <div className="register-scroll">
+            <div className="register-logo-area">
+              <span className="splash-logo" style={{ fontSize:'20px', letterSpacing:'.48em' }}>SARASUNA</span>
+              <div className="register-divider-line"><div className="register-divider-dot" /></div>
+              <p className="register-subtitle">さら砂へようこそ<br />はじめての方は登録してください</p>
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">メールアドレス</label>
+              <input className="form-input" type="email" placeholder="example@mail.com"
+                value={email} onChange={e => { setEmail(e.target.value); setErrors(p => ({...p, email:null})); }} />
+              {errors.email && <p className="form-error">{errors.email}</p>}
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">パスワード</label>
+              <div className="pw-wrap">
+                <input className="form-input" type={showPw ? 'text' : 'password'} placeholder="8文字以上"
+                  value={password} onChange={e => { setPassword(e.target.value); setErrors(p => ({...p, password:null})); }} />
+                <button className="pw-toggle" type="button" onClick={() => setShowPw(v => !v)}>
+                  {showPw ? '隠す' : '表示'}
+                </button>
+              </div>
+              {errors.password && <p className="form-error">{errors.password}</p>}
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">生まれた年</label>
+              <select className="form-select" value={birthYear}
+                onChange={e => { setBirth(e.target.value); setErrors(p => ({...p, birth:null})); }}>
+                <option value="">選択してください</option>
+                {years.map(y => <option key={y} value={y}>{y}年</option>)}
+              </select>
+              <p className="form-hint">13歳未満の方はご利用いただけません</p>
+              {errors.birth && <p className="form-error">{errors.birth}</p>}
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">ハンドルネーム</label>
+              <input className="form-input" type="text" placeholder="砂時計、夜の波… (20文字以内)"
+                value={handle} maxLength={20}
+                onChange={e => { setHandle(e.target.value); setErrors(p => ({...p, handle:null})); }} />
+              <p className="form-hint">アプリ内での表示名です。本名は不要です。</p>
+              {errors.handle && <p className="form-error">{errors.handle}</p>}
+            </div>
+
+            <div className="form-check">
+              <input type="checkbox" id="tos" checked={agreed}
+                onChange={e => { setAgreed(e.target.checked); setErrors(p => ({...p, agreed:null})); }} />
+              <label className="form-check-label" htmlFor="tos">
+                <button className="form-check-link" type="button">利用規約</button>および
+                <button className="form-check-link" type="button">プライバシーポリシー</button>に同意します
+              </label>
+            </div>
+            {errors.agreed && <p className="form-error" style={{ marginTop:'-12px', marginBottom:'16px' }}>{errors.agreed}</p>}
+
+            <button className="register-btn" onClick={handleSubmit} disabled={!canSubmit}>
+              {loading ? '登録中…' : '砂浜に登録する'}
+            </button>
+
+            <div className="register-login-wrap">
+              すでにアカウントをお持ちの方は&nbsp;
+              <button className="register-login-btn" onClick={onLogin}>ログイン</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Login ── */
+    function Login({ onLoggedIn, onBack }) {
+      const [email,    setEmail]    = useState('');
+      const [password, setPassword] = useState('');
+      const [showPw,   setShowPw]   = useState(false);
+      const [error,    setError]    = useState('');
+      const [loading,  setLoading]  = useState(false);
+
+      async function handleLogin() {
+        if (!email || !password) { setError('メールアドレスとパスワードを入力してください'); return; }
+        setLoading(true);
+        const { error: err } = await sb.auth.signInWithPassword({ email, password });
+        setLoading(false);
+        if (err) {
+          setError('メールアドレスまたはパスワードが正しくありません');
+          return;
+        }
+        onLoggedIn(); // onAuthStateChange が session をセットするため no-op でOK
+      }
+
+      return (
+        <div className="register-shell">
+          <div className="register-scroll">
+            <div className="register-logo-area">
+              <span className="splash-logo" style={{ fontSize:'20px', letterSpacing:'.48em' }}>SARASUNA</span>
+              <div className="register-divider-line"><div className="register-divider-dot" /></div>
+              <p className="register-subtitle">おかえりなさい</p>
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">メールアドレス</label>
+              <input className="form-input" type="email" placeholder="example@mail.com"
+                value={email} onChange={e => { setEmail(e.target.value); setError(''); }} />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">パスワード</label>
+              <div className="pw-wrap">
+                <input className="form-input" type={showPw ? 'text' : 'password'} placeholder="パスワード"
+                  value={password} onChange={e => { setPassword(e.target.value); setError(''); }} />
+                <button className="pw-toggle" type="button" onClick={() => setShowPw(v => !v)}>
+                  {showPw ? '隠す' : '表示'}
+                </button>
+              </div>
+            </div>
+
+            {error && <p className="form-error" style={{ marginBottom:'14px' }}>{error}</p>}
+
+            <button className="register-btn" onClick={handleLogin} disabled={!email || !password || loading}>
+              {loading ? 'ログイン中…' : '砂浜へ'}
+            </button>
+
+            <div className="register-login-wrap" style={{ marginTop:'20px' }}>
+              <button className="register-login-btn" onClick={onBack}>← 登録画面に戻る</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── VerifyEmail ── */
+    function VerifyEmail({ email, onVerified }) {
+      return (
+        <div className="verify-screen">
+          <div className="verify-icon" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'44px', fontWeight:300, color:'var(--ocean)', letterSpacing:0 }}>届</div>
+          <h2 className="verify-title">認証メールを送りました</h2>
+          <p className="verify-email-addr">{email}</p>
+          <p className="verify-note">
+            メール内のリンクをタップして<br />登録を完了してください。
+          </p>
+          <button className="enter-btn" onClick={onVerified}>
+            認証が完了したら砂浜へ
+          </button>
+          <p className="verify-hint">※ 届かない場合は迷惑メールフォルダをご確認ください</p>
+        </div>
+      );
+    }
+
+    /* ── My Page ── */
+    function MyPage({ session, onSignOut }) {
+      const [profile,    setProfile]    = useState(null);
+      const [posts,      setPosts]      = useState([]);
+      const [editingId,  setEditingId]  = useState(null);
+      const [editText,   setEditText]   = useState('');
+      const [deletingId, setDeletingId] = useState(null);
+
+      useEffect(() => {
+        if (!session) return;
+        sb.from('profiles').select('*').eq('id', session.user.id).single()
+          .then(({ data }) => setProfile(data));
+        sb.from('posts').select('*').eq('user_id', session.user.id)
+          .order('created_at', { ascending: false }).limit(20)
+          .then(({ data }) => setPosts(data || []));
+      }, [session?.user?.id]);
+
+      async function handleSaveEdit(postId) {
+        if (!editText.trim()) return;
+        const { error } = await sb.from('posts')
+          .update({ body: editText.trim() })
+          .eq('id', postId).eq('user_id', session.user.id);
+        if (!error) {
+          setPosts(prev => prev.map(p => p.id === postId ? { ...p, body: editText.trim() } : p));
+          setEditingId(null);
+        }
+      }
+
+      async function handleDelete(postId) {
+        const { error } = await sb.from('posts')
+          .delete().eq('id', postId).eq('user_id', session.user.id);
+        if (!error) {
+          setPosts(prev => prev.filter(p => p.id !== postId));
+          setDeletingId(null);
+        }
+      }
+
+      const handle     = profile?.handle || session?.user?.user_metadata?.handle || '砂流れ';
+      const joined     = session ? new Date(session.user.created_at) : new Date();
+      const joinText   = `さら砂 ${joined.getFullYear()}年${joined.getMonth()+1}月から`;
+      const totalWaves = posts.reduce((s, p) => s + (p.waves || 0), 0);
+
+      return (
+        <div className="screen my-screen">
+          <div className="my-head">
+            <div className="my-av" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'28px', fontWeight:400, color:'var(--ink-2)' }}>
+              {handle.charAt(0)}
+            </div>
+            <div className="my-name">{handle}</div>
+            <div className="my-since">{joinText}</div>
+          </div>
+
+          <div className="my-stats">
+            <div className="stat"><div className="stat-n">{posts.length}</div><div className="stat-l">流した瓶</div></div>
+            <div className="stat"><div className="stat-n">0</div><div className="stat-l">スナトモ</div></div>
+            <div className="stat"><div className="stat-n">{totalWaves}</div><div className="stat-l">受けた波音</div></div>
+          </div>
+
+          <AdBanner data={AD_MY} />
+
+          {posts.length > 0 && (
+            <div className="my-section">
+              <p className="my-section-label">流した瓶</p>
+              {posts.map(p => (
+                <div key={p.id} className={`log-card${p.dest==='ocean' ? ' ocean-dest' : ' fire-dest'}`}>
+                  {editingId === p.id ? (
+                    <>
+                      <textarea
+                        className="log-edit-area"
+                        value={editText}
+                        onChange={e => setEditText(e.target.value)}
+                        maxLength={5000}
+                      />
+                      <div className="log-edit-btns">
+                        <button className="log-cancel-btn" onClick={() => setEditingId(null)}>キャンセル</button>
+                        <button className="log-save-btn" onClick={() => handleSaveEdit(p.id)}>保存する</button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="log-text">{p.body || p.text}</p>
+                      <div className="log-meta">
+                        <span className={p.dest==='ocean' ? 'log-dest-ocean' : 'log-dest-fire'}>
+                          {p.dest==='ocean' ? '海に流した' : '焚き火に流した'}
+                        </span>
+                        <span>{timeAgo(p.created_at)}</span>
+                      </div>
+                      <div className="log-actions">
+                        <button className="log-action-btn edit" onClick={() => { setEditingId(p.id); setEditText(p.body || ''); setDeletingId(null); }}>編集</button>
+                        <button className="log-action-btn del"  onClick={() => { setDeletingId(p.id); setEditingId(null); }}>削除</button>
+                      </div>
+                      {deletingId === p.id && (
+                        <div className="log-del-confirm">
+                          <span className="log-del-msg">本当に削除しますか？</span>
+                          <div style={{ display:'flex', gap:'8px' }}>
+                            <button className="log-cancel-btn" onClick={() => setDeletingId(null)}>いいえ</button>
+                            <button className="log-del-yes" onClick={() => handleDelete(p.id)}>削除</button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="my-section">
+            <p className="my-section-label">このアプリについて</p>
+            <div className="settings-list">
+              <div className="settings-row">
+                <span className="settings-key">SNS連携</span>
+                <span className="no-badge">持たない</span>
+              </div>
+              <div className="settings-row">
+                <span className="settings-key">ID検索</span>
+                <span className="no-badge">持たない</span>
+              </div>
+              <div className="settings-row">
+                <span className="settings-key">いいね / フォロワー数</span>
+                <span className="no-badge">持たない</span>
+              </div>
+              <div className="settings-row">
+                <span className="settings-key">引用 / 拡散機能</span>
+                <span className="no-badge">持たない</span>
+              </div>
+              <div className="settings-row" style={{ cursor:'pointer' }} onClick={onSignOut}>
+                <span className="settings-key" style={{ color:'#C04040' }}>ログアウト</span>
+                <span className="settings-arrow">→</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ── App ── */
+    function App() {
+      const [step,    setStep]    = useState('loading'); /* loading | splash | register | login | verify | app */
+      const [session, setSession] = useState(null);
+      const [tab,     setTab]     = useState('ocean');
+
+      useEffect(() => {
+        // 既存セッションを確認
+        sb.auth.getSession().then(({ data: { session } }) => {
+          setSession(session);
+          setStep(session ? 'app' : 'splash');
+        });
+        // 認証状態の変化を監視
+        const { data: { subscription } } = sb.auth.onAuthStateChange((_event, session) => {
+          setSession(session);
+          if (session) setStep('app');
+        });
+        return () => subscription.unsubscribe();
+      }, []);
+
+      async function handleSignOut() {
+        await sb.auth.signOut();
+        setSession(null);
+        setTab('ocean');
+        setStep('splash');
+      }
+
+      /* ─ 読込中 ─ */
+      if (step === 'loading') {
+        return (
+          <div className="app-shell" style={{ alignItems:'center', justifyContent:'center', background:'linear-gradient(160deg,#D4F2E8 0%,#C4EAF8 32%,#D0F4F0 65%,#C8EEE0 100%)' }}>
+            <span style={{ fontFamily:"'Noto Serif JP',serif", fontSize:'13px', color:'var(--ink-3)', letterSpacing:'.14em' }}>読み込み中…</span>
+          </div>
+        );
+      }
+
+      if (step === 'splash')
+        return <div className="app-shell"><Splash onEnter={() => setStep('register')} /></div>;
+      if (step === 'register')
+        return <div className="app-shell"><Register onRegistered={() => setStep('verify')} onLogin={() => setStep('login')} /></div>;
+      if (step === 'login')
+        return <div className="app-shell"><Login onLoggedIn={() => {}} onBack={() => setStep('register')} /></div>;
+      if (step === 'verify')
+        return <div className="app-shell"><VerifyEmail email={session?.user?.email} onVerified={() => setStep('app')} /></div>;
+
+      return (
+        <div className="app-shell">
+          <Sidebar current={tab} onChange={setTab} />
+          <div className="content-wrap">
+            {tab === 'write' ? (
+              <Write session={session} onSent={dest => setTab(dest === '海' ? 'ocean' : 'bonfire')} />
+            ) : (
+              <div className="screen">
+                {tab === 'ocean'    && <Ocean />}
+                {tab === 'bonfire'  && <Bonfire session={session} />}
+                {tab === 'naminoto' && <Naminoto />}
+                {tab === 'my'       && <MyPage session={session} onSignOut={handleSignOut} />}
+              </div>
+            )}
+            <NavBar current={tab} onChange={setTab} />
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
