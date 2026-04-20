@@ -2297,19 +2297,31 @@
       const [error,   setError]   = useState('');
       const [success, setSuccess] = useState(false);
 
+      /* 最後に変更した日時から残り日数を計算 */
+      const lastUpdated  = profile?.handle_updated_at ? new Date(profile.handle_updated_at) : null;
+      const cooldownDays = 7;
+      const now          = new Date();
+      const diffMs       = lastUpdated ? now - lastUpdated : Infinity;
+      const diffDays     = diffMs / (1000 * 60 * 60 * 24);
+      const remainDays   = Math.ceil(cooldownDays - diffDays);
+      const isCooling    = remainDays > 0;
+
       async function handleSave() {
+        if (isCooling) return;
         const h = handle.trim();
         if (!h) { setError('ハンドルネームを入力してください'); return; }
         if (h.length > 20) { setError('20文字以内で入力してください'); return; }
         setSaving(true);
         const { error: err } = await sb.from('profiles')
-          .update({ handle: h })
+          .update({ handle: h, handle_updated_at: new Date().toISOString() })
           .eq('id', session.user.id);
         setSaving(false);
         if (err) { setError('保存できませんでした'); return; }
         setSuccess(true);
         setTimeout(() => { onSaved(h); onBack(); }, 1200);
       }
+
+      const birthYear = profile?.birth_year;
 
       return (
         <div className="screen my-screen">
@@ -2318,6 +2330,24 @@
             <span className="screen-title" style={{ fontSize:'16px' }}>プロフィール編集</span>
           </div>
           <div style={{ padding:'24px 16px 48px' }}>
+
+            {/* ─ 生まれた年（変更不可） ─ */}
+            {birthYear && (
+              <div className="form-field">
+                <label className="form-label">生まれた年</label>
+                <div style={{
+                  padding:'11px 12px', background:'var(--bg)',
+                  border:'1px solid var(--rule)',
+                  fontSize:'14px', color:'var(--ink-3)',
+                  fontFamily:"'Noto Serif JP',serif", letterSpacing:'.04em'
+                }}>
+                  {birthYear}年
+                </div>
+                <p className="form-hint">生まれた年は変更できません。</p>
+              </div>
+            )}
+
+            {/* ─ ハンドルネーム ─ */}
             <div className="form-field">
               <label className="form-label">ハンドルネーム</label>
               <input
@@ -2326,16 +2356,25 @@
                 placeholder="20文字以内"
                 value={handle}
                 maxLength={20}
+                disabled={isCooling}
                 onChange={e => { setHandle(e.target.value); setError(''); setSuccess(false); }}
+                style={isCooling ? { opacity:.5, cursor:'not-allowed' } : {}}
               />
-              <p className="form-hint">アプリ内での表示名です。変更は即時反映されます。</p>
+              {isCooling ? (
+                <p className="form-hint" style={{ color:'var(--fire)' }}>
+                  次の変更まであと {remainDays} 日。変更は7日に1回のみできます。
+                </p>
+              ) : (
+                <p className="form-hint">変更後7日間は再変更できません。</p>
+              )}
               {error   && <p className="form-error">{error}</p>}
               {success && <p style={{ fontSize:'10px', color:'var(--ocean)', marginTop:'4px', letterSpacing:'.06em' }}>✓ 保存しました</p>}
             </div>
+
             <button
               className="register-btn"
               onClick={handleSave}
-              disabled={!handle.trim() || saving}
+              disabled={isCooling || !handle.trim() || saving}
             >
               {saving ? '保存中…' : '保存する'}
             </button>
