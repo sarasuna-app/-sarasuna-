@@ -16,32 +16,32 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #E8F5EE;
-      --surface:     #FAFFFE;
-      --ocean:       #3A9FD8;
-      --ocean-l:     #60B8E8;
-      --ocean-pale:  #DBF0FA;
-      --ocean-mid:   #9ED0EC;
-      --fire:        #D45872;
-      --fire-pale:   #FEF0F4;
-      --fire-mid:    #F0B8C8;
-      --ink:         #162820;
-      --ink-2:       #2E4E40;
-      --ink-3:       #608878;
-      --rule:        #C4E4D4;
-      --sand:        #A4CCBC;
-      --night:       #0A1E14;
-      --manu-bg:     #F0FBF6;
-      --sepia:       rgba(60,140,110,.12);
+      --bg:          #FBF8F3;
+      --surface:     #FFFFFF;
+      --ocean:       #6B9BB8;
+      --ocean-l:     #8AB4CC;
+      --ocean-pale:  #E8F0F5;
+      --ocean-mid:   #B0CCDc;
+      --fire:        #C47850;
+      --fire-pale:   #F5EDE8;
+      --fire-mid:    #DFB090;
+      --ink:         #2C2420;
+      --ink-2:       #4A3A30;
+      --ink-3:       #7A6A5A;
+      --rule:        #D8CFC4;
+      --sand:        #C4B8A8;
+      --night:       #1E1208;
+      --manu-bg:     #FDFAF6;
+      --sepia:       rgba(120,100,80,.10);
 
-      --shadow:      0 8px 24px rgba(30,110,80,.08);
-      --shadow-lift: 0 14px 40px rgba(30,110,80,.13);
+      --shadow:      0 1px 4px rgba(0,0,0,.06);
+      --shadow-lift: 0 2px 8px rgba(0,0,0,.09);
     }
 
     html, body {
       height: 100%; height: 100dvh;
       width: 100%; overflow: hidden;
-      background: #9AC4B0;
+      background: #E8E2D9;
     }
 
     body {
@@ -50,20 +50,14 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── 平成レトロ ドット壁紙 ── */
+    /* ── レトロ 細ドット壁紙 ── */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle, rgba(40,140,100,.07) 1px, transparent 1px);
-      background-size: 22px 22px;
+      background-image: radial-gradient(circle, rgba(120,100,80,.08) 1px, transparent 1px);
+      background-size: 18px 18px;
     }
-    body::after {
-      content: '';
-      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
-      opacity: .018;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-    }
+    body::after { display: none; }
 
     #root {
       height: 100%; height: 100dvh;
@@ -76,7 +70,9 @@
       background: var(--bg);
       display: flex; flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 32px 80px rgba(30,100,70,.22), 0 0 0 1px rgba(40,140,100,.08);
+      border-left: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
     }
 
     /* スクロール可能な通常スクリーン */
@@ -100,10 +96,16 @@
     ════════════════════════════════════ */
     .splash {
       width: 100%; height: 100%;
-      background: #fff;
+      background: var(--surface);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       position: relative; overflow: hidden;
+    }
+    .splash::before {
+      content: '';
+      position: absolute; inset: 24px;
+      border: 1px solid var(--rule);
+      pointer-events: none;
     }
 
     .splash-center { text-align: center; position: relative; z-index: 1; }
@@ -112,28 +114,28 @@
       font-family: 'Noto Sans JP', sans-serif;
       font-size: 28px; font-weight: 300;
       letter-spacing: .55em; text-indent: .55em;
-      color: #1a1a1a;
+      color: var(--ink);
     }
 
     .splash-divider {
       display: flex; align-items: center; gap: 10px;
       margin: 28px auto; width: fit-content;
     }
-    .splash-d-line { width: 20px; height: 1px; background: #ccc; }
-    .splash-d-dot  { width: 3px; height: 3px; border-radius: 50%; background: #ccc; }
+    .splash-d-line { width: 20px; height: 1px; background: var(--rule); }
+    .splash-d-dot  { width: 3px; height: 3px; border-radius: 50%; background: var(--sand); }
 
     .splash-tagline {
       font-family: 'Noto Serif JP', serif;
       font-size: 12px; font-weight: 300;
-      color: #888; letter-spacing: .12em; line-height: 2;
+      color: var(--ink-3); letter-spacing: .12em; line-height: 2;
     }
-    .splash-sub { font-size: 11px; color: #aaa; margin-top: 4px; letter-spacing: .1em; }
+    .splash-sub { font-size: 11px; color: var(--sand); margin-top: 4px; letter-spacing: .1em; }
 
     .enter-btn {
       margin-top: 48px;
-      background: #1a1a1a;
+      background: var(--ink);
       border: none;
-      border-radius: 2px;
+      border-radius: 0;
       font-family: 'Noto Serif JP', serif;
       font-size: 12px; font-weight: 300;
       letter-spacing: .44em; text-indent: .44em;
@@ -142,14 +144,14 @@
       transition: opacity .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .enter-btn:hover { opacity: .75; }
+    .enter-btn:hover { opacity: .72; }
 
     /* ════════════════════════════════════
        NAV
     ════════════════════════════════════ */
     .nav {
       display: flex; align-items: stretch;
-      background: linear-gradient(0deg, rgba(255,255,255,.98) 0%, rgba(248,244,255,.95) 100%);
+      background: var(--surface);
       border-top: 1px solid var(--rule);
       flex-shrink: 0;
       padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -163,15 +165,15 @@
       position: relative; transition: opacity .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .nav-item:not(.active) { opacity: .4; }
+    .nav-item:not(.active) { opacity: .38; }
     .nav-item.active::before {
       content: '';
       position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-      width: 24px; height: 3px;
-      background: linear-gradient(90deg, #38BF80, #3AACDC);
-      border-radius: 0 0 3px 3px;
+      width: 20px; height: 2px;
+      background: var(--ocean);
+      border-radius: 0 0 2px 2px;
     }
-    .nav-item.fire-active::before { background: linear-gradient(90deg, var(--fire), #FF8CA0); }
+    .nav-item.fire-active::before { background: var(--fire); }
     .nav-icon {
       font-family: 'Shippori Mincho', serif;
       font-size: 15px; font-weight: 500; line-height: 1;
@@ -193,22 +195,18 @@
     /* ════════════════════════════════════
        OCEAN — 海
     ════════════════════════════════════ */
-    .ocean-screen { min-height: 100%; background: var(--ocean-pale); padding-bottom: 48px; }
+    .ocean-screen { min-height: 100%; background: var(--bg); padding-bottom: 48px; }
 
     .ocean-header {
       padding: 20px 20px 0;
-      background: linear-gradient(180deg, #C4DCF8 0%, #D4E8FF 50%, #E4F0FF 100%);
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
       position: relative;
     }
-    .ocean-header::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 40%;
-      background: linear-gradient(180deg, rgba(255,255,255,.28) 0%, transparent 100%);
-      pointer-events: none;
-    }
+    .ocean-header::after { display: none; }
     .ocean-header-top { padding-bottom: 16px; }
 
-    .ocean-tabs { display: flex; border-bottom: 1px solid rgba(91,144,208,.18); }
+    .ocean-tabs { display: flex; border-bottom: 1px solid var(--rule); }
     .ocean-tab {
       padding: 9px 16px 10px; border: none; background: none; cursor: pointer;
       font-size: 11px; font-weight: 300; letter-spacing: .1em; color: var(--ink-3);
@@ -219,18 +217,19 @@
     .ocean-tab.active::after {
       content: ''; position: absolute; bottom: -1px; left: 8px; right: 8px;
       height: 2px;
-      background: linear-gradient(90deg, #38BF80, #3AACDC);
+      background: var(--ocean);
       border-radius: 2px 2px 0 0;
     }
 
     /* ════════════════════════════════════
        LETTER CARDS — 漂着したメッセージ
     ════════════════════════════════════ */
-    .letter-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 14px; }
+    .letter-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 12px; }
 
     .letter-card {
       background: var(--surface);
-      border-radius: 14px;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
       box-shadow: var(--shadow);
       padding: 22px 20px 18px;
       position: relative; overflow: hidden;
@@ -245,25 +244,14 @@
     .letter-card[data-v="3"] { transform: rotate(0.38deg);  margin-left: 16px; margin-right: 4px; }
     .letter-card[data-v="4"] { transform: rotate(-0.58deg); margin-right: 18px; }
 
-    /* 平成レトロ 虹色シマー */
+    /* レトロ上部アクセント線 */
     .letter-card::before {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(56,191,128,.35) 20%,
-        rgba(58,172,220,.30) 50%,
-        rgba(58,160,216,.25) 80%,
-        transparent 100%
-      );
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--ocean-pale);
+      border-bottom: 1px dashed var(--ocean-mid);
     }
-    /* カード上部シャイン */
-    .letter-card::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 50%;
-      background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 100%);
-      pointer-events: none;
-    }
+    .letter-card::after { display: none; }
 
     /* 波が引くアニメーション — タップ時 */
     @keyframes waveRecede {
@@ -282,7 +270,7 @@
     .letter-foot {
       display: flex; align-items: center; justify-content: space-between;
       margin-top: 16px; padding-top: 12px;
-      border-top: 1px solid rgba(0,0,0,.05);
+      border-top: 1px solid var(--rule);
     }
     .letter-time { font-size: 10px; color: var(--ink-3); }
 
@@ -295,19 +283,20 @@
       transition: background .2s, color .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .wave-btn:hover { background: rgba(44,95,120,.08); }
-    .wave-btn.waved { color: var(--ocean); background: rgba(44,95,120,.1); }
+    .wave-btn:hover { background: var(--ocean-pale); }
+    .wave-btn.waved { color: var(--ocean); background: var(--ocean-pale); }
 
     /* ════════════════════════════════════
        AD CARD — 広告（インフィード）
     ════════════════════════════════════ */
     .ad-card {
       background: var(--surface);
-      border-radius: 14px;
+      border: 1px dashed var(--rule);
+      border-radius: 2px;
       box-shadow: var(--shadow);
       overflow: hidden;
       position: relative;
-      margin: 0 2px; /* 広告は傾きなし */
+      margin: 0 2px;
     }
 
     .ad-promo-label {
@@ -316,10 +305,9 @@
       color: var(--ink-3); font-weight: 300;
     }
 
-    /* 広告ビジュアル — grayscale + sepia で砂浜に馴染む */
     .ad-visual {
       width: 100%; height: 68px;
-      filter: grayscale(20%) sepia(10%);
+      filter: grayscale(30%) sepia(15%);
     }
 
     .ad-body { padding: 14px 18px 16px; }
@@ -332,11 +320,12 @@
 
     .ad-brand { font-size: 10px; color: var(--ink-3); margin-top: 8px; letter-spacing: .14em; }
 
-    /* ── 横長バナー広告（波音・自分・送信完了） ── */
+    /* ── 横長バナー広告 ── */
     .ad-banner {
       margin: 14px 14px 0;
       background: var(--surface);
-      border-radius: 12px;
+      border: 1px dashed var(--rule);
+      border-radius: 2px;
       box-shadow: var(--shadow);
       overflow: hidden; position: relative;
       display: flex; align-items: stretch;
@@ -361,7 +350,6 @@
       font-size: 8px; letter-spacing: .16em;
       color: var(--ink-3); font-weight: 300;
     }
-    /* デスクトップ：バナーも中央寄せ */
     @media (min-width: 768px) {
       .ad-banner {
         max-width: 680px;
@@ -376,12 +364,14 @@
     .novel-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 10px; }
 
     .novel-card {
-      background: var(--surface); border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
       box-shadow: var(--shadow); overflow: hidden; position: relative;
     }
     .novel-card::before {
-      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
-      background: linear-gradient(180deg, #38BF80, rgba(58,172,220,.18));
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+      background: var(--ocean);
     }
     .novel-body { padding: 18px 18px 0 22px; }
     .novel-title {
@@ -399,47 +389,43 @@
     }
     .novel-from { font-size: 10px; color: var(--ink-3); letter-spacing: .12em; }
     .novel-time { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
-    .novel-read { font-size: 10px; color: var(--ocean-l); letter-spacing: .1em; font-family: 'Noto Serif JP', serif; }
+    .novel-read { font-size: 10px; color: var(--ocean); letter-spacing: .1em; font-family: 'Noto Serif JP', serif; }
 
     /* ════════════════════════════════════
        BONFIRE — 焚き火
     ════════════════════════════════════ */
-    .bonfire-screen { min-height: 100%; background: #211608; padding-bottom: 48px; }
+    .bonfire-screen { min-height: 100%; background: #1E1208; padding-bottom: 48px; }
     .bonfire-header {
       padding: 20px 20px 16px;
-      background: linear-gradient(180deg, #2E1E0A 0%, #241608 60%, #1C1208 100%);
-      border-bottom: 1px solid rgba(232,110,30,.18);
+      background: #261508;
+      border-bottom: 1px solid rgba(196,120,80,.18);
       position: relative;
     }
-    .bonfire-header::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 40%;
-      background: linear-gradient(180deg, rgba(255,160,60,.06) 0%, transparent 100%);
-      pointer-events: none;
-    }
+    .bonfire-header::after { display: none; }
     .bonfire-header .screen-title { color: #EEE0CC; }
     .bonfire-header .screen-sub   { color: #7A6A52; }
 
     .room-card {
       margin: 14px 14px 0;
-      background: #2A1C0A;
-      border-radius: 14px; overflow: hidden;
-      box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 0 1px rgba(232,110,30,.12);
+      background: #261508;
+      border: 1px solid rgba(196,120,80,.16);
+      border-radius: 2px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.28);
     }
     .room-head {
       display: flex; align-items: center; gap: 12px; padding: 14px 16px;
-      border-bottom: 1px solid rgba(232,110,30,.10);
+      border-bottom: 1px solid rgba(196,120,80,.10);
     }
     .room-name {
       font-family: 'Noto Serif JP', serif;
       font-size: 14px; font-weight: 300; color: #EEE0CC; letter-spacing: .05em;
     }
     .room-meta { font-size: 10px; color: #6A5A44; margin-top: 2px; letter-spacing: .06em; }
-    .post-card { padding: 15px 16px 13px; border-bottom: 1px solid rgba(232,110,30,.08); position: relative; }
+    .post-card { padding: 15px 16px 13px; border-bottom: 1px solid rgba(196,120,80,.08); position: relative; }
     .post-card:last-child { border-bottom: none; }
     .post-card::before {
       content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
-      background: linear-gradient(180deg, #E87828, rgba(232,120,40,.08));
+      background: var(--fire);
     }
     .post-from { font-size: 10px; letter-spacing: .12em; color: #6A5A44; margin-bottom: 10px; padding-left: 8px; }
     .post-body {
@@ -448,10 +434,10 @@
     }
     .post-foot {
       margin-top: 8px; padding: 8px 0 0 8px;
-      display: flex; justify-content: space-between; border-top: 1px solid rgba(232,110,30,.08);
+      display: flex; justify-content: space-between; border-top: 1px solid rgba(196,120,80,.08);
     }
     .post-time { font-size: 10px; color: #6A5A44; }
-    .post-wave { font-size: 11px; color: #E87828; }
+    .post-wave { font-size: 11px; color: var(--fire); }
 
     /* ════════════════════════════════════
        BONFIRE — チャット・コミュニティ作成
@@ -460,24 +446,19 @@
     /* ─ チャット画面（夜の焚き火） ─ */
     .chat-shell {
       display: flex; flex-direction: column;
-      height: 100%; background: #211608;
+      height: 100%; background: #1E1208;
     }
     .chat-header {
       display: flex; align-items: center; gap: 12px;
       padding: 16px 18px 14px;
-      background: linear-gradient(180deg, #2E1E0A 0%, #1C1208 100%);
-      border-bottom: 1px solid rgba(232,110,30,.16);
+      background: #261508;
+      border-bottom: 1px solid rgba(196,120,80,.16);
       flex-shrink: 0; position: relative; z-index: 1;
     }
-    .chat-header::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 45%;
-      background: linear-gradient(180deg, rgba(255,140,40,.05) 0%, transparent 100%);
-      pointer-events: none;
-    }
+    .chat-header::after { display: none; }
     .chat-back {
       background: none; border: none; cursor: pointer;
-      font-size: 20px; line-height: 1; color: #E87828;
+      font-size: 20px; line-height: 1; color: var(--fire);
       padding: 4px 8px 4px 2px;
       -webkit-tap-highlight-color: transparent;
       transition: opacity .2s; flex-shrink: 0;
@@ -495,7 +476,7 @@
       padding: 16px 14px 12px;
       display: flex; flex-direction: column; gap: 10px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
-      background: #211608;
+      background: #1E1208;
     }
     .chat-messages::-webkit-scrollbar { display: none; }
 
@@ -508,21 +489,20 @@
       margin-bottom: 4px; padding: 0 4px;
     }
     .chat-msg-bubble {
-      padding: 10px 14px; border-radius: 16px;
+      padding: 10px 14px; border-radius: 4px;
       font-family: 'Noto Serif JP', serif;
       font-size: 13px; font-weight: 300; line-height: 1.9;
       position: relative; word-break: break-all;
     }
     .chat-msg.other .chat-msg-bubble {
-      background: #2E2010;
-      border-radius: 4px 16px 16px 16px;
+      background: #2A1A0A;
+      border: 1px solid rgba(196,120,80,.14);
       color: #DDD0B8;
-      box-shadow: 0 2px 8px rgba(0,0,0,.36);
+      box-shadow: 0 1px 4px rgba(0,0,0,.28);
     }
     .chat-msg.me .chat-msg-bubble {
-      background: linear-gradient(135deg, rgba(232,120,40,.28) 0%, rgba(200,90,20,.22) 100%);
-      border: 1px solid rgba(232,120,40,.30);
-      border-radius: 16px 16px 4px 16px;
+      background: rgba(196,120,80,.18);
+      border: 1px solid rgba(196,120,80,.28);
       color: #EEE0CC;
     }
     .chat-msg-time {
@@ -533,59 +513,59 @@
       flex-shrink: 0;
       display: flex; align-items: flex-end; gap: 10px;
       padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
-      background: #2A1C0A;
-      border-top: 1px solid rgba(232,110,30,.14);
+      background: #261508;
+      border-top: 1px solid rgba(196,120,80,.14);
     }
     .chat-textarea {
       flex: 1; resize: none; border: none; outline: none;
-      background: #181008;
-      border: 1px solid rgba(232,110,30,.24);
-      border-radius: 14px;
+      background: #1A0E06;
+      border: 1px solid rgba(196,120,80,.22);
+      border-radius: 2px;
       padding: 10px 14px;
       font-family: 'Noto Serif JP', serif;
       font-size: 14px; font-weight: 300; color: #EEE0CC; line-height: 1.7;
       max-height: 100px; overflow-y: auto;
-      caret-color: #E87828;
+      caret-color: var(--fire);
       -webkit-overflow-scrolling: touch;
     }
     .chat-textarea::placeholder { color: #4A3C2C; }
     .chat-send-btn {
       width: 40px; height: 40px; flex-shrink: 0;
-      border-radius: 50%; border: none; cursor: pointer;
-      background: linear-gradient(135deg, #C86018, #E87828, #F0A030);
+      border-radius: 2px; border: none; cursor: pointer;
+      background: var(--fire);
       color: #fff; font-size: 16px; line-height: 1;
       display: flex; align-items: center; justify-content: center;
       transition: opacity .2s, transform .15s;
-      box-shadow: 0 4px 14px rgba(200,96,24,.45);
+      box-shadow: 0 1px 4px rgba(0,0,0,.20);
       -webkit-tap-highlight-color: transparent;
     }
     .chat-send-btn:disabled { opacity: .25; cursor: default; box-shadow: none; }
-    .chat-send-btn:not(:disabled):hover { transform: scale(1.07); }
+    .chat-send-btn:not(:disabled):hover { opacity: .82; }
 
     /* ─ ルーム一覧下部「新規作成」ボタン ─ */
     .room-create-card {
       margin: 14px 14px 0;
       background: none;
-      border: 1px dashed rgba(232,110,30,.32);
-      border-radius: 14px;
+      border: 1px dashed rgba(196,120,80,.32);
+      border-radius: 2px;
       padding: 18px 20px;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; font-size: 13px; color: #C86018;
+      cursor: pointer; font-size: 13px; color: var(--fire);
       font-family: 'Noto Serif JP', serif; letter-spacing: .06em;
       transition: background .2s; -webkit-tap-highlight-color: transparent;
     }
-    .room-create-card:hover { background: rgba(232,110,30,.06); }
+    .room-create-card:hover { background: rgba(196,120,80,.06); }
 
     /* ─ コミュニティ作成画面（夜の焚き火） ─ */
     .create-shell {
       display: flex; flex-direction: column;
-      height: 100%; background: #211608;
+      height: 100%; background: #1E1208;
     }
     .create-header {
       display: flex; align-items: center; gap: 12px;
       padding: 16px 18px 14px;
-      background: linear-gradient(180deg, #2E1E0A 0%, #1C1208 100%);
-      border-bottom: 1px solid rgba(232,110,30,.16);
+      background: #261508;
+      border-bottom: 1px solid rgba(196,120,80,.16);
       flex-shrink: 0;
     }
     .create-title-text {
@@ -604,32 +584,31 @@
     .create-label:first-child { margin-top: 0; }
     .create-input {
       width: 100%;
-      border: 1px solid rgba(232,110,30,.22);
-      border-radius: 12px; outline: none;
-      background: #2A1C0A;
+      border: 1px solid rgba(196,120,80,.22);
+      border-radius: 2px; outline: none;
+      background: #2A1A0A;
       padding: 14px 16px;
       font-family: 'Noto Serif JP', serif;
       font-size: 15px; font-weight: 300; color: #EEE0CC;
-      caret-color: #E87828; letter-spacing: .04em;
+      caret-color: var(--fire); letter-spacing: .04em;
     }
     .create-input::placeholder { color: #4A3C2C; }
-    .create-input:focus { border-color: rgba(232,110,30,.55); }
+    .create-input:focus { border-color: rgba(196,120,80,.50); }
     .create-submit-btn {
       margin-top: 28px; width: 100%;
       padding: 15px 0; border: none; cursor: pointer;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #C86018, #E87828, #F0A030);
+      border-radius: 2px;
+      background: var(--fire);
       color: #FFF8F0; font-family: 'Noto Serif JP', serif;
       font-size: 14px; font-weight: 300; letter-spacing: .14em;
-      transition: opacity .2s, transform .15s;
-      box-shadow: 0 6px 24px rgba(200,96,24,.40);
+      transition: opacity .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .create-submit-btn:disabled { opacity: .25; cursor: default; box-shadow: none; }
-    .create-submit-btn:not(:disabled):hover { transform: translateY(-1px); }
+    .create-submit-btn:disabled { opacity: .25; cursor: default; }
+    .create-submit-btn:not(:disabled):hover { opacity: .82; }
 
     /* 焚き火タブ内の広告テキスト色 */
-    .bonfire-screen .ad-card { background: #181208; box-shadow: 0 8px 24px rgba(0,0,0,.40), 0 0 0 1px rgba(232,110,30,.10); }
+    .bonfire-screen .ad-card { background: #1A0E06; border-color: rgba(196,120,80,.14); box-shadow: 0 2px 8px rgba(0,0,0,.30); }
     .bonfire-screen .ad-copy  { color: #C8B89A; }
     .bonfire-screen .ad-brand { color: #6A5A44; }
     .bonfire-screen .ad-promo-label { color: #6A5A44; }
@@ -641,7 +620,7 @@
         max-width: 680px; margin-left: auto; margin-right: auto;
         width: 100%; box-sizing: border-box;
       }
-      .chat-shell, .create-shell { background: #0C0906; }
+      .chat-shell, .create-shell { background: #120A04; }
     }
 
     /* ════════════════════════════════════
@@ -664,7 +643,7 @@
     .write-mode-tab.active::after {
       content: ''; position: absolute; bottom: -1px; left: 6px; right: 6px;
       height: 2px;
-      background: linear-gradient(90deg, var(--ocean), #38BF80);
+      background: var(--ocean);
       border-radius: 2px 2px 0 0;
     }
 
@@ -679,13 +658,15 @@
 
     /* ─ ショートモード ─ */
     .write-paper {
-      background: var(--surface); border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
       box-shadow: var(--shadow); overflow: hidden; position: relative;
     }
     .write-paper::before {
       content: ''; position: absolute;
       top: 0; left: 44px; bottom: 0; width: 1px;
-      background: rgba(201,109,64,.12); pointer-events: none; z-index: 1;
+      background: rgba(196,120,80,.10); pointer-events: none; z-index: 1;
     }
     .write-area {
       width: 100%; min-height: 260px;
@@ -710,7 +691,8 @@
     /* ─ 原稿用紙モード ─ */
     .manuscript-paper {
       background: var(--manu-bg);
-      border-radius: 14px;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -752,7 +734,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 10px 22px 14px;
       background: var(--manu-bg);
-      border-top: 1px solid rgba(180,140,100,.18);
+      border-top: 1px solid var(--sepia);
       font-size: 10px; color: var(--ink-3); letter-spacing: .1em;
     }
 
@@ -776,7 +758,7 @@
     .send-btns { display: flex; gap: 10px; }
     .send-btn {
       flex: 1; padding: 13px 8px;
-      background: var(--surface); border: 1px solid var(--rule); border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 2px;
       font-family: 'Noto Serif JP', serif;
       font-size: 12px; font-weight: 300; letter-spacing: .1em; color: var(--ink-2);
       cursor: pointer; transition: all .2s;
@@ -784,28 +766,11 @@
       -webkit-tap-highlight-color: transparent;
       position: relative; overflow: hidden;
     }
-    .send-btn::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 50%;
-      background: linear-gradient(180deg, rgba(255,255,255,.22) 0%, transparent 100%);
-      pointer-events: none;
-    }
+    .send-btn::before { display: none; }
     .send-btn-icon { font-size: 16px; }
-    .send-btn.ocean {
-      border-top: 3px solid transparent;
-      background-image: linear-gradient(var(--surface), var(--surface)),
-                        linear-gradient(90deg, var(--ocean), #38BF80);
-      background-origin: border-box;
-      background-clip: padding-box, border-box;
-    }
-    .send-btn.fire  {
-      border-top: 3px solid transparent;
-      background-image: linear-gradient(var(--surface), var(--surface)),
-                        linear-gradient(90deg, var(--fire), #FF8CA0);
-      background-origin: border-box;
-      background-clip: padding-box, border-box;
-    }
-    .send-btn:hover:not(:disabled) { background: var(--bg); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .send-btn.ocean { border-top: 2px solid var(--ocean); }
+    .send-btn.fire  { border-top: 2px solid var(--fire); }
+    .send-btn:hover:not(:disabled) { background: var(--bg); box-shadow: var(--shadow); }
     .send-btn:disabled { opacity: .28; cursor: default; }
 
     .sent-view {
@@ -823,27 +788,24 @@
     /* ════════════════════════════════════
        NAMINOTO — 波音（儚さ演出）
     ════════════════════════════════════ */
-    .naminoto-screen { min-height: 100%; background: var(--ocean-pale); padding-bottom: 48px; }
+    .naminoto-screen { min-height: 100%; background: var(--bg); padding-bottom: 48px; }
     .naminoto-header {
       padding: 20px 20px 16px;
-      background: linear-gradient(180deg, #C4DCF8 0%, #D4E8FF 50%, #E4F0FF 100%);
-      border-bottom: 1px solid rgba(91,144,208,.18);
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
       position: relative;
     }
-    .naminoto-header::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 40%;
-      background: linear-gradient(180deg, rgba(255,255,255,.28) 0%, transparent 100%);
-      pointer-events: none;
-    }
+    .naminoto-header::after { display: none; }
     .wave-count-card {
       margin: 16px 14px 20px; background: var(--surface);
-      border-radius: 14px; box-shadow: var(--shadow);
+      border: 1px solid var(--rule);
+      border-radius: 2px; box-shadow: var(--shadow);
       padding: 30px 24px 26px; text-align: center; position: relative; overflow: hidden;
     }
     .wave-count-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, transparent 5%, #38BF80 30%, #3AACDC 55%, var(--ocean) 80%, transparent 95%);
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--ocean-pale);
+      border-bottom: 1px dashed var(--ocean-mid);
     }
     .wave-big {
       font-family: 'Noto Serif JP', serif;
@@ -854,29 +816,31 @@
     .wave-detail { font-size: 12px; color: var(--ink-2); margin-top: 14px; line-height: 2; }
     .wave-expire {
       display: inline-block; margin-top: 10px; padding: 4px 10px;
-      background: rgba(44,95,120,.06); border-radius: 10px;
+      background: var(--ocean-pale); border: 1px dashed var(--ocean-mid);
+      border-radius: 2px;
       font-size: 10px; color: var(--ink-3); letter-spacing: .08em;
     }
     .wave-section { font-size: 9px; letter-spacing: .22em; color: var(--ink-3); padding: 0 16px 10px; text-transform: uppercase; }
     .wave-list { display: flex; flex-direction: column; gap: 1px; padding: 0 14px; }
 
-    /* 儚さ：不透明度を落とし、hover で少し浮く */
     .wave-item {
       display: flex; align-items: center; gap: 12px;
       padding: 13px 14px; background: var(--surface);
-      opacity: .58;        /* 名も知らぬ波は薄め */
+      border: 1px solid var(--rule); border-bottom: none;
+      opacity: .58;
       transition: opacity .25s;
     }
-    .wave-item.sunatomo { opacity: .84; } /* スナトモは少し濃いめ */
-    .wave-item:first-child { border-radius: 12px 12px 0 0; }
-    .wave-item:last-child  { border-radius: 0 0 12px 12px; }
+    .wave-item:last-child { border-bottom: 1px solid var(--rule); }
+    .wave-item.sunatomo { opacity: .86; }
+    .wave-item:first-child { border-radius: 2px 2px 0 0; }
+    .wave-item:last-child  { border-radius: 0 0 2px 2px; }
     .wave-item:hover { opacity: 1; }
 
     .wave-avatar {
       width: 34px; height: 34px; border-radius: 50%;
       background: var(--ocean-pale); font-size: 15px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      border: 1px solid rgba(44,95,120,.18);
+      border: 1px solid var(--rule);
     }
     .wave-avatar.unknown {
       background: var(--bg); border-color: var(--rule);
@@ -903,11 +867,10 @@
     }
     .my-av {
       width: 70px; height: 70px; border-radius: 50%;
-      background: linear-gradient(135deg, #C4EED8 0%, #C4EAF8 50%, #C8F0E8 100%);
-      border: 2px solid rgba(56,191,128,.28);
+      background: var(--ocean-pale);
+      border: 1px solid var(--rule);
       display: flex; align-items: center; justify-content: center;
       font-size: 26px; margin-bottom: 16px;
-      box-shadow: 0 4px 16px rgba(40,140,100,.14);
     }
     .my-name {
       font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 300;
@@ -930,11 +893,12 @@
     }
     .log-card {
       background: var(--surface); border-left: 3px solid var(--rule);
+      border: 1px solid var(--rule); border-left: 3px solid var(--rule);
       padding: 14px 16px 12px; margin-bottom: 8px;
-      box-shadow: var(--shadow); border-radius: 0 12px 12px 0;
+      box-shadow: var(--shadow); border-radius: 0;
     }
-    .log-card.ocean-dest { border-color: var(--ocean); }
-    .log-card.fire-dest  { border-color: var(--fire); }
+    .log-card.ocean-dest { border-left-color: var(--ocean); }
+    .log-card.fire-dest  { border-left-color: var(--fire); }
     .log-text {
       font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 300;
       line-height: 2; color: var(--ink-2);
@@ -943,7 +907,7 @@
       display: flex; justify-content: space-between;
       margin-top: 8px; font-size: 10px; color: var(--ink-3); letter-spacing: .05em;
     }
-    .log-dest-ocean { color: var(--ocean-l); }
+    .log-dest-ocean { color: var(--ocean); }
     .log-dest-fire  { color: var(--fire); }
 
     /* ── 編集・削除 ── */
@@ -953,34 +917,34 @@
     .log-action-btn {
       background: none; border: none; cursor: pointer;
       font-size: 10px; letter-spacing: .1em; padding: 3px 10px;
-      border-radius: 8px; transition: background .18s;
+      border-radius: 2px; transition: background .18s;
       -webkit-tap-highlight-color: transparent;
       font-family: 'Noto Serif JP', serif;
     }
     .log-action-btn.edit   { color: var(--ocean); }
     .log-action-btn.edit:hover   { background: var(--ocean-pale); }
-    .log-action-btn.del    { color: #C04040; }
-    .log-action-btn.del:hover    { background: rgba(192,64,64,.07); }
+    .log-action-btn.del    { color: #B04040; }
+    .log-action-btn.del:hover    { background: rgba(176,64,64,.07); }
     .log-edit-area {
       width: 100%; min-height: 90px; resize: vertical;
-      border: 1px solid rgba(50,170,130,.32); border-radius: 10px;
+      border: 1px solid var(--rule); border-radius: 2px;
       padding: 10px 12px; margin-top: 8px;
       font-family: 'Noto Serif JP', serif;
       font-size: 13px; font-weight: 300; color: var(--ink);
-      background: rgba(255,255,255,.85); outline: none;
+      background: var(--surface); outline: none;
       caret-color: var(--ocean); line-height: 1.9;
     }
     .log-edit-btns { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
     .log-save-btn {
-      padding: 5px 16px; border-radius: 8px; cursor: pointer;
+      padding: 5px 16px; border-radius: 2px; cursor: pointer;
       font-family: 'Noto Serif JP', serif;
       font-size: 11px; letter-spacing: .1em; color: var(--ink-2);
-      background: linear-gradient(135deg, rgba(56,191,128,.15), rgba(58,172,220,.15));
-      border: 1px solid rgba(50,170,130,.36);
+      background: var(--ocean-pale);
+      border: 1px solid var(--rule);
       -webkit-tap-highlight-color: transparent;
     }
     .log-cancel-btn {
-      padding: 5px 12px; border-radius: 8px; cursor: pointer;
+      padding: 5px 12px; border-radius: 2px; cursor: pointer;
       font-family: 'Noto Serif JP', serif;
       font-size: 11px; letter-spacing: .08em; color: var(--ink-3);
       background: none; border: none;
@@ -988,20 +952,21 @@
     }
     .log-del-confirm {
       margin-top: 8px; padding: 10px 12px;
-      background: rgba(192,64,64,.06); border-radius: 8px;
+      background: rgba(176,64,64,.05); border: 1px dashed rgba(176,64,64,.24);
+      border-radius: 2px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .log-del-msg { font-size: 11px; color: #C04040; letter-spacing: .06em; }
+    .log-del-msg { font-size: 11px; color: #B04040; letter-spacing: .06em; }
     .log-del-yes {
-      padding: 4px 14px; border-radius: 8px; cursor: pointer;
-      font-size: 11px; color: #fff; background: #C04040; border: none;
+      padding: 4px 14px; border-radius: 2px; cursor: pointer;
+      font-size: 11px; color: #fff; background: #B04040; border: none;
       font-family: 'Noto Serif JP', serif; letter-spacing: .08em;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* 設定 — SNS連携・ID検索 なし を明示 */
+    /* 設定 */
     .settings-list {
-      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--rule); overflow: hidden;
       box-shadow: var(--shadow);
     }
     .settings-row {
@@ -1013,8 +978,8 @@
     .settings-key { font-size: 13px; color: var(--ink-2); letter-spacing: .03em; }
     .no-badge {
       font-size: 8px; letter-spacing: .14em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 10px;
-      background: rgba(44,95,120,.07); color: var(--ink-3);
+      padding: 3px 8px; border: 1px solid var(--rule);
+      background: var(--bg); color: var(--ink-3);
     }
     .settings-arrow { font-size: 12px; color: var(--ink-3); }
 
@@ -1022,32 +987,25 @@
        SIDEBAR（デスクトップ用）
     ════════════════════════════════════ */
     .sidebar {
-      display: none; /* モバイルでは非表示 */
+      display: none;
       flex-direction: column;
       width: 224px; min-width: 224px;
-      background: linear-gradient(180deg, #BEE8D4 0%, #C8EEE8 50%, #D0F2F0 100%);
-      border-right: 1px solid rgba(48,165,120,.16);
+      background: var(--surface);
+      border-right: 1px solid var(--rule);
       overflow: hidden; position: relative; flex-shrink: 0;
     }
-    /* サイドバー上部シャイン */
-    .sidebar::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 160px;
-      background: linear-gradient(180deg, rgba(255,255,255,.36) 0%, transparent 100%);
-      pointer-events: none; z-index: 0;
-    }
+    .sidebar::before { display: none; }
 
     .sidebar-logo-area {
       padding: 40px 26px 26px;
       position: relative; z-index: 1;
-      border-bottom: 1px solid rgba(48,165,120,.14);
+      border-bottom: 1px solid var(--rule);
     }
     .sidebar-logo-ja {
       display: block;
       font-family: 'Noto Sans JP', sans-serif;
       font-size: 18px; font-weight: 300; letter-spacing: .48em;
-      background: linear-gradient(135deg, #38BF80 15%, #3AACDC 55%, #2E90D4 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      color: var(--ink);
     }
     .sidebar-logo-en {
       display: block;
@@ -1068,11 +1026,11 @@
     .sidebar-item {
       display: flex; align-items: center; gap: 13px;
       padding: 12px 16px; border: none; background: none;
-      cursor: pointer; border-radius: 10px; width: 100%; text-align: left;
+      cursor: pointer; border-radius: 2px; width: 100%; text-align: left;
       transition: background .18s; -webkit-tap-highlight-color: transparent;
     }
-    .sidebar-item:hover   { background: rgba(44,155,100,.08); }
-    .sidebar-item.active  { background: rgba(44,155,100,.13); }
+    .sidebar-item:hover   { background: var(--bg); }
+    .sidebar-item.active  { background: var(--ocean-pale); border-left: 2px solid var(--ocean); }
 
     .sidebar-icon  {
       font-family: 'Shippori Mincho', serif;
@@ -1082,17 +1040,17 @@
     }
     .sidebar-label { font-size: 13px; letter-spacing: .06em; color: var(--ink-2); font-weight: 300; }
     .sidebar-item.active  .sidebar-label { color: var(--ink); font-weight: 500; }
-    .sidebar-item.active  .sidebar-icon  { filter: drop-shadow(0 0 4px rgba(91,144,208,.45)); }
-    .sidebar-item.fire-active.active .sidebar-icon { filter: drop-shadow(0 0 4px rgba(212,88,114,.45)); }
+    .sidebar-item.active  .sidebar-icon  { }
+    .sidebar-item.fire-active.active { background: var(--fire-pale); border-left-color: var(--fire); }
 
     .sidebar-divider {
       height: 1px; margin: 6px 14px;
-      background: linear-gradient(90deg, transparent, rgba(48,165,120,.22), transparent);
+      background: var(--rule);
     }
 
     .sidebar-footer {
       padding: 16px 26px 34px; position: relative; z-index: 1;
-      border-top: 1px solid rgba(48,165,120,.12);
+      border-top: 1px solid var(--rule);
     }
     .sidebar-footer p {
       font-family: 'Noto Serif JP', serif;
@@ -1113,7 +1071,7 @@
        DESKTOP ≥ 768px
     ════════════════════════════════════ */
     @media (min-width: 768px) {
-      html, body { background: #8ABFAA; }
+      html, body { background: #E8E2D9; }
 
       #root { align-items: stretch; }
 
@@ -1175,13 +1133,14 @@
     .filter-toast {
       position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
       z-index: 9000;
-      background: #1A0C0C;
-      border: 1px solid rgba(220,60,60,.35);
-      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 3px solid #B04040;
+      border-radius: 2px;
       padding: 12px 18px 12px 14px;
       display: flex; align-items: flex-start; gap: 10px;
       max-width: 320px; width: calc(100% - 40px);
-      box-shadow: 0 8px 32px rgba(0,0,0,.40);
+      box-shadow: var(--shadow-lift);
       animation: toastIn .28s cubic-bezier(.22,.68,0,1.2) both;
     }
     @keyframes toastIn {
@@ -1191,12 +1150,12 @@
     .filter-toast-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
     .filter-toast-body { flex: 1; }
     .filter-toast-title {
-      font-size: 12px; font-weight: 400; color: #F0C0B0;
+      font-size: 12px; font-weight: 400; color: #B04040;
       letter-spacing: .06em; margin-bottom: 3px;
     }
     .filter-toast-msg {
       font-family: 'Noto Serif JP', serif;
-      font-size: 11px; font-weight: 300; color: #8A7A72;
+      font-size: 11px; font-weight: 300; color: var(--ink-3);
       line-height: 1.8; letter-spacing: .04em;
     }
     @media (min-width: 768px) {
@@ -1204,73 +1163,50 @@
     }
 
     /* ════════════════════════════════════
-       平成レトロ EXTRAS
+       レトロ EXTRAS
     ════════════════════════════════════ */
 
-    /* ✦ キラキラ浮遊アニメーション */
     @keyframes sparkleFloat {
-      0%,100% { opacity: .3;  transform: scale(1)    rotate(0deg);   }
-      33%     { opacity: .85; transform: scale(1.2)  rotate(15deg);  }
-      66%     { opacity: .45; transform: scale(.88)  rotate(-10deg); }
+      0%,100% { opacity: .2;  transform: scale(1)    rotate(0deg);   }
+      50%     { opacity: .55; transform: scale(1.15) rotate(12deg);  }
     }
     .splash-sparkle {
       position: absolute;
-      animation: sparkleFloat 3.5s ease-in-out infinite;
+      animation: sparkleFloat 4s ease-in-out infinite;
       pointer-events: none; z-index: 0; user-select: none;
-      line-height: 1;
+      line-height: 1; opacity: .2;
     }
 
-    /* ナビ アイコングロウ */
-    .nav-item.active .nav-icon {
-      filter: drop-shadow(0 0 5px rgba(91,144,208,.55));
-    }
-    .nav-item.fire-active .nav-icon {
-      filter: drop-shadow(0 0 5px rgba(212,88,114,.55));
-    }
+    .nav-item.active .nav-icon { }
+    .nav-item.fire-active .nav-icon { }
 
     /* マイページ ヘッダー */
-    .my-head {
-      background: linear-gradient(180deg, #C8EED8 0%, #D0F0EC 50%, var(--surface) 100%);
-      position: relative;
-    }
-    .my-head::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 35%;
-      background: linear-gradient(180deg, rgba(255,255,255,.30) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    /* 波音 ビッグカウント グラデテキスト */
-    .wave-big {
-      background: linear-gradient(135deg, #38BF80 0%, #3AACDC 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* スナトモ アバター グラデ枠 */
-    .wave-avatar {
-      background: linear-gradient(135deg, var(--ocean-pale), #C8EED8);
-      border: 1.5px solid rgba(52,175,125,.25);
-    }
+    .my-head { background: var(--surface); }
+    .my-head::after { display: none; }
 
     /* write ヘッダー */
-    .write-header {
-      background: linear-gradient(180deg, #CCF0E0 0%, var(--surface) 100%);
-    }
+    .write-header { background: var(--surface); }
 
     /* ════════════════════════════════════
        REGISTER / VERIFY
     ════════════════════════════════════ */
     .register-shell {
       width: 100%; height: 100%;
-      background: linear-gradient(160deg, #D4F2E8 0%, #C4EAF8 32%, #D0F4F0 65%, #C8EEE0 100%);
+      background: var(--surface);
       display: flex; flex-direction: column;
       overflow: hidden; position: relative;
+    }
+    .register-shell::before {
+      content: '';
+      position: absolute; inset: 18px;
+      border: 1px solid var(--rule);
+      pointer-events: none; z-index: 0;
     }
     .register-scroll {
       flex: 1; overflow-y: auto;
       padding: 0 28px 48px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
+      position: relative; z-index: 1;
     }
     .register-scroll::-webkit-scrollbar { display: none; }
 
@@ -1290,11 +1226,11 @@
     .register-divider-line::before,
     .register-divider-line::after {
       content: ''; flex: 1; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(50,170,130,.28), transparent);
+      background: var(--rule);
     }
     .register-divider-dot {
       width: 4px; height: 4px; border-radius: 50%;
-      background: linear-gradient(135deg, #38BF80, #3AACDC);
+      background: var(--sand);
     }
 
     .form-field { margin-bottom: 16px; }
@@ -1305,9 +1241,9 @@
     }
     .form-input, .form-select {
       width: 100%; padding: 13px 14px;
-      background: rgba(255,255,255,.72);
-      border: 1px solid rgba(50,170,130,.22);
-      border-radius: 12px; outline: none;
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 2px; outline: none;
       font-family: 'Noto Serif JP', serif;
       font-size: 14px; font-weight: 300; color: var(--ink);
       caret-color: var(--ocean);
@@ -1315,8 +1251,8 @@
       -webkit-appearance: none;
     }
     .form-input:focus, .form-select:focus {
-      border-color: rgba(50,170,130,.55);
-      background: rgba(255,255,255,.90);
+      border-color: var(--ocean);
+      background: var(--surface);
     }
     .form-input::placeholder { color: var(--ink-3); }
     .form-select { color: var(--ink-2); cursor: pointer; }
@@ -1335,7 +1271,7 @@
       margin-top: 5px; letter-spacing: .05em; line-height: 1.8;
     }
     .form-error {
-      font-size: 10px; color: #C04040;
+      font-size: 10px; color: #B04040;
       margin-top: 5px; letter-spacing: .05em;
     }
 
@@ -1362,9 +1298,9 @@
 
     .register-btn {
       width: 100%; padding: 15px 0;
-      background: linear-gradient(135deg, rgba(56,191,128,.14) 0%, rgba(58,172,220,.14) 100%);
-      border: 1px solid rgba(50,170,130,.36);
-      border-radius: 14px;
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
       font-family: 'Noto Serif JP', serif;
       font-size: 13px; font-weight: 300;
       letter-spacing: .20em; color: var(--ink-2);
@@ -1372,8 +1308,8 @@
       -webkit-tap-highlight-color: transparent;
     }
     .register-btn:not(:disabled):hover {
-      background: linear-gradient(135deg, rgba(56,191,128,.24) 0%, rgba(58,172,220,.24) 100%);
-      border-color: rgba(50,170,130,.60);
+      background: var(--ocean-pale);
+      border-color: var(--ocean);
     }
     .register-btn:disabled { opacity: .32; cursor: default; }
 
@@ -1392,11 +1328,17 @@
     /* ─ 認証メール待ち画面 ─ */
     .verify-screen {
       width: 100%; height: 100%;
-      background: linear-gradient(160deg, #D4F2E8 0%, #C4EAF8 32%, #D0F4F0 65%, #C8EEE0 100%);
+      background: var(--surface);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 40px 36px; text-align: center;
       position: relative;
+    }
+    .verify-screen::before {
+      content: '';
+      position: absolute; inset: 18px;
+      border: 1px solid var(--rule);
+      pointer-events: none;
     }
     .verify-icon { font-size: 46px; margin-bottom: 24px; }
     .verify-title {
