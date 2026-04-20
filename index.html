@@ -100,76 +100,49 @@
     ════════════════════════════════════ */
     .splash {
       width: 100%; height: 100%;
-      background: linear-gradient(160deg, #D4F2E8 0%, #C4EAF8 32%, #D0F4F0 65%, #C8EEE0 100%);
+      background: #fff;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       position: relative; overflow: hidden;
     }
 
-    /* 光沢シャイン */
-    .splash::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 40%;
-      background: linear-gradient(180deg, rgba(255,255,255,.35) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    .splash-horizon {
-      position: absolute; top: 60%; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent 5%, rgba(50,180,140,.28) 35%, rgba(58,160,216,.22) 65%, transparent 95%);
-    }
-    .splash-waveline {
-      position: absolute; top: calc(60% + 8px); left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent 15%, rgba(50,170,130,.10) 45%, transparent 90%);
-    }
-
-    .splash-center { text-align: center; position: relative; z-index: 1; top: -20px; }
+    .splash-center { text-align: center; position: relative; z-index: 1; }
 
     .splash-logo {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 36px; font-weight: 300;
+      font-size: 28px; font-weight: 300;
       letter-spacing: .55em; text-indent: .55em;
-      background: linear-gradient(135deg, #38BF80 0%, #3AACDC 50%, #2E90D4 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .splash-en {
-      font-size: 9px; font-weight: 400;
-      letter-spacing: .78em; text-indent: .78em;
-      color: var(--ink-3); margin-top: 10px;
-      text-transform: uppercase;
+      color: #1a1a1a;
     }
 
     .splash-divider {
       display: flex; align-items: center; gap: 10px;
-      margin: 32px auto; width: fit-content;
+      margin: 28px auto; width: fit-content;
     }
-    .splash-d-line { width: 22px; height: 1px; background: linear-gradient(90deg, #38BF80, #3AACDC); }
-    .splash-d-dot  { width: 4px;  height: 4px;  border-radius: 50%;
-      background: linear-gradient(135deg, #38BF80, #3AACDC); }
+    .splash-d-line { width: 20px; height: 1px; background: #ccc; }
+    .splash-d-dot  { width: 3px; height: 3px; border-radius: 50%; background: #ccc; }
 
     .splash-tagline {
       font-family: 'Noto Serif JP', serif;
-      font-size: 13px; font-weight: 300;
-      color: var(--ink-2); letter-spacing: .1em; line-height: 2;
+      font-size: 12px; font-weight: 300;
+      color: #888; letter-spacing: .12em; line-height: 2;
     }
-    .splash-sub { font-size: 11px; color: var(--ink-3); margin-top: 4px; letter-spacing: .1em; }
+    .splash-sub { font-size: 11px; color: #aaa; margin-top: 4px; letter-spacing: .1em; }
 
     .enter-btn {
       margin-top: 48px;
-      background: linear-gradient(135deg, rgba(56,191,128,.12) 0%, rgba(58,172,220,.12) 100%);
-      border: 1px solid rgba(50,170,130,.32);
-      border-radius: 20px;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 2px;
       font-family: 'Noto Serif JP', serif;
       font-size: 12px; font-weight: 300;
       letter-spacing: .44em; text-indent: .44em;
-      color: var(--ink-2); cursor: pointer;
-      padding: 12px 32px;
-      transition: all .3s;
+      color: #fff; cursor: pointer;
+      padding: 14px 36px;
+      transition: opacity .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .enter-btn:hover { background: linear-gradient(135deg, rgba(56,191,128,.22) 0%, rgba(58,172,220,.22) 100%); border-color: rgba(50,170,130,.58); }
+    .enter-btn:hover { opacity: .75; }
 
     /* ════════════════════════════════════
        NAV
@@ -1564,19 +1537,6 @@
     function Splash({ onEnter }) {
       return (
         <div className="splash">
-          {SPARKLE_POS.map((s, i) => (
-            <span
-              key={i}
-              className="splash-sparkle"
-              style={{
-                top: s.top, left: s.left, right: s.right,
-                fontSize: s.fontSize, color: s.color,
-                animationDelay: s.delay,
-              }}
-            >✦</span>
-          ))}
-          <div className="splash-horizon" />
-          <div className="splash-waveline" />
           <div className="splash-center">
             <h1 className="splash-logo">SARASUNA</h1>
             <div className="splash-divider">
