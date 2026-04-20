@@ -16,32 +16,32 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #FBF8F3;
-      --surface:     #FFFFFF;
-      --ocean:       #6B9BB8;
-      --ocean-l:     #8AB4CC;
-      --ocean-pale:  #E8F0F5;
-      --ocean-mid:   #B0CCDc;
-      --fire:        #C47850;
-      --fire-pale:   #F5EDE8;
-      --fire-mid:    #DFB090;
-      --ink:         #2C2420;
-      --ink-2:       #4A3A30;
-      --ink-3:       #7A6A5A;
-      --rule:        #D8CFC4;
-      --sand:        #C4B8A8;
-      --night:       #1E1208;
-      --manu-bg:     #FDFAF6;
-      --sepia:       rgba(120,100,80,.10);
+      --bg:          #F7F2EA;
+      --surface:     #FDFAF5;
+      --ocean:       #5A8FA8;
+      --ocean-l:     #7AAAC4;
+      --ocean-pale:  #E4EEF4;
+      --ocean-mid:   #A8C8DC;
+      --fire:        #B86838;
+      --fire-pale:   #F2E8DF;
+      --fire-mid:    #D4A070;
+      --ink:         #28201A;
+      --ink-2:       #483828;
+      --ink-3:       #786858;
+      --rule:        #DDD4C8;
+      --sand:        #C0B4A4;
+      --night:       #1A1008;
+      --manu-bg:     #FBF8F2;
+      --sepia:       rgba(100,80,60,.10);
 
-      --shadow:      0 1px 4px rgba(0,0,0,.06);
-      --shadow-lift: 0 2px 8px rgba(0,0,0,.09);
+      --shadow:      0 1px 3px rgba(0,0,0,.07);
+      --shadow-lift: 0 2px 8px rgba(0,0,0,.10);
     }
 
     html, body {
       height: 100%; height: 100dvh;
       width: 100%; overflow: hidden;
-      background: #E8E2D9;
+      background: #E4DDD4;
     }
 
     body {
@@ -50,14 +50,8 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── レトロ 細ドット壁紙 ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle, rgba(120,100,80,.08) 1px, transparent 1px);
-      background-size: 18px 18px;
-    }
-    body::after { display: none; }
+    body::before { display: none; }
+    body::after  { display: none; }
 
     #root {
       height: 100%; height: 100dvh;
@@ -103,7 +97,7 @@
     }
     .splash::before {
       content: '';
-      position: absolute; inset: 24px;
+      position: absolute; inset: 20px;
       border: 1px solid var(--rule);
       pointer-events: none;
     }
@@ -111,40 +105,40 @@
     .splash-center { text-align: center; position: relative; z-index: 1; }
 
     .splash-logo {
-      font-family: 'Noto Sans JP', sans-serif;
-      font-size: 28px; font-weight: 300;
-      letter-spacing: .55em; text-indent: .55em;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 26px; font-weight: 400;
+      letter-spacing: .6em; text-indent: .6em;
       color: var(--ink);
     }
 
     .splash-divider {
-      display: flex; align-items: center; gap: 10px;
-      margin: 28px auto; width: fit-content;
+      display: flex; align-items: center; gap: 8px;
+      margin: 24px auto; width: fit-content;
     }
-    .splash-d-line { width: 20px; height: 1px; background: var(--rule); }
+    .splash-d-line { width: 28px; height: 1px; background: var(--rule); }
     .splash-d-dot  { width: 3px; height: 3px; border-radius: 50%; background: var(--sand); }
 
     .splash-tagline {
       font-family: 'Noto Serif JP', serif;
-      font-size: 12px; font-weight: 300;
-      color: var(--ink-3); letter-spacing: .12em; line-height: 2;
+      font-size: 11px; font-weight: 300;
+      color: var(--ink-3); letter-spacing: .14em; line-height: 2.2;
     }
-    .splash-sub { font-size: 11px; color: var(--sand); margin-top: 4px; letter-spacing: .1em; }
+    .splash-sub { font-size: 10px; color: var(--sand); margin-top: 4px; letter-spacing: .1em; }
 
     .enter-btn {
-      margin-top: 48px;
-      background: var(--ink);
-      border: none;
+      margin-top: 44px;
+      background: none;
+      border: 1px solid var(--ink);
       border-radius: 0;
       font-family: 'Noto Serif JP', serif;
-      font-size: 12px; font-weight: 300;
-      letter-spacing: .44em; text-indent: .44em;
-      color: #fff; cursor: pointer;
-      padding: 14px 36px;
-      transition: opacity .2s;
+      font-size: 11px; font-weight: 300;
+      letter-spacing: .42em; text-indent: .42em;
+      color: var(--ink); cursor: pointer;
+      padding: 13px 38px;
+      transition: background .2s, color .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .enter-btn:hover { opacity: .72; }
+    .enter-btn:hover { background: var(--ink); color: #fff; }
 
     /* ════════════════════════════════════
        NAV
@@ -160,37 +154,36 @@
     .nav-item {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      gap: 4px; padding: 10px 0 16px;
+      gap: 3px; padding: 10px 0 14px;
       border: none; background: none; cursor: pointer;
       position: relative; transition: opacity .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .nav-item:not(.active) { opacity: .38; }
-    .nav-item.active::before {
+    .nav-item:not(.active) { opacity: .32; }
+    .nav-item.active::after {
       content: '';
-      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-      width: 20px; height: 2px;
+      position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 4px; border-radius: 50%;
       background: var(--ocean);
-      border-radius: 0 0 2px 2px;
     }
-    .nav-item.fire-active::before { background: var(--fire); }
+    .nav-item.fire-active::after { background: var(--fire); }
     .nav-icon {
       font-family: 'Shippori Mincho', serif;
-      font-size: 15px; font-weight: 500; line-height: 1;
+      font-size: 16px; font-weight: 500; line-height: 1;
     }
-    .nav-label { font-size: 9px; letter-spacing: .1em; color: var(--ink-3); }
-    .nav-item.active .nav-label { color: var(--ocean); font-weight: 400; }
-    .nav-item.fire-active .nav-label { color: var(--fire); font-weight: 400; }
+    .nav-label { font-size: 9px; letter-spacing: .08em; color: var(--ink-3); }
+    .nav-item.active .nav-label { color: var(--ocean); }
+    .nav-item.fire-active .nav-label { color: var(--fire); }
 
     /* ════════════════════════════════════
        SHARED
     ════════════════════════════════════ */
     .screen-title {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 19px; font-weight: 300;
-      letter-spacing: .05em; color: var(--ink);
+      font-family: 'Shippori Mincho', serif;
+      font-size: 18px; font-weight: 500;
+      letter-spacing: .08em; color: var(--ink);
     }
-    .screen-sub { font-size: 11px; color: var(--ink-3); margin-top: 3px; letter-spacing: .07em; }
+    .screen-sub { font-size: 10px; color: var(--ink-3); margin-top: 4px; letter-spacing: .1em; }
 
     /* ════════════════════════════════════
        OCEAN — 海
@@ -198,157 +191,150 @@
     .ocean-screen { min-height: 100%; background: var(--bg); padding-bottom: 48px; }
 
     .ocean-header {
-      padding: 20px 20px 0;
+      padding: 18px 18px 0;
       background: var(--surface);
       border-bottom: 1px solid var(--rule);
       position: relative;
     }
     .ocean-header::after { display: none; }
-    .ocean-header-top { padding-bottom: 16px; }
+    .ocean-header-top { padding-bottom: 14px; }
 
-    .ocean-tabs { display: flex; border-bottom: 1px solid var(--rule); }
+    .ocean-tabs { display: flex; gap: 0; }
     .ocean-tab {
-      padding: 9px 16px 10px; border: none; background: none; cursor: pointer;
+      padding: 8px 14px 10px; border: none; background: none; cursor: pointer;
+      font-family: 'Noto Serif JP', serif;
       font-size: 11px; font-weight: 300; letter-spacing: .1em; color: var(--ink-3);
       position: relative; transition: color .2s;
       -webkit-tap-highlight-color: transparent;
     }
     .ocean-tab.active { color: var(--ocean); }
     .ocean-tab.active::after {
-      content: ''; position: absolute; bottom: -1px; left: 8px; right: 8px;
-      height: 2px;
+      content: ''; position: absolute; bottom: 0; left: 10px; right: 10px;
+      height: 1px;
       background: var(--ocean);
-      border-radius: 2px 2px 0 0;
     }
 
     /* ════════════════════════════════════
        LETTER CARDS — 漂着したメッセージ
     ════════════════════════════════════ */
-    .letter-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 12px; }
+    .letter-list { padding: 16px 14px 0; display: flex; flex-direction: column; gap: 10px; }
 
     .letter-card {
       background: var(--surface);
       border: 1px solid var(--rule);
-      border-radius: 2px;
+      border-radius: 0;
       box-shadow: var(--shadow);
-      padding: 22px 20px 18px;
+      padding: 20px 18px 16px;
       position: relative; overflow: hidden;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* 5種の漂着バリアント */
-    .letter-card[data-v="0"] { transform: rotate(-0.5deg); margin-right: 20px; }
-    .letter-card[data-v="1"] { transform: rotate(0.65deg);  margin-left: 20px; }
-    .letter-card[data-v="2"] { transform: rotate(-0.4deg); margin-right: 12px; margin-left: 8px; }
-    .letter-card[data-v="3"] { transform: rotate(0.38deg);  margin-left: 16px; margin-right: 4px; }
-    .letter-card[data-v="4"] { transform: rotate(-0.58deg); margin-right: 18px; }
+    /* 漂着バリアント — 小さな傾き */
+    .letter-card[data-v="0"] { transform: rotate(-0.3deg); }
+    .letter-card[data-v="1"] { transform: rotate(0.4deg); }
+    .letter-card[data-v="2"] { transform: rotate(-0.25deg); }
+    .letter-card[data-v="3"] { transform: rotate(0.3deg); }
+    .letter-card[data-v="4"] { transform: rotate(-0.35deg); }
 
-    /* レトロ上部アクセント線 */
     .letter-card::before {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
       background: var(--ocean-pale);
-      border-bottom: 1px dashed var(--ocean-mid);
     }
     .letter-card::after { display: none; }
 
-    /* 波が引くアニメーション — タップ時 */
     @keyframes waveRecede {
       0%   { opacity: 1; }
-      26%  { opacity: .46; filter: brightness(.95) saturate(.8); }
-      70%  { opacity: .80; }
-      100% { opacity: 1;   filter: none; }
+      30%  { opacity: .5; }
+      100% { opacity: 1; }
     }
-    .letter-card.receding { animation: waveRecede .65s cubic-bezier(.22,.68,0,1.2) both; }
+    .letter-card.receding { animation: waveRecede .5s ease both; }
 
-    .letter-from { font-size: 10px; letter-spacing: .16em; color: var(--ink-3); margin-bottom: 13px; }
+    .letter-from { font-size: 10px; letter-spacing: .14em; color: var(--ink-3); margin-bottom: 12px; }
     .letter-body {
       font-family: 'Noto Serif JP', serif;
-      font-size: 14px; font-weight: 300; line-height: 2.15; color: var(--ink);
+      font-size: 14px; font-weight: 300; line-height: 2.1; color: var(--ink);
     }
     .letter-foot {
       display: flex; align-items: center; justify-content: space-between;
-      margin-top: 16px; padding-top: 12px;
+      margin-top: 14px; padding-top: 11px;
       border-top: 1px solid var(--rule);
     }
     .letter-time { font-size: 10px; color: var(--ink-3); }
 
-    /* いいね不在 — 波（共鳴）のみ */
     .wave-btn {
       display: flex; align-items: center; gap: 5px;
-      background: none; border: none; cursor: pointer;
-      padding: 2px 7px 2px 5px; border-radius: 10px;
+      background: none; border: 1px solid transparent; cursor: pointer;
+      padding: 2px 8px 2px 6px;
       font-size: 11px; color: var(--ocean-l); letter-spacing: .06em;
-      transition: background .2s, color .2s;
+      transition: border-color .2s, color .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .wave-btn:hover { background: var(--ocean-pale); }
-    .wave-btn.waved { color: var(--ocean); background: var(--ocean-pale); }
+    .wave-btn:hover { border-color: var(--ocean-pale); }
+    .wave-btn.waved { color: var(--ocean); border-color: var(--ocean-mid); }
 
     /* ════════════════════════════════════
        AD CARD — 広告（インフィード）
     ════════════════════════════════════ */
     .ad-card {
-      background: var(--surface);
+      background: var(--bg);
       border: 1px dashed var(--rule);
-      border-radius: 2px;
-      box-shadow: var(--shadow);
+      border-radius: 0;
       overflow: hidden;
       position: relative;
-      margin: 0 2px;
+      margin: 0;
     }
 
     .ad-promo-label {
-      position: absolute; top: 9px; right: 11px;
-      font-size: 8px; letter-spacing: .18em; text-transform: uppercase;
-      color: var(--ink-3); font-weight: 300;
+      position: absolute; top: 8px; right: 10px;
+      font-size: 8px; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--sand); font-weight: 300;
     }
 
     .ad-visual {
-      width: 100%; height: 68px;
-      filter: grayscale(30%) sepia(15%);
+      width: 100%; height: 56px;
+      filter: grayscale(40%) sepia(20%);
     }
 
-    .ad-body { padding: 14px 18px 16px; }
+    .ad-body { padding: 12px 16px 14px; }
 
     .ad-copy {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 14px; color: var(--ink-2);
-      letter-spacing: .1em; line-height: 1.9;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; color: var(--ink-2);
+      letter-spacing: .08em; line-height: 1.9;
     }
 
-    .ad-brand { font-size: 10px; color: var(--ink-3); margin-top: 8px; letter-spacing: .14em; }
+    .ad-brand { font-size: 10px; color: var(--ink-3); margin-top: 6px; letter-spacing: .12em; }
 
     /* ── 横長バナー広告 ── */
     .ad-banner {
-      margin: 14px 14px 0;
-      background: var(--surface);
+      margin: 12px 14px 0;
+      background: var(--bg);
       border: 1px dashed var(--rule);
-      border-radius: 2px;
-      box-shadow: var(--shadow);
+      border-radius: 0;
       overflow: hidden; position: relative;
       display: flex; align-items: stretch;
     }
     .ad-banner-visual {
-      width: 64px; flex-shrink: 0;
+      width: 56px; flex-shrink: 0;
     }
     .ad-banner-body {
-      flex: 1; padding: 12px 14px 10px;
+      flex: 1; padding: 10px 12px 10px;
     }
     .ad-banner-copy {
       font-family: 'Noto Serif JP', serif;
-      font-size: 12px; color: var(--ink-2);
+      font-size: 11px; color: var(--ink-2);
       letter-spacing: .06em; line-height: 1.7;
     }
     .ad-banner-brand {
       font-size: 9px; color: var(--ink-3);
-      margin-top: 5px; letter-spacing: .14em;
+      margin-top: 4px; letter-spacing: .12em;
     }
     .ad-banner-promo {
-      position: absolute; top: 6px; right: 9px;
-      font-size: 8px; letter-spacing: .16em;
-      color: var(--ink-3); font-weight: 300;
+      position: absolute; top: 6px; right: 8px;
+      font-size: 8px; letter-spacing: .14em;
+      color: var(--sand); font-weight: 300;
     }
     @media (min-width: 768px) {
       .ad-banner {
@@ -361,31 +347,32 @@
     /* ════════════════════════════════════
        NOVEL CARDS — 日記小説
     ════════════════════════════════════ */
-    .novel-list { padding: 18px 14px 0; display: flex; flex-direction: column; gap: 10px; }
+    .novel-list { padding: 16px 14px 0; display: flex; flex-direction: column; gap: 10px; }
 
     .novel-card {
       background: var(--surface);
       border: 1px solid var(--rule);
-      border-radius: 2px;
+      border-radius: 0;
       box-shadow: var(--shadow); overflow: hidden; position: relative;
     }
     .novel-card::before {
-      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
-      background: var(--ocean);
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--ocean-pale);
+      border-bottom: 1px dashed var(--ocean-mid);
     }
-    .novel-body { padding: 18px 18px 0 22px; }
+    .novel-body { padding: 18px 16px 0; }
     .novel-title {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 15px; font-weight: 400; color: var(--ink); letter-spacing: .05em; line-height: 1.7;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: .06em; line-height: 1.8;
     }
     .novel-excerpt {
       font-family: 'Noto Serif JP', serif;
-      font-size: 13px; font-weight: 300; color: var(--ink-2); line-height: 2.1; margin-top: 10px;
+      font-size: 12px; font-weight: 300; color: var(--ink-2); line-height: 2.1; margin-top: 10px;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
     .novel-foot {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 11px 18px 14px 22px; margin-top: 10px; border-top: 1px solid var(--rule);
+      padding: 10px 16px 13px; margin-top: 10px; border-top: 1px solid var(--rule);
     }
     .novel-from { font-size: 10px; color: var(--ink-3); letter-spacing: .12em; }
     .novel-time { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
@@ -394,71 +381,69 @@
     /* ════════════════════════════════════
        BONFIRE — 焚き火
     ════════════════════════════════════ */
-    .bonfire-screen { min-height: 100%; background: #1E1208; padding-bottom: 48px; }
+    .bonfire-screen { min-height: 100%; background: #1C1006; padding-bottom: 48px; }
     .bonfire-header {
-      padding: 20px 20px 16px;
-      background: #261508;
-      border-bottom: 1px solid rgba(196,120,80,.18);
+      padding: 18px 18px 16px;
+      background: #221408;
+      border-bottom: 1px solid rgba(180,100,50,.2);
       position: relative;
     }
     .bonfire-header::after { display: none; }
-    .bonfire-header .screen-title { color: #EEE0CC; }
-    .bonfire-header .screen-sub   { color: #7A6A52; }
+    .bonfire-header .screen-title { color: #E8D8C0; }
+    .bonfire-header .screen-sub   { color: #6A5A40; }
 
     .room-card {
-      margin: 14px 14px 0;
-      background: #261508;
-      border: 1px solid rgba(196,120,80,.16);
-      border-radius: 2px; overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,.28);
+      margin: 12px 14px 0;
+      background: #201208;
+      border: 1px solid rgba(180,100,50,.18);
+      border-radius: 0; overflow: hidden;
     }
     .room-head {
       display: flex; align-items: center; gap: 12px; padding: 14px 16px;
-      border-bottom: 1px solid rgba(196,120,80,.10);
+      border-bottom: 1px solid rgba(180,100,50,.10);
     }
     .room-name {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 14px; font-weight: 300; color: #EEE0CC; letter-spacing: .05em;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px; font-weight: 500; color: #E8D8C0; letter-spacing: .06em;
     }
-    .room-meta { font-size: 10px; color: #6A5A44; margin-top: 2px; letter-spacing: .06em; }
-    .post-card { padding: 15px 16px 13px; border-bottom: 1px solid rgba(196,120,80,.08); position: relative; }
+    .room-meta { font-size: 10px; color: #6A5A40; margin-top: 2px; letter-spacing: .06em; }
+    .post-card { padding: 14px 16px 12px; border-bottom: 1px solid rgba(180,100,50,.08); position: relative; }
     .post-card:last-child { border-bottom: none; }
     .post-card::before {
-      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
-      background: var(--fire);
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 2px;
+      background: rgba(180,100,50,.5);
     }
-    .post-from { font-size: 10px; letter-spacing: .12em; color: #6A5A44; margin-bottom: 10px; padding-left: 8px; }
+    .post-from { font-size: 10px; letter-spacing: .12em; color: #6A5A40; margin-bottom: 10px; padding-left: 8px; }
     .post-body {
       font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 300;
-      line-height: 2.1; color: #DDD0B8; padding-left: 8px;
+      line-height: 2.1; color: #D8C8A8; padding-left: 8px;
     }
     .post-foot {
       margin-top: 8px; padding: 8px 0 0 8px;
-      display: flex; justify-content: space-between; border-top: 1px solid rgba(196,120,80,.08);
+      display: flex; justify-content: space-between; border-top: 1px solid rgba(180,100,50,.08);
     }
-    .post-time { font-size: 10px; color: #6A5A44; }
+    .post-time { font-size: 10px; color: #6A5A40; }
     .post-wave { font-size: 11px; color: var(--fire); }
 
     /* ════════════════════════════════════
        BONFIRE — チャット・コミュニティ作成
     ════════════════════════════════════ */
 
-    /* ─ チャット画面（夜の焚き火） ─ */
     .chat-shell {
       display: flex; flex-direction: column;
-      height: 100%; background: #1E1208;
+      height: 100%; background: #1C1006;
     }
     .chat-header {
       display: flex; align-items: center; gap: 12px;
-      padding: 16px 18px 14px;
-      background: #261508;
-      border-bottom: 1px solid rgba(196,120,80,.16);
+      padding: 14px 16px 12px;
+      background: #221408;
+      border-bottom: 1px solid rgba(180,100,50,.18);
       flex-shrink: 0; position: relative; z-index: 1;
     }
     .chat-header::after { display: none; }
     .chat-back {
       background: none; border: none; cursor: pointer;
-      font-size: 20px; line-height: 1; color: var(--fire);
+      font-size: 16px; line-height: 1; color: var(--fire-mid);
       padding: 4px 8px 4px 2px;
       -webkit-tap-highlight-color: transparent;
       transition: opacity .2s; flex-shrink: 0;
@@ -466,17 +451,17 @@
     .chat-back:hover { opacity: .6; }
     .chat-room-info { flex: 1; }
     .chat-room-name {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 14px; font-weight: 300; color: #EEE0CC; letter-spacing: .04em;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px; font-weight: 500; color: #E8D8C0; letter-spacing: .06em;
     }
-    .chat-room-meta { font-size: 10px; color: #6A5A44; margin-top: 2px; }
+    .chat-room-meta { font-size: 10px; color: #6A5A40; margin-top: 2px; }
 
     .chat-messages {
       flex: 1; overflow-y: auto; overflow-x: hidden;
-      padding: 16px 14px 12px;
+      padding: 14px 12px 10px;
       display: flex; flex-direction: column; gap: 10px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
-      background: #1E1208;
+      background: #1C1006;
     }
     .chat-messages::-webkit-scrollbar { display: none; }
 
@@ -485,142 +470,136 @@
     .chat-msg.other { align-self: flex-start; align-items: flex-start; }
 
     .chat-msg-handle {
-      font-size: 10px; color: #6A5A44; letter-spacing: .08em;
+      font-size: 10px; color: #6A5A40; letter-spacing: .08em;
       margin-bottom: 4px; padding: 0 4px;
     }
     .chat-msg-bubble {
-      padding: 10px 14px; border-radius: 4px;
+      padding: 10px 14px; border-radius: 0;
       font-family: 'Noto Serif JP', serif;
       font-size: 13px; font-weight: 300; line-height: 1.9;
-      position: relative; word-break: break-all;
+      word-break: break-all;
     }
     .chat-msg.other .chat-msg-bubble {
-      background: #2A1A0A;
-      border: 1px solid rgba(196,120,80,.14);
-      color: #DDD0B8;
-      box-shadow: 0 1px 4px rgba(0,0,0,.28);
+      background: #281608;
+      border: 1px solid rgba(180,100,50,.16);
+      color: #D8C8A8;
     }
     .chat-msg.me .chat-msg-bubble {
-      background: rgba(196,120,80,.18);
-      border: 1px solid rgba(196,120,80,.28);
-      color: #EEE0CC;
+      background: rgba(180,100,50,.16);
+      border: 1px solid rgba(180,100,50,.28);
+      color: #E8D8C0;
     }
     .chat-msg-time {
-      font-size: 9px; color: #5A4A36; margin-top: 4px; padding: 0 4px;
+      font-size: 9px; color: #584838; margin-top: 4px; padding: 0 4px;
     }
 
     .chat-input-area {
       flex-shrink: 0;
-      display: flex; align-items: flex-end; gap: 10px;
-      padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
-      background: #261508;
-      border-top: 1px solid rgba(196,120,80,.14);
+      display: flex; align-items: flex-end; gap: 8px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: #221408;
+      border-top: 1px solid rgba(180,100,50,.14);
     }
     .chat-textarea {
       flex: 1; resize: none; border: none; outline: none;
-      background: #1A0E06;
-      border: 1px solid rgba(196,120,80,.22);
-      border-radius: 2px;
-      padding: 10px 14px;
+      background: #180E04;
+      border: 1px solid rgba(180,100,50,.24);
+      border-radius: 0;
+      padding: 10px 12px;
       font-family: 'Noto Serif JP', serif;
-      font-size: 14px; font-weight: 300; color: #EEE0CC; line-height: 1.7;
+      font-size: 13px; font-weight: 300; color: #E8D8C0; line-height: 1.7;
       max-height: 100px; overflow-y: auto;
       caret-color: var(--fire);
       -webkit-overflow-scrolling: touch;
     }
-    .chat-textarea::placeholder { color: #4A3C2C; }
+    .chat-textarea::placeholder { color: #4A3828; }
     .chat-send-btn {
-      width: 40px; height: 40px; flex-shrink: 0;
-      border-radius: 2px; border: none; cursor: pointer;
-      background: var(--fire);
-      color: #fff; font-size: 16px; line-height: 1;
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 0; border: 1px solid rgba(180,100,50,.4); cursor: pointer;
+      background: rgba(180,100,50,.2);
+      color: var(--fire-mid); font-size: 14px; line-height: 1;
       display: flex; align-items: center; justify-content: center;
-      transition: opacity .2s, transform .15s;
-      box-shadow: 0 1px 4px rgba(0,0,0,.20);
+      transition: background .2s;
       -webkit-tap-highlight-color: transparent;
     }
-    .chat-send-btn:disabled { opacity: .25; cursor: default; box-shadow: none; }
-    .chat-send-btn:not(:disabled):hover { opacity: .82; }
+    .chat-send-btn:disabled { opacity: .22; cursor: default; }
+    .chat-send-btn:not(:disabled):hover { background: rgba(180,100,50,.35); }
 
-    /* ─ ルーム一覧下部「新規作成」ボタン ─ */
     .room-create-card {
-      margin: 14px 14px 0;
+      margin: 12px 14px 0;
       background: none;
-      border: 1px dashed rgba(196,120,80,.32);
-      border-radius: 2px;
-      padding: 18px 20px;
+      border: 1px dashed rgba(180,100,50,.3);
+      border-radius: 0;
+      padding: 16px 20px;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; font-size: 13px; color: var(--fire);
-      font-family: 'Noto Serif JP', serif; letter-spacing: .06em;
+      cursor: pointer; font-size: 13px; color: rgba(180,100,50,.7);
+      font-family: 'Noto Serif JP', serif; letter-spacing: .08em;
       transition: background .2s; -webkit-tap-highlight-color: transparent;
     }
-    .room-create-card:hover { background: rgba(196,120,80,.06); }
+    .room-create-card:hover { background: rgba(180,100,50,.06); }
 
-    /* ─ コミュニティ作成画面（夜の焚き火） ─ */
     .create-shell {
       display: flex; flex-direction: column;
-      height: 100%; background: #1E1208;
+      height: 100%; background: #1C1006;
     }
     .create-header {
       display: flex; align-items: center; gap: 12px;
-      padding: 16px 18px 14px;
-      background: #261508;
-      border-bottom: 1px solid rgba(196,120,80,.16);
+      padding: 14px 16px 12px;
+      background: #221408;
+      border-bottom: 1px solid rgba(180,100,50,.18);
       flex-shrink: 0;
     }
     .create-title-text {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 15px; font-weight: 300; color: #EEE0CC; letter-spacing: .04em;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px; font-weight: 500; color: #E8D8C0; letter-spacing: .06em;
     }
     .create-body {
-      flex: 1; overflow-y: auto; padding: 26px 18px 40px;
+      flex: 1; overflow-y: auto; padding: 24px 16px 40px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
     }
     .create-body::-webkit-scrollbar { display: none; }
     .create-label {
-      font-size: 9px; letter-spacing: .22em; color: #6A5A44;
-      text-transform: uppercase; margin-bottom: 12px; margin-top: 24px;
+      font-size: 9px; letter-spacing: .2em; color: #6A5A40;
+      text-transform: uppercase; margin-bottom: 10px; margin-top: 22px;
     }
     .create-label:first-child { margin-top: 0; }
     .create-input {
       width: 100%;
-      border: 1px solid rgba(196,120,80,.22);
-      border-radius: 2px; outline: none;
-      background: #2A1A0A;
-      padding: 14px 16px;
+      border: 1px solid rgba(180,100,50,.24);
+      border-radius: 0; outline: none;
+      background: #281608;
+      padding: 12px 14px;
       font-family: 'Noto Serif JP', serif;
-      font-size: 15px; font-weight: 300; color: #EEE0CC;
+      font-size: 14px; font-weight: 300; color: #E8D8C0;
       caret-color: var(--fire); letter-spacing: .04em;
     }
-    .create-input::placeholder { color: #4A3C2C; }
-    .create-input:focus { border-color: rgba(196,120,80,.50); }
+    .create-input::placeholder { color: #4A3828; }
+    .create-input:focus { border-color: rgba(180,100,50,.5); }
     .create-submit-btn {
-      margin-top: 28px; width: 100%;
-      padding: 15px 0; border: none; cursor: pointer;
-      border-radius: 2px;
-      background: var(--fire);
-      color: #FFF8F0; font-family: 'Noto Serif JP', serif;
-      font-size: 14px; font-weight: 300; letter-spacing: .14em;
-      transition: opacity .2s;
+      margin-top: 26px; width: 100%;
+      padding: 14px 0; border: 1px solid rgba(180,100,50,.6); cursor: pointer;
+      border-radius: 0;
+      background: rgba(180,100,50,.15);
+      color: var(--fire-mid); font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 300; letter-spacing: .16em;
+      transition: background .2s;
       -webkit-tap-highlight-color: transparent;
     }
     .create-submit-btn:disabled { opacity: .25; cursor: default; }
-    .create-submit-btn:not(:disabled):hover { opacity: .82; }
+    .create-submit-btn:not(:disabled):hover { background: rgba(180,100,50,.28); }
 
-    /* 焚き火タブ内の広告テキスト色 */
-    .bonfire-screen .ad-card { background: #1A0E06; border-color: rgba(196,120,80,.14); box-shadow: 0 2px 8px rgba(0,0,0,.30); }
-    .bonfire-screen .ad-copy  { color: #C8B89A; }
-    .bonfire-screen .ad-brand { color: #6A5A44; }
-    .bonfire-screen .ad-promo-label { color: #6A5A44; }
+    .bonfire-screen .ad-card { background: #1A0C04; border-color: rgba(180,100,50,.16); }
+    .bonfire-screen .ad-copy  { color: #C0A888; }
+    .bonfire-screen .ad-brand { color: #6A5A40; }
+    .bonfire-screen .ad-promo-label { color: #584838; }
 
-    /* デスクトップ：チャット・作成画面も中央寄せ */
     @media (min-width: 768px) {
       .chat-header, .chat-messages, .chat-input-area,
       .create-header, .create-body {
         max-width: 680px; margin-left: auto; margin-right: auto;
         width: 100%; box-sizing: border-box;
       }
-      .chat-shell, .create-shell { background: #120A04; }
+      .chat-shell, .create-shell { background: #140C04; }
     }
 
     /* ════════════════════════════════════
@@ -628,50 +607,48 @@
     ════════════════════════════════════ */
     .write-header {
       background: var(--surface); border-bottom: 1px solid var(--rule);
-      flex-shrink: 0; padding: 20px 20px 0;
+      flex-shrink: 0; padding: 18px 18px 0;
     }
-    .write-header-top { padding-bottom: 14px; }
+    .write-header-top { padding-bottom: 12px; }
 
-    .write-mode-tabs { display: flex; border-bottom: 1px solid var(--rule); }
+    .write-mode-tabs { display: flex; }
     .write-mode-tab {
-      padding: 9px 18px 10px; border: none; background: none; cursor: pointer;
+      padding: 8px 16px 10px; border: none; background: none; cursor: pointer;
+      font-family: 'Noto Serif JP', serif;
       font-size: 11px; letter-spacing: .1em; color: var(--ink-3);
       position: relative; transition: color .2s;
       -webkit-tap-highlight-color: transparent;
     }
     .write-mode-tab.active { color: var(--ink); }
     .write-mode-tab.active::after {
-      content: ''; position: absolute; bottom: -1px; left: 6px; right: 6px;
-      height: 2px;
-      background: var(--ocean);
-      border-radius: 2px 2px 0 0;
+      content: ''; position: absolute; bottom: 0; left: 8px; right: 8px;
+      height: 1px;
+      background: var(--ink);
     }
 
-    /* スクロール領域 */
     .write-body {
       flex: 1; overflow-y: auto; overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      padding: 18px 14px;
+      padding: 16px 14px;
       scrollbar-width: none;
     }
     .write-body::-webkit-scrollbar { display: none; }
 
-    /* ─ ショートモード ─ */
     .write-paper {
       background: var(--surface);
       border: 1px solid var(--rule);
-      border-radius: 2px;
-      box-shadow: var(--shadow); overflow: hidden; position: relative;
+      border-radius: 0;
+      overflow: hidden; position: relative;
     }
     .write-paper::before {
       content: ''; position: absolute;
-      top: 0; left: 44px; bottom: 0; width: 1px;
-      background: rgba(196,120,80,.10); pointer-events: none; z-index: 1;
+      top: 0; left: 42px; bottom: 0; width: 1px;
+      background: rgba(180,100,50,.12); pointer-events: none; z-index: 1;
     }
     .write-area {
       width: 100%; min-height: 260px;
       background: transparent; border: none;
-      padding: 22px 20px 22px 56px;
+      padding: 20px 18px 20px 54px;
       font-family: 'Noto Serif JP', serif;
       font-size: 15px; font-weight: 300; line-height: 2.2; color: var(--ink);
       resize: none; outline: none; caret-color: var(--ocean);
@@ -681,19 +658,17 @@
       );
       background-attachment: local;
     }
-    .write-area::placeholder { color: var(--ink-3); }
+    .write-area::placeholder { color: var(--sand); }
     .write-count {
       display: flex; justify-content: flex-end;
-      padding: 8px 18px 12px; font-size: 10px; color: var(--ink-3);
+      padding: 7px 16px 10px; font-size: 10px; color: var(--ink-3);
       border-top: 1px solid var(--rule);
     }
 
-    /* ─ 原稿用紙モード ─ */
     .manuscript-paper {
       background: var(--manu-bg);
       border: 1px solid var(--rule);
-      border-radius: 2px;
-      box-shadow: var(--shadow);
+      border-radius: 0;
       overflow: hidden;
     }
 
@@ -701,15 +676,14 @@
       width: 100%; border: none; outline: none;
       background: transparent;
       border-bottom: 1px solid var(--sepia);
-      padding: 18px 22px 16px;
+      padding: 16px 18px 14px;
       font-family: 'Shippori Mincho', serif;
-      font-size: 17px; font-weight: 500;
+      font-size: 16px; font-weight: 500;
       color: var(--ink); letter-spacing: .06em;
       caret-color: var(--ocean);
     }
-    .manuscript-title::placeholder { color: var(--ink-3); font-weight: 400; }
+    .manuscript-title::placeholder { color: var(--sand); font-weight: 400; }
 
-    /* 横罫線 — セピア色 */
     .novel-area {
       width: 100%; min-height: 360px;
       border: none; outline: none; resize: none;
@@ -721,18 +695,18 @@
         var(--sepia) 2.8em
       );
       background-attachment: local;
-      padding: 1.4em 22px 22px;
+      padding: 1.4em 18px 18px;
       font-family: 'Shippori Mincho', serif;
       font-size: 16px; line-height: 2.8em;
       color: var(--ink); letter-spacing: .08em;
       caret-color: var(--ocean);
       -webkit-overflow-scrolling: touch;
     }
-    .novel-area::placeholder { color: var(--ink-3); }
+    .novel-area::placeholder { color: var(--sand); }
 
     .novel-count {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 22px 14px;
+      padding: 8px 18px 12px;
       background: var(--manu-bg);
       border-top: 1px solid var(--sepia);
       font-size: 10px; color: var(--ink-3); letter-spacing: .1em;
@@ -744,101 +718,95 @@
     }
     .autosave-indicator.on { opacity: 1; }
 
-    /* ─ 送信エリア ─ */
     .send-area {
       flex-shrink: 0;
-      padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px));
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
       background: var(--surface);
       border-top: 1px solid var(--rule);
     }
     .send-label {
-      font-size: 10px; letter-spacing: .16em; color: var(--ink-3);
-      text-align: center; margin-bottom: 10px; text-transform: uppercase;
+      font-size: 9px; letter-spacing: .2em; color: var(--ink-3);
+      text-align: center; margin-bottom: 10px;
     }
-    .send-btns { display: flex; gap: 10px; }
+    .send-btns { display: flex; gap: 8px; }
     .send-btn {
-      flex: 1; padding: 13px 8px;
-      background: var(--surface); border: 1px solid var(--rule); border-radius: 2px;
+      flex: 1; padding: 12px 8px;
+      background: var(--bg); border: 1px solid var(--rule); border-radius: 0;
       font-family: 'Noto Serif JP', serif;
       font-size: 12px; font-weight: 300; letter-spacing: .1em; color: var(--ink-2);
-      cursor: pointer; transition: all .2s;
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      cursor: pointer; transition: background .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
       -webkit-tap-highlight-color: transparent;
-      position: relative; overflow: hidden;
     }
     .send-btn::before { display: none; }
     .send-btn-icon { font-size: 16px; }
-    .send-btn.ocean { border-top: 2px solid var(--ocean); }
-    .send-btn.fire  { border-top: 2px solid var(--fire); }
-    .send-btn:hover:not(:disabled) { background: var(--bg); box-shadow: var(--shadow); }
+    .send-btn.ocean { border-left: 2px solid var(--ocean); }
+    .send-btn.fire  { border-left: 2px solid var(--fire); }
+    .send-btn:hover:not(:disabled) { background: var(--surface); }
     .send-btn:disabled { opacity: .28; cursor: default; }
 
     .sent-view {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      gap: 18px; padding: 40px 36px; text-align: center;
+      gap: 16px; padding: 40px 32px; text-align: center;
     }
-    .sent-icon { font-size: 44px; }
+    .sent-icon { font-size: 40px; }
     .sent-title {
-      font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 300;
-      color: var(--ink); line-height: 2.3; white-space: pre-line;
+      font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 300;
+      color: var(--ink); line-height: 2.4; white-space: pre-line;
     }
-    .sent-note { font-size: 11px; color: var(--ink-3); letter-spacing: .12em; }
+    .sent-note { font-size: 10px; color: var(--ink-3); letter-spacing: .12em; }
 
     /* ════════════════════════════════════
        NAMINOTO — 波音（儚さ演出）
     ════════════════════════════════════ */
     .naminoto-screen { min-height: 100%; background: var(--bg); padding-bottom: 48px; }
     .naminoto-header {
-      padding: 20px 20px 16px;
+      padding: 18px 18px 16px;
       background: var(--surface);
       border-bottom: 1px solid var(--rule);
       position: relative;
     }
     .naminoto-header::after { display: none; }
     .wave-count-card {
-      margin: 16px 14px 20px; background: var(--surface);
+      margin: 14px 14px 18px; background: var(--surface);
       border: 1px solid var(--rule);
-      border-radius: 2px; box-shadow: var(--shadow);
-      padding: 30px 24px 26px; text-align: center; position: relative; overflow: hidden;
+      border-radius: 0;
+      padding: 28px 22px 24px; text-align: center; position: relative; overflow: hidden;
     }
     .wave-count-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
       background: var(--ocean-pale);
-      border-bottom: 1px dashed var(--ocean-mid);
     }
     .wave-big {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 72px; font-weight: 200; color: var(--ocean);
-      line-height: 1; letter-spacing: -.03em;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 68px; font-weight: 400; color: var(--ocean);
+      line-height: 1; letter-spacing: -.02em;
     }
-    .wave-label { font-size: 10px; color: var(--ink-3); margin-top: 10px; letter-spacing: .2em; text-transform: uppercase; }
-    .wave-detail { font-size: 12px; color: var(--ink-2); margin-top: 14px; line-height: 2; }
+    .wave-label { font-size: 10px; color: var(--ink-3); margin-top: 10px; letter-spacing: .18em; }
+    .wave-detail { font-size: 11px; color: var(--ink-2); margin-top: 12px; line-height: 2; }
     .wave-expire {
-      display: inline-block; margin-top: 10px; padding: 4px 10px;
+      display: inline-block; margin-top: 10px; padding: 3px 10px;
       background: var(--ocean-pale); border: 1px dashed var(--ocean-mid);
-      border-radius: 2px;
       font-size: 10px; color: var(--ink-3); letter-spacing: .08em;
     }
-    .wave-section { font-size: 9px; letter-spacing: .22em; color: var(--ink-3); padding: 0 16px 10px; text-transform: uppercase; }
-    .wave-list { display: flex; flex-direction: column; gap: 1px; padding: 0 14px; }
+    .wave-section { font-size: 9px; letter-spacing: .2em; color: var(--ink-3); padding: 0 14px 8px; }
+    .wave-list { display: flex; flex-direction: column; gap: 0; padding: 0 14px; }
 
     .wave-item {
       display: flex; align-items: center; gap: 12px;
-      padding: 13px 14px; background: var(--surface);
+      padding: 12px 14px; background: var(--surface);
       border: 1px solid var(--rule); border-bottom: none;
-      opacity: .58;
+      opacity: .55;
       transition: opacity .25s;
     }
     .wave-item:last-child { border-bottom: 1px solid var(--rule); }
-    .wave-item.sunatomo { opacity: .86; }
-    .wave-item:first-child { border-radius: 2px 2px 0 0; }
-    .wave-item:last-child  { border-radius: 0 0 2px 2px; }
+    .wave-item.sunatomo { opacity: .85; }
     .wave-item:hover { opacity: 1; }
 
     .wave-avatar {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: var(--ocean-pale); font-size: 15px; flex-shrink: 0;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--ocean-pale); font-size: 14px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       border: 1px solid var(--rule);
     }
@@ -850,10 +818,11 @@
     .wave-name { font-size: 13px; color: var(--ink); letter-spacing: .04em; }
     .wave-note { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
     .wave-time { font-size: 10px; color: var(--ink-3); }
-    .wave-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ocean); flex-shrink: 0; }
+    .wave-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--ocean); flex-shrink: 0; }
     .naminoto-note {
-      font-size: 11px; color: var(--ink-3); text-align: center;
-      margin-top: 28px; line-height: 2.2; letter-spacing: .08em; padding: 0 28px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 11px; font-weight: 300; color: var(--ink-3); text-align: center;
+      margin-top: 24px; line-height: 2.4; letter-spacing: .08em; padding: 0 28px;
     }
 
     /* ════════════════════════════════════
@@ -861,41 +830,51 @@
     ════════════════════════════════════ */
     .my-screen { min-height: 100%; background: var(--bg); padding-bottom: 48px; }
     .my-head {
-      background: var(--surface); padding: 36px 24px 28px;
+      background: var(--surface); padding: 32px 22px 24px;
       border-bottom: 1px solid var(--rule);
       display: flex; flex-direction: column; align-items: center; text-align: center;
     }
     .my-av {
-      width: 70px; height: 70px; border-radius: 50%;
+      width: 64px; height: 64px; border-radius: 50%;
       background: var(--ocean-pale);
       border: 1px solid var(--rule);
       display: flex; align-items: center; justify-content: center;
-      font-size: 26px; margin-bottom: 16px;
+      font-size: 24px; margin-bottom: 14px;
     }
     .my-name {
-      font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 300;
-      color: var(--ink); letter-spacing: .08em;
+      font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 500;
+      color: var(--ink); letter-spacing: .1em;
     }
     .my-since { font-size: 10px; color: var(--ink-3); margin-top: 5px; letter-spacing: .1em; }
+    .my-edit-btn {
+      margin-top: 12px;
+      padding: 5px 18px;
+      background: none; border: 1px solid var(--rule); border-radius: 0;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 10px; color: var(--ink-3); letter-spacing: .12em; cursor: pointer;
+      transition: border-color .2s, color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .my-edit-btn:hover { border-color: var(--ink-3); color: var(--ink-2); }
 
     .my-stats { display: flex; background: var(--surface); border-bottom: 1px solid var(--rule); }
-    .stat { flex: 1; padding: 20px 6px; text-align: center; }
+    .stat { flex: 1; padding: 18px 6px; text-align: center; }
     .stat + .stat { border-left: 1px solid var(--rule); }
     .stat-n {
-      font-family: 'Noto Serif JP', serif; font-size: 26px; font-weight: 200; color: var(--ink);
+      font-family: 'Shippori Mincho', serif; font-size: 24px; font-weight: 400; color: var(--ink);
     }
     .stat-l { font-size: 10px; color: var(--ink-3); margin-top: 4px; letter-spacing: .07em; }
 
-    .my-section { padding: 20px 14px 0; }
+    .my-section { padding: 18px 14px 0; }
     .my-section-label {
       font-size: 9px; letter-spacing: .22em; color: var(--ink-3);
-      margin-bottom: 14px; text-transform: uppercase;
+      margin-bottom: 12px;
     }
     .log-card {
-      background: var(--surface); border-left: 3px solid var(--rule);
-      border: 1px solid var(--rule); border-left: 3px solid var(--rule);
-      padding: 14px 16px 12px; margin-bottom: 8px;
-      box-shadow: var(--shadow); border-radius: 0;
+      background: var(--surface);
+      border: 1px solid var(--rule); border-left: 2px solid var(--rule);
+      padding: 12px 14px 10px; margin-bottom: 8px;
+      border-radius: 0;
     }
     .log-card.ocean-dest { border-left-color: var(--ocean); }
     .log-card.fire-dest  { border-left-color: var(--fire); }
@@ -910,24 +889,23 @@
     .log-dest-ocean { color: var(--ocean); }
     .log-dest-fire  { color: var(--fire); }
 
-    /* ── 編集・削除 ── */
     .log-actions {
-      display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end;
+      display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end;
     }
     .log-action-btn {
       background: none; border: none; cursor: pointer;
       font-size: 10px; letter-spacing: .1em; padding: 3px 10px;
-      border-radius: 2px; transition: background .18s;
+      transition: background .18s;
       -webkit-tap-highlight-color: transparent;
       font-family: 'Noto Serif JP', serif;
     }
     .log-action-btn.edit   { color: var(--ocean); }
     .log-action-btn.edit:hover   { background: var(--ocean-pale); }
-    .log-action-btn.del    { color: #B04040; }
-    .log-action-btn.del:hover    { background: rgba(176,64,64,.07); }
+    .log-action-btn.del    { color: #A83838; }
+    .log-action-btn.del:hover    { background: rgba(168,56,56,.07); }
     .log-edit-area {
       width: 100%; min-height: 90px; resize: vertical;
-      border: 1px solid var(--rule); border-radius: 2px;
+      border: 1px solid var(--rule); border-radius: 0;
       padding: 10px 12px; margin-top: 8px;
       font-family: 'Noto Serif JP', serif;
       font-size: 13px; font-weight: 300; color: var(--ink);
@@ -936,7 +914,7 @@
     }
     .log-edit-btns { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
     .log-save-btn {
-      padding: 5px 16px; border-radius: 2px; cursor: pointer;
+      padding: 5px 16px; border-radius: 0; cursor: pointer;
       font-family: 'Noto Serif JP', serif;
       font-size: 11px; letter-spacing: .1em; color: var(--ink-2);
       background: var(--ocean-pale);
@@ -944,7 +922,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     .log-cancel-btn {
-      padding: 5px 12px; border-radius: 2px; cursor: pointer;
+      padding: 5px 12px; border-radius: 0; cursor: pointer;
       font-family: 'Noto Serif JP', serif;
       font-size: 11px; letter-spacing: .08em; color: var(--ink-3);
       background: none; border: none;
@@ -952,14 +930,13 @@
     }
     .log-del-confirm {
       margin-top: 8px; padding: 10px 12px;
-      background: rgba(176,64,64,.05); border: 1px dashed rgba(176,64,64,.24);
-      border-radius: 2px;
+      background: rgba(168,56,56,.04); border: 1px dashed rgba(168,56,56,.22);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .log-del-msg { font-size: 11px; color: #B04040; letter-spacing: .06em; }
+    .log-del-msg { font-size: 11px; color: #A83838; letter-spacing: .06em; }
     .log-del-yes {
-      padding: 4px 14px; border-radius: 2px; cursor: pointer;
-      font-size: 11px; color: #fff; background: #B04040; border: none;
+      padding: 4px 14px; border-radius: 0; cursor: pointer;
+      font-size: 11px; color: #fff; background: #A83838; border: none;
       font-family: 'Noto Serif JP', serif; letter-spacing: .08em;
       -webkit-tap-highlight-color: transparent;
     }
@@ -967,17 +944,16 @@
     /* 設定 */
     .settings-list {
       border: 1px solid var(--rule); overflow: hidden;
-      box-shadow: var(--shadow);
     }
     .settings-row {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--surface); padding: 15px 16px;
+      background: var(--surface); padding: 14px 16px;
       border-bottom: 1px solid var(--rule);
     }
     .settings-row:last-child { border-bottom: none; }
     .settings-key { font-size: 13px; color: var(--ink-2); letter-spacing: .03em; }
     .no-badge {
-      font-size: 8px; letter-spacing: .14em; text-transform: uppercase;
+      font-size: 8px; letter-spacing: .14em;
       padding: 3px 8px; border: 1px solid var(--rule);
       background: var(--bg); color: var(--ink-3);
     }
@@ -989,7 +965,7 @@
     .sidebar {
       display: none;
       flex-direction: column;
-      width: 224px; min-width: 224px;
+      width: 210px; min-width: 210px;
       background: var(--surface);
       border-right: 1px solid var(--rule);
       overflow: hidden; position: relative; flex-shrink: 0;
@@ -997,36 +973,31 @@
     .sidebar::before { display: none; }
 
     .sidebar-logo-area {
-      padding: 40px 26px 26px;
+      padding: 36px 22px 22px;
       position: relative; z-index: 1;
       border-bottom: 1px solid var(--rule);
     }
     .sidebar-logo-ja {
       display: block;
-      font-family: 'Noto Sans JP', sans-serif;
-      font-size: 18px; font-weight: 300; letter-spacing: .48em;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 17px; font-weight: 500; letter-spacing: .52em;
       color: var(--ink);
-    }
-    .sidebar-logo-en {
-      display: block;
-      font-size: 8px; font-weight: 400; letter-spacing: .62em;
-      color: var(--ink-3); margin-top: 7px;
     }
     .sidebar-tagline {
       font-family: 'Noto Serif JP', serif;
-      font-size: 11px; font-weight: 300;
-      color: var(--ink-3); margin-top: 14px; line-height: 2; letter-spacing: .05em;
+      font-size: 10px; font-weight: 300;
+      color: var(--ink-3); margin-top: 12px; line-height: 2.2; letter-spacing: .06em;
     }
 
     .sidebar-nav {
-      flex: 1; padding: 16px 10px;
+      flex: 1; padding: 14px 10px;
       display: flex; flex-direction: column; gap: 2px;
       position: relative; z-index: 1;
     }
     .sidebar-item {
-      display: flex; align-items: center; gap: 13px;
-      padding: 12px 16px; border: none; background: none;
-      cursor: pointer; border-radius: 2px; width: 100%; text-align: left;
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border: none; background: none;
+      cursor: pointer; border-radius: 0; width: 100%; text-align: left;
       transition: background .18s; -webkit-tap-highlight-color: transparent;
     }
     .sidebar-item:hover   { background: var(--bg); }
@@ -1040,7 +1011,6 @@
     }
     .sidebar-label { font-size: 13px; letter-spacing: .06em; color: var(--ink-2); font-weight: 300; }
     .sidebar-item.active  .sidebar-label { color: var(--ink); font-weight: 500; }
-    .sidebar-item.active  .sidebar-icon  { }
     .sidebar-item.fire-active.active { background: var(--fire-pale); border-left-color: var(--fire); }
 
     .sidebar-divider {
@@ -1049,7 +1019,7 @@
     }
 
     .sidebar-footer {
-      padding: 16px 26px 34px; position: relative; z-index: 1;
+      padding: 16px 22px 30px; position: relative; z-index: 1;
       border-top: 1px solid var(--rule);
     }
     .sidebar-footer p {
@@ -1071,7 +1041,7 @@
        DESKTOP ≥ 768px
     ════════════════════════════════════ */
     @media (min-width: 768px) {
-      html, body { background: #E8E2D9; }
+      html, body { background: #E4DDD4; }
 
       #root { align-items: stretch; }
 
@@ -1165,26 +1135,9 @@
     /* ════════════════════════════════════
        レトロ EXTRAS
     ════════════════════════════════════ */
+    .splash-sparkle { display: none; }
 
-    @keyframes sparkleFloat {
-      0%,100% { opacity: .2;  transform: scale(1)    rotate(0deg);   }
-      50%     { opacity: .55; transform: scale(1.15) rotate(12deg);  }
-    }
-    .splash-sparkle {
-      position: absolute;
-      animation: sparkleFloat 4s ease-in-out infinite;
-      pointer-events: none; z-index: 0; user-select: none;
-      line-height: 1; opacity: .2;
-    }
-
-    .nav-item.active .nav-icon { }
-    .nav-item.fire-active .nav-icon { }
-
-    /* マイページ ヘッダー */
-    .my-head { background: var(--surface); }
     .my-head::after { display: none; }
-
-    /* write ヘッダー */
     .write-header { background: var(--surface); }
 
     /* ════════════════════════════════════
@@ -1198,30 +1151,30 @@
     }
     .register-shell::before {
       content: '';
-      position: absolute; inset: 18px;
+      position: absolute; inset: 16px;
       border: 1px solid var(--rule);
       pointer-events: none; z-index: 0;
     }
     .register-scroll {
       flex: 1; overflow-y: auto;
-      padding: 0 28px 48px;
+      padding: 0 26px 48px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
       position: relative; z-index: 1;
     }
     .register-scroll::-webkit-scrollbar { display: none; }
 
     .register-logo-area {
-      text-align: center; padding: 44px 0 28px;
+      text-align: center; padding: 40px 0 24px;
     }
     .register-subtitle {
       font-family: 'Noto Serif JP', serif;
-      font-size: 12px; font-weight: 300;
-      color: var(--ink-3); letter-spacing: .12em;
-      margin-top: 12px; line-height: 2;
+      font-size: 11px; font-weight: 300;
+      color: var(--ink-3); letter-spacing: .1em;
+      margin-top: 10px; line-height: 2.2;
     }
     .register-divider-line {
       display: flex; align-items: center; gap: 10px;
-      margin: 4px 0 24px;
+      margin: 4px 0 22px;
     }
     .register-divider-line::before,
     .register-divider-line::after {
@@ -1229,21 +1182,21 @@
       background: var(--rule);
     }
     .register-divider-dot {
-      width: 4px; height: 4px; border-radius: 50%;
+      width: 3px; height: 3px; border-radius: 50%;
       background: var(--sand);
     }
 
-    .form-field { margin-bottom: 16px; }
+    .form-field { margin-bottom: 14px; }
     .form-label {
       display: block;
-      font-size: 9px; letter-spacing: .22em; color: var(--ink-3);
-      text-transform: uppercase; margin-bottom: 8px;
+      font-size: 9px; letter-spacing: .2em; color: var(--ink-3);
+      margin-bottom: 7px;
     }
     .form-input, .form-select {
-      width: 100%; padding: 13px 14px;
+      width: 100%; padding: 11px 12px;
       background: var(--bg);
       border: 1px solid var(--rule);
-      border-radius: 2px; outline: none;
+      border-radius: 0; outline: none;
       font-family: 'Noto Serif JP', serif;
       font-size: 14px; font-weight: 300; color: var(--ink);
       caret-color: var(--ocean);
@@ -1254,13 +1207,13 @@
       border-color: var(--ocean);
       background: var(--surface);
     }
-    .form-input::placeholder { color: var(--ink-3); }
+    .form-input::placeholder { color: var(--sand); }
     .form-select { color: var(--ink-2); cursor: pointer; }
     .form-select option { color: var(--ink); background: #fff; }
 
     .pw-wrap { position: relative; }
     .pw-toggle {
-      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
       background: none; border: none; cursor: pointer;
       font-size: 10px; color: var(--ink-3); letter-spacing: .08em;
       -webkit-tap-highlight-color: transparent;
@@ -1268,20 +1221,20 @@
 
     .form-hint {
       font-size: 10px; color: var(--ink-3);
-      margin-top: 5px; letter-spacing: .05em; line-height: 1.8;
+      margin-top: 4px; letter-spacing: .05em; line-height: 1.8;
     }
     .form-error {
-      font-size: 10px; color: #B04040;
-      margin-top: 5px; letter-spacing: .05em;
+      font-size: 10px; color: #A83838;
+      margin-top: 4px; letter-spacing: .05em;
     }
 
     .form-check {
       display: flex; align-items: flex-start; gap: 11px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .form-check input[type="checkbox"] {
       margin-top: 3px; flex-shrink: 0;
-      width: 16px; height: 16px;
+      width: 15px; height: 15px;
       accent-color: var(--ocean); cursor: pointer;
     }
     .form-check-label {
@@ -1297,24 +1250,23 @@
     }
 
     .register-btn {
-      width: 100%; padding: 15px 0;
-      background: var(--bg);
-      border: 1px solid var(--rule);
-      border-radius: 2px;
+      width: 100%; padding: 14px 0;
+      background: none;
+      border: 1px solid var(--ink);
+      border-radius: 0;
       font-family: 'Noto Serif JP', serif;
-      font-size: 13px; font-weight: 300;
-      letter-spacing: .20em; color: var(--ink-2);
-      cursor: pointer; transition: all .25s;
+      font-size: 12px; font-weight: 300;
+      letter-spacing: .22em; color: var(--ink);
+      cursor: pointer; transition: background .2s, color .2s;
       -webkit-tap-highlight-color: transparent;
     }
     .register-btn:not(:disabled):hover {
-      background: var(--ocean-pale);
-      border-color: var(--ocean);
+      background: var(--ink); color: var(--surface);
     }
-    .register-btn:disabled { opacity: .32; cursor: default; }
+    .register-btn:disabled { opacity: .28; cursor: default; }
 
     .register-login-wrap {
-      text-align: center; margin-top: 20px;
+      text-align: center; margin-top: 18px;
       font-size: 11px; color: var(--ink-3); letter-spacing: .06em;
     }
     .register-login-btn {
@@ -1331,19 +1283,19 @@
       background: var(--surface);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 40px 36px; text-align: center;
+      padding: 40px 32px; text-align: center;
       position: relative;
     }
     .verify-screen::before {
       content: '';
-      position: absolute; inset: 18px;
+      position: absolute; inset: 16px;
       border: 1px solid var(--rule);
       pointer-events: none;
     }
-    .verify-icon { font-size: 46px; margin-bottom: 24px; }
+    .verify-icon { font-size: 42px; margin-bottom: 22px; }
     .verify-title {
       font-family: 'Noto Serif JP', serif;
-      font-size: 16px; font-weight: 300;
+      font-size: 15px; font-weight: 300;
       color: var(--ink); letter-spacing: .06em;
       line-height: 2.2; margin-bottom: 12px;
     }
@@ -1353,11 +1305,11 @@
     }
     .verify-note {
       font-size: 11px; color: var(--ink-3);
-      line-height: 2.2; letter-spacing: .06em; margin-bottom: 36px;
+      line-height: 2.2; letter-spacing: .06em; margin-bottom: 32px;
     }
     .verify-hint {
       font-size: 10px; color: var(--ink-3);
-      letter-spacing: .04em; margin-top: 20px; opacity: .7;
+      letter-spacing: .04em; margin-top: 18px; opacity: .7;
     }
   </style>
 </head>
@@ -2338,6 +2290,60 @@
       );
     }
 
+    /* ── ProfileEdit ── */
+    function ProfileEdit({ session, profile, onBack, onSaved }) {
+      const [handle,  setHandle]  = useState(profile?.handle || session?.user?.user_metadata?.handle || '');
+      const [saving,  setSaving]  = useState(false);
+      const [error,   setError]   = useState('');
+      const [success, setSuccess] = useState(false);
+
+      async function handleSave() {
+        const h = handle.trim();
+        if (!h) { setError('ハンドルネームを入力してください'); return; }
+        if (h.length > 20) { setError('20文字以内で入力してください'); return; }
+        setSaving(true);
+        const { error: err } = await sb.from('profiles')
+          .update({ handle: h })
+          .eq('id', session.user.id);
+        setSaving(false);
+        if (err) { setError('保存できませんでした'); return; }
+        setSuccess(true);
+        setTimeout(() => { onSaved(h); onBack(); }, 1200);
+      }
+
+      return (
+        <div className="screen my-screen">
+          <div style={{ background:'var(--surface)', borderBottom:'1px solid var(--rule)', padding:'14px 16px', display:'flex', alignItems:'center', gap:'12px' }}>
+            <button onClick={onBack} style={{ background:'none', border:'none', cursor:'pointer', fontSize:'16px', color:'var(--ink-3)', padding:'2px 8px 2px 0', fontFamily:"'Shippori Mincho',serif" }}>←</button>
+            <span className="screen-title" style={{ fontSize:'16px' }}>プロフィール編集</span>
+          </div>
+          <div style={{ padding:'24px 16px 48px' }}>
+            <div className="form-field">
+              <label className="form-label">ハンドルネーム</label>
+              <input
+                className="form-input"
+                type="text"
+                placeholder="20文字以内"
+                value={handle}
+                maxLength={20}
+                onChange={e => { setHandle(e.target.value); setError(''); setSuccess(false); }}
+              />
+              <p className="form-hint">アプリ内での表示名です。変更は即時反映されます。</p>
+              {error   && <p className="form-error">{error}</p>}
+              {success && <p style={{ fontSize:'10px', color:'var(--ocean)', marginTop:'4px', letterSpacing:'.06em' }}>✓ 保存しました</p>}
+            </div>
+            <button
+              className="register-btn"
+              onClick={handleSave}
+              disabled={!handle.trim() || saving}
+            >
+              {saving ? '保存中…' : '保存する'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     /* ── My Page ── */
     function MyPage({ session, onSignOut }) {
       const [profile,    setProfile]    = useState(null);
@@ -2345,6 +2351,7 @@
       const [editingId,  setEditingId]  = useState(null);
       const [editText,   setEditText]   = useState('');
       const [deletingId, setDeletingId] = useState(null);
+      const [showEdit,   setShowEdit]   = useState(false);
 
       useEffect(() => {
         if (!session) return;
@@ -2380,14 +2387,26 @@
       const joinText   = `さら砂 ${joined.getFullYear()}年${joined.getMonth()+1}月から`;
       const totalWaves = posts.reduce((s, p) => s + (p.waves || 0), 0);
 
+      if (showEdit) {
+        return <ProfileEdit session={session} profile={profile}
+          onBack={() => setShowEdit(false)}
+          onSaved={newHandle => setProfile(p => ({ ...p, handle: newHandle }))}
+        />;
+      }
+
       return (
         <div className="screen my-screen">
           <div className="my-head">
-            <div className="my-av" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'28px', fontWeight:400, color:'var(--ink-2)' }}>
+            <div className="my-av" style={{ fontFamily:"'Shippori Mincho',serif", fontSize:'26px', fontWeight:500, color:'var(--ink-2)' }}>
               {handle.charAt(0)}
             </div>
             <div className="my-name">{handle}</div>
             <div className="my-since">{joinText}</div>
+            {session && (
+              <button className="my-edit-btn" onClick={() => setShowEdit(true)}>
+                プロフィール編集
+              </button>
+            )}
           </div>
 
           <div className="my-stats">
@@ -2504,8 +2523,8 @@
       /* ─ 読込中 ─ */
       if (step === 'loading') {
         return (
-          <div className="app-shell" style={{ alignItems:'center', justifyContent:'center', background:'linear-gradient(160deg,#D4F2E8 0%,#C4EAF8 32%,#D0F4F0 65%,#C8EEE0 100%)' }}>
-            <span style={{ fontFamily:"'Noto Serif JP',serif", fontSize:'13px', color:'var(--ink-3)', letterSpacing:'.14em' }}>読み込み中…</span>
+          <div className="app-shell" style={{ alignItems:'center', justifyContent:'center', background:'var(--surface)' }}>
+            <span style={{ fontFamily:"'Noto Serif JP',serif", fontSize:'12px', color:'var(--ink-3)', letterSpacing:'.16em' }}>読み込み中…</span>
           </div>
         );
       }
