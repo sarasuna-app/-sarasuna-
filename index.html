@@ -1744,9 +1744,9 @@
         setTimeout(() => setReceding(null), 700);
       }
 
-      // DBが空のときは静的フォールバックを使う
-      const shortItems = (dbPosts  && dbPosts.length  > 0) ? dbPosts  : (dbPosts  === null ? [] : SHORT_DIARIES);
-      const novelItems = (dbNovels && dbNovels.length > 0) ? dbNovels : (dbNovels === null ? [] : DIARY_NOVELS);
+      // DBのデータのみ表示（フォールバック無効）
+      const shortItems = dbPosts  || [];
+      const novelItems = dbNovels || [];
 
       function buildTimeline() {
         const nodes = [];
