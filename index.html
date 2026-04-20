@@ -1777,9 +1777,12 @@
             dbPosts === null ? (
               <p style={{ textAlign:'center', padding:'40px 20px', color:'var(--ink-3)', fontSize:'12px', letterSpacing:'.1em', fontFamily:"'Noto Serif JP',serif" }}>読み込み中…</p>
             ) : shortItems.length === 0 ? (
-              <p style={{ textAlign:'center', padding:'48px 24px', color:'var(--ink-3)', fontSize:'13px', lineHeight:2.2, letterSpacing:'.08em', fontFamily:"'Noto Serif JP',serif" }}>
-                まだ瓶は届いていない。<br />最初の一通を流してみよう。
-              </p>
+              <div style={{ textAlign:'center', padding:'60px 24px', color:'var(--ink-3)', fontFamily:"'Noto Serif JP',serif" }}>
+                <div style={{ fontSize:'32px', marginBottom:'20px', opacity:0.4 }}>🌊</div>
+                <p style={{ fontSize:'14px', lineHeight:2.4, letterSpacing:'.1em' }}>
+                  砂浜は静かです。<br />あなたの言葉を待っています。
+                </p>
+              </div>
             ) : (
               <div className="letter-list">{buildTimeline()}</div>
             )
@@ -1788,6 +1791,13 @@
           {tab === 'novel' && (
             dbNovels === null ? (
               <p style={{ textAlign:'center', padding:'40px 20px', color:'var(--ink-3)', fontSize:'12px', letterSpacing:'.1em', fontFamily:"'Noto Serif JP',serif" }}>読み込み中…</p>
+            ) : novelItems.length === 0 ? (
+              <div style={{ textAlign:'center', padding:'60px 24px', color:'var(--ink-3)', fontFamily:"'Noto Serif JP',serif" }}>
+                <div style={{ fontSize:'32px', marginBottom:'20px', opacity:0.4 }}>🌊</div>
+                <p style={{ fontSize:'14px', lineHeight:2.4, letterSpacing:'.1em' }}>
+                  砂浜は静かです。<br />あなたの言葉を待っています。
+                </p>
+              </div>
             ) : (
               <div className="novel-list">
                 {novelItems.map(n => (
