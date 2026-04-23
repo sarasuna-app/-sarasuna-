@@ -1362,12 +1362,6 @@
     const AD_SENT     = { copy:'言葉を纏う、上質な万年筆。',      brand:'— 文具 砂時計 —',     bg:'linear-gradient(120deg,#C4EED8 0%,#D0EEF8 100%)' };
 
 
-    const NAMINOTO_STATIC = [
-      { id:1, handle:'夜の波', note:'あなたの瓶に波を返した',       time:'さっき',  isSunatomo:true  },
-      { id:2, handle:'白い霧', note:'日記小説を最後まで読んだ',     time:'1時間前', isSunatomo:true  },
-      { id:3, handle:null,     note:'名も知らぬ波',                 time:'3時間前', isSunatomo:false },
-      { id:4, handle:null,     note:'名も知らぬ波',                 time:'昨日',    isSunatomo:false },
-    ];
 
     const SAVE_SHORT = 'ss_short';
     const SAVE_TITLE = 'ss_title';
@@ -2057,8 +2051,6 @@
 
     /* ── Naminoto ── */
     function Naminoto() {
-      const total    = NAMINOTO_STATIC.length;
-      const sunatomo = NAMINOTO_STATIC.filter(i => i.isSunatomo).length;
       return (
         <div className="screen naminoto-screen">
           <div className="naminoto-header">
@@ -2066,27 +2058,15 @@
             <div className="screen-sub">浜辺に届いた気配</div>
           </div>
           <div className="wave-count-card">
-            <div className="wave-big">{total}</div>
+            <div className="wave-big">0</div>
             <p className="wave-label">今日の波音</p>
-            <p className="wave-detail">スナトモ {sunatomo} 件 · 名も知らぬ波 {total - sunatomo} 件</p>
+            <p className="wave-detail">まだ波音は届いていない</p>
             <div><span className="wave-expire">48時間後に消えていく</span></div>
           </div>
-          <p className="wave-section">ひとつひとつの波音</p>
-          <div className="wave-list">
-            {NAMINOTO_STATIC.map(item => (
-              <div key={item.id} className={`wave-item${item.isSunatomo ? ' sunatomo' : ''}`}>
-                <div className={`wave-avatar${item.isSunatomo ? '' : ' unknown'}`}
-                  style={ item.isSunatomo ? { fontFamily:"'Shippori Mincho',serif", fontSize:'13px', fontWeight:500 } : {} }>
-                  {item.isSunatomo ? item.handle.charAt(0) : '—'}
-                </div>
-                <div className="wave-info">
-                  <p className="wave-name">{item.isSunatomo ? item.handle : '名も知らぬ波'}</p>
-                  <p className="wave-note">{item.note}</p>
-                </div>
-                <span className="wave-time">{item.time}</span>
-                {item.isSunatomo && <div className="wave-dot" />}
-              </div>
-            ))}
+          <div style={{ textAlign:'center', padding:'40px 28px', color:'var(--ink-3)', fontFamily:"'Noto Serif JP',serif" }}>
+            <p style={{ fontSize:'13px', lineHeight:2.4, letterSpacing:'.08em' }}>
+              砂浜は静かです。<br />誰かの気配を待っています。
+            </p>
           </div>
           <AdBanner data={AD_NAMINOTO} />
           <p className="naminoto-note">波音は48時間で消えていく。<br />執着せず、さらさらと。</p>
