@@ -2544,10 +2544,11 @@
           setSession(session);
           setStep(session ? 'app' : 'splash');
         });
-        // 認証状態の変化を監視
-        const { data: { subscription } } = sb.auth.onAuthStateChange((_event, session) => {
+        // 認証状態の変化を監視（SIGNED_IN のときだけアプリへ遷移）
+        const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
           setSession(session);
-          if (session) setStep('app');
+          if (event === 'SIGNED_IN' && session) setStep('app');
+          if (event === 'SIGNED_OUT') { setSession(null); setStep('splash'); }
         });
         return () => subscription.unsubscribe();
       }, []);
@@ -2571,11 +2572,9 @@
       if (step === 'splash')
         return <div className="app-shell"><Splash onEnter={() => setStep('register')} /></div>;
       if (step === 'register')
-        return <div className="app-shell"><Register onRegistered={() => setStep('verify')} onLogin={() => setStep('login')} /></div>;
+        return <div className="app-shell"><Register onRegistered={() => setStep('app')} onLogin={() => setStep('login')} /></div>;
       if (step === 'login')
         return <div className="app-shell"><Login onLoggedIn={() => {}} onBack={() => setStep('register')} /></div>;
-      if (step === 'verify')
-        return <div className="app-shell"><VerifyEmail email={session?.user?.email} onVerified={() => setStep('app')} /></div>;
 
       return (
         <div className="app-shell">
