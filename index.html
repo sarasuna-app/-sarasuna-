@@ -1326,28 +1326,14 @@
 
     function timeAgo(ts) {
       const diff = (Date.now() - new Date(ts).getTime()) / 1000;
-      if (diff < 60)    return 'さっき';
-      if (diff < 3600)  return `${Math.floor(diff / 60)}分前`;
-      if (diff < 86400) return `${Math.floor(diff / 3600)}時間前`;
-      return `${Math.floor(diff / 86400)}日前`;
+      if (diff < 60)      return 'さっき';
+      if (diff < 3600)    return `${Math.floor(diff / 60)}分前`;
+      if (diff < 86400)   return `${Math.floor(diff / 3600)}時間前`;
+      if (diff < 2592000) return `${Math.floor(diff / 86400)}日前`;
+      if (diff < 31536000)return `${Math.floor(diff / 2592000)}ヶ月前`;
+      return `${Math.floor(diff / 31536000)}年前`;
     }
 
-    /* ── フォールバック用静的データ ── */
-    const SHORT_DIARIES = [
-      { id:1, handle:'砂時計',   text:'今日は雨だった。コーヒーを飲みながら、窓の外をずっと見ていた。何も考えていないようで、いろんなことを考えていた気がする。', time:'2時間前', waves:3 },
-      { id:2, handle:'夜の波',   text:'久しぶりに昔の曲を聴いたら、あの頃のことが蘇った。遠い記憶なのに、まだ温かかった。', time:'5時間前', waves:7 },
-      { id:3, handle:'白い霧',   text:'誰かに話しかけたいわけじゃない。ただ、誰かに聞こえてほしかった。それだけ。', time:'昨日', waves:12 },
-      { id:4, handle:'月光',     text:'失敗した。でも明日も生きる。それだけでいい。そう思えるようになった。', time:'昨日', waves:5 },
-      { id:5, handle:'砂のくず', text:'桜を見た。一人で見た。それが良かった。', time:'2日前', waves:2 },
-      { id:6, handle:'遠い灯台', text:'今日、誰とも話さなかった。それが今日一番の安息だったかもしれない。', time:'2日前', waves:8 },
-      { id:7, handle:'波の跡',   text:'夏の匂いが少しだけした。まだ春なのに。記憶って不思議だな。', time:'3日前', waves:4 },
-      { id:8, handle:'砂鉄',     text:'また眠れなかった。でも朝は来る。それで十分だ、今は。', time:'4日前', waves:6 },
-    ];
-
-    const DIARY_NOVELS = [
-      { id:1, handle:'鳥籠の風', title:'雨の日の喫茶店で、十年後の自分と話した気がした', excerpt:'窓の外で傘が揺れていた。私はいつも、雨の日に一番本当のことを考える。あの頃とは違う自分が、今ここにいる。なぜだろう、その事実が少しだけ悲しい。', time:'3時間前' },
-      { id:2, handle:'曇りの棚', title:'退職届を書いた夜のこと', excerpt:'封筒に入れた瞬間、不思議と涙は出なかった。十二年分の何かが、音もなく沈んでいく感じだった。それは後悔ではなく、むしろ——', time:'昨日' },
-    ];
 
     /* 広告データ: 海 — 3番目・7番目の後 */
     const ADS = {
@@ -1411,17 +1397,6 @@
     }
 
     /* ── Splash ── */
-    const SPARKLE_POS = [
-      { top:'10%', left:'10%',  fontSize:'14px', delay:'0s',    color:'#38BF80' },
-      { top:'16%', right:'13%', fontSize:'10px', delay:'0.8s',  color:'#3AACDC' },
-      { top:'32%', left:'6%',   fontSize:'8px',  delay:'2.1s',  color:'#2EB888' },
-      { top:'40%', right:'8%',  fontSize:'12px', delay:'1.5s',  color:'#60C8E8' },
-      { top:'66%', left:'12%',  fontSize:'11px', delay:'1.1s',  color:'#38BF80' },
-      { top:'74%', right:'16%', fontSize:'9px',  delay:'0.4s',  color:'#3AACDC' },
-      { top:'55%', left:'18%',  fontSize:'7px',  delay:'2.7s',  color:'#2EC898' },
-      { top:'24%', right:'22%', fontSize:'8px',  delay:'1.9s',  color:'#50D0C0' },
-    ];
-
     function Splash({ onEnter }) {
       return (
         <div className="splash">
@@ -1441,17 +1416,8 @@
 
     /* ── Sidebar（デスクトップ） ── */
     function Sidebar({ current, onChange }) {
-      const SIDE_SPARKLES = [
-        { top:'22%', left:'76%', size:'9px',  delay:'0s',   color:'#38BF80' },
-        { top:'48%', left:'82%', size:'7px',  delay:'1.6s', color:'#3AACDC' },
-        { top:'70%', left:'78%', size:'8px',  delay:'2.8s', color:'#2EC898' },
-      ];
       return (
         <aside className="sidebar">
-          {SIDE_SPARKLES.map((s, i) => (
-            <span key={i} className="splash-sparkle"
-              style={{ top:s.top, left:s.left, fontSize:s.size, color:s.color, animationDelay:s.delay }}>✦</span>
-          ))}
           <div className="sidebar-logo-area">
             <span className="sidebar-logo-ja">SARASUNA</span>
             <p className="sidebar-tagline">もう一度、人に戻るSNS</p>
@@ -1521,13 +1487,13 @@
     }
 
     /* ── LetterCard ── 波が引くアニメーション付き */
-    function LetterCard({ data, index, receding, onTap }) {
+    function LetterCard({ data, index, receding, onTap, session }) {
       const [waved, setWaved] = useState(false);
-      const [count, setCount] = useState(data.waves || data.waves_count || 0);
+      const [count, setCount] = useState(data.waves || 0);
 
       async function handleWave(e) {
         e.stopPropagation();
-        if (waved) return;
+        if (waved || !session) return; // 未ログインは波を送れない
         setWaved(true);
         setCount(c => c + 1);
         if (data.id && typeof data.id === 'string' && data.id.includes('-')) {
@@ -1568,7 +1534,7 @@
     }
 
     /* ── Ocean ── */
-    function Ocean() {
+    function Ocean({ session }) {
       const [tab, setTab]             = useState('short');
       const [recedingId, setReceding] = useState(null);
       const [dbPosts,  setDbPosts]    = useState(null); // null = 読込中
@@ -1600,7 +1566,7 @@
         const nodes = [];
         shortItems.forEach((item, i) => {
           nodes.push(
-            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} />
+            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} session={session} />
           );
           const adKey = i + 1;
           if (ADS[adKey]) nodes.push(<AdCard key={ADS[adKey].id} data={ADS[adKey]} />);
@@ -1687,6 +1653,7 @@
       const [filterErr,   setFilterErr]  = useState(null);
       const [sending,     setSending]    = useState(false);
       const [deletingRoom, setDeletingRoom] = useState(null);
+      const [creating,     setCreating]     = useState(false);
       const messagesEndRef = useRef(null);
 
       /* ルーム一覧を読み込む */
@@ -1746,11 +1713,13 @@
 
       /* ルーム作成 */
       async function handleCreateRoom() {
-        if (!newName.trim() || !session) return;
+        if (!newName.trim() || !session || creating) return;
         const violation = checkContent(newName);
         if (violation) { setFilterErr(violation); return; }
+        setCreating(true);
         const { data, error } = await sb.from('rooms')
           .insert({ created_by: session.user.id, name: newName.trim() }).select().single();
+        setCreating(false);
         if (!error && data) {
           setRooms(prev => [data, ...(prev || [])]);
           setNewName('');
@@ -1820,8 +1789,8 @@
                 placeholder="例：深夜に絵を描く人たち"
                 value={newName} onChange={e => setNewName(e.target.value)} maxLength={30}
               />
-              <button className="create-submit-btn" onClick={handleCreateRoom} disabled={!newName.trim()}>
-                焚き火を囲む
+              <button className="create-submit-btn" onClick={handleCreateRoom} disabled={!newName.trim() || creating}>
+                {creating ? '作成中…' : '焚き火を囲む'}
               </button>
             </div>
           </div>
@@ -1876,10 +1845,12 @@
               まだ焚き火がない。<br />最初に灯してみよう。
             </p>
           )}
-          <button className="room-create-card" onClick={() => setView('create')}>
-            <span style={{ fontSize:'18px' }}>＋</span>
-            <span>新しい焚き火を作る</span>
-          </button>
+          {session && (
+            <button className="room-create-card" onClick={() => setView('create')}>
+              <span style={{ fontSize:'18px' }}>＋</span>
+              <span>新しい焚き火を作る</span>
+            </button>
+          )}
           <div style={{ height:'24px' }} />
         </div>
       );
@@ -1893,9 +1864,10 @@
         return () => clearTimeout(t);
       }, []);
       const MSG = {
-        hate:     { title: 'ヘイトコンテンツは投稿できません',   sub: 'さら砂は誰もが安心できる場所を目指しています。' },
-        adult:    { title: 'アダルトコンテンツは投稿できません', sub: 'このサービスはアダルトコンテンツを許可していません。' },
-        personal: { title: '個人情報は投稿できません',           sub: '電話番号・メールアドレス・住所などの投稿はお断りしています。' },
+        hate:          { title: 'ヘイトコンテンツは投稿できません',   sub: 'さら砂は誰もが安心できる場所を目指しています。' },
+        adult:         { title: 'アダルトコンテンツは投稿できません', sub: 'このサービスはアダルトコンテンツを許可していません。' },
+        personal:      { title: '個人情報は投稿できません',           sub: '電話番号・メールアドレス・住所などの投稿はお断りしています。' },
+        login_required:{ title: 'ログインが必要です',                 sub: '発言するにはログインしてください。' },
       };
       const m = MSG[type] || MSG.hate;
       return (
@@ -1930,7 +1902,7 @@
       }
 
       const today = new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
-      const canSend = mode === 'short' ? shortText.trim().length > 0 : novelText.trim().length > 0 && novelTitle.trim().length > 0;
+      const canSend = session && (mode === 'short' ? shortText.trim().length > 0 : novelText.trim().length > 0 && novelTitle.trim().length > 0);
 
       async function handleSend(dest) {
         if (!canSend || sending) return;
@@ -1938,28 +1910,24 @@
         const violation = checkContent(target);
         if (violation) { setFilterErr(violation); return; }
         setSending(true);
-        if (session) {
-          const { data: prof } = await sb.from('profiles').select('handle').eq('id', session.user.id).single();
-          const handle = prof?.handle || session.user.user_metadata?.handle || '砂流れ';
-          const body = mode === 'novel' && novelTitle
-            ? `【${novelTitle}】\n${novelText}`
-            : (mode === 'short' ? shortText : novelText);
-          const { error: insertErr } = await sb.from('posts').insert({
-            user_id: session.user.id,
-            handle,
-            dest: dest === '海' ? 'ocean' : 'bonfire',
-            body,
-          });
-          if (insertErr) console.error('insert error:', insertErr);
-        }
+        const { data: prof } = await sb.from('profiles').select('handle').eq('id', session.user.id).single();
+        const handle = prof?.handle || session.user.user_metadata?.handle || '砂流れ';
+        const body = mode === 'novel' && novelTitle
+          ? `【${novelTitle}】\n${novelText}`
+          : (mode === 'short' ? shortText : novelText);
+        const { error: insertErr } = await sb.from('posts').insert({
+          user_id: session.user.id,
+          handle,
+          dest: dest === '海' ? 'ocean' : 'bonfire',
+          body,
+        });
+        if (insertErr) { console.error('insert error:', insertErr); setSending(false); return; }
+        // 送信直後に下書きをクリア（リロード対策）
+        if (mode === 'short') { setShort(''); localStorage.removeItem(SAVE_SHORT); }
+        else { setNovel(''); setTitle(''); localStorage.removeItem(SAVE_NOVEL); localStorage.removeItem(SAVE_TITLE); }
         setSending(false);
         setSent(dest);
-        setTimeout(() => {
-          if (mode === 'short') { setShort(''); localStorage.removeItem(SAVE_SHORT); }
-          else { setNovel(''); setTitle(''); localStorage.removeItem(SAVE_NOVEL); localStorage.removeItem(SAVE_TITLE); }
-          setSent(null);
-          onSent(dest);
-        }, 2600);
+        setTimeout(() => { setSent(null); onSent(dest); }, 2600);
       }
 
       if (sent) {
@@ -2564,7 +2532,7 @@
               <Write session={session} onSent={dest => setTab(dest === '海' ? 'ocean' : 'bonfire')} />
             ) : (
               <div className="screen">
-                {tab === 'ocean'    && <Ocean />}
+                {tab === 'ocean'    && <Ocean session={session} />}
                 {tab === 'bonfire'  && <Bonfire session={session} />}
                 {tab === 'naminoto' && <Naminoto />}
                 {tab === 'my'       && <MyPage session={session} onSignOut={handleSignOut} />}
