@@ -140,6 +140,18 @@
     }
     .enter-btn:hover { background: var(--ink); color: #fff; }
 
+    .splash-features {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .splash-pill {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10px; font-weight: 400;
+      color: var(--ink-3); letter-spacing: .06em;
+      border: 1px solid var(--rule);
+      padding: 5px 12px;
+    }
+
     /* ════════════════════════════════════
        NAV
     ════════════════════════════════════ */
@@ -1407,8 +1419,17 @@
               <div className="splash-d-dot" />
               <div className="splash-d-line" />
             </div>
-            <p className="splash-tagline">もう一度、人に戻るSNS</p>
-            <button className="enter-btn" onClick={onEnter}>砂浜へ</button>
+            <p className="splash-tagline">
+              比べなくていい。<br />
+              評価されなくていい。<br />
+              ただ書いて、流すだけでいい。
+            </p>
+            <div className="splash-features">
+              <span className="splash-pill">フォロワー数なし</span>
+              <span className="splash-pill">いいねなし</span>
+              <span className="splash-pill">通知なし</span>
+            </div>
+            <button className="enter-btn" onClick={onEnter}>無料ではじめる</button>
           </div>
         </div>
       );
@@ -2095,7 +2116,7 @@
             <div className="register-logo-area">
               <span className="splash-logo" style={{ fontSize:'20px', letterSpacing:'.48em' }}>SARASUNA</span>
               <div className="register-divider-line"><div className="register-divider-dot" /></div>
-              <p className="register-subtitle">さら砂へようこそ<br />はじめての方は登録してください</p>
+              <p className="register-subtitle">比べない場所で、書いてみよう。<br />登録は無料・1分でできます</p>
             </div>
 
             <div className="form-field">
@@ -2148,7 +2169,7 @@
             {errors.agreed && <p className="form-error" style={{ marginTop:'-12px', marginBottom:'16px' }}>{errors.agreed}</p>}
 
             <button className="register-btn" onClick={handleSubmit} disabled={!canSubmit}>
-              {loading ? '登録中…' : '砂浜に登録する'}
+              {loading ? '登録中…' : '無料ではじめる'}
             </button>
 
             <div className="register-login-wrap">
