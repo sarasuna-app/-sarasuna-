@@ -2508,6 +2508,12 @@
       const [tab,     setTab]     = useState('ocean');
 
       useEffect(() => {
+        // アクセスログを記録
+        sb.from('page_views').insert({
+          user_agent: navigator.userAgent.slice(0, 200),
+          referrer: document.referrer.slice(0, 200) || null,
+        }).then(() => {});
+
         // 既存セッションを確認
         sb.auth.getSession().then(({ data: { session } }) => {
           setSession(session);
