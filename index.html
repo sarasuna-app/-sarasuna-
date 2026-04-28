@@ -348,7 +348,7 @@
       font-size: 8px; letter-spacing: .14em;
       color: var(--sand); font-weight: 300;
     }
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
       .ad-banner {
         max-width: 680px;
         margin-left: auto; margin-right: auto;
@@ -605,7 +605,7 @@
     .bonfire-screen .ad-brand { color: #6A5A40; }
     .bonfire-screen .ad-promo-label { color: #584838; }
 
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
       .chat-header, .chat-messages, .chat-input-area,
       .create-header, .create-body {
         max-width: 680px; margin-left: auto; margin-right: auto;
@@ -1052,7 +1052,7 @@
     /* ════════════════════════════════════
        DESKTOP ≥ 768px
     ════════════════════════════════════ */
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
       html, body { background: #E4DDD4; }
 
       #root { align-items: stretch; }
@@ -1110,6 +1110,31 @@
     }
 
     /* ════════════════════════════════════
+       SMALL SCREEN ≤ 360px（iPhone SE等）
+    ════════════════════════════════════ */
+    @media (max-width: 360px) {
+      .splash-logo { font-size: 22px; letter-spacing: .5em; text-indent: .5em; }
+      .splash-tagline { font-size: 10px; line-height: 2; }
+      .splash-pill { font-size: 9px; padding: 4px 9px; }
+      .enter-btn { padding: 11px 28px; font-size: 10px; letter-spacing: .35em; text-indent: .35em; }
+      .register-scroll { padding: 30px 22px 40px; }
+      .form-input, .form-select { font-size: 13px; }
+    }
+
+    /* ════════════════════════════════════
+       LARGE SCREEN ≥ 1440px（広いPC）
+    ════════════════════════════════════ */
+    @media (min-width: 1440px) {
+      .sidebar { width: 240px; min-width: 240px; }
+      .ocean-header, .bonfire-header, .naminoto-header, .my-head, .my-stats,
+      .letter-list, .novel-list, .bonfire-posts,
+      .wave-count-card, .wave-section, .wave-list, .naminoto-note,
+      .my-section {
+        max-width: 760px;
+      }
+    }
+
+    /* ════════════════════════════════════
        FILTER ERROR TOAST
     ════════════════════════════════════ */
     .filter-toast {
@@ -1140,7 +1165,7 @@
       font-size: 11px; font-weight: 300; color: var(--ink-3);
       line-height: 1.8; letter-spacing: .04em;
     }
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
       .filter-toast { bottom: 32px; }
     }
 
