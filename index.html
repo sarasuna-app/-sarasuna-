@@ -2533,11 +2533,18 @@
       const [tab,     setTab]     = useState('ocean');
 
       useEffect(() => {
-        // アクセスログを記録
-        sb.from('page_views').insert({
-          user_agent: navigator.userAgent.slice(0, 200),
-          referrer: document.referrer.slice(0, 200) || null,
-        }).then(() => {});
+        // 開発者モード設定（?dev=1 で開発者として永続マーク）
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('dev') === '1') {
+          localStorage.setItem('sarasuna_dev', '1');
+        }
+        // 開発者でなければアクセスログを記録
+        if (localStorage.getItem('sarasuna_dev') !== '1') {
+          sb.from('page_views').insert({
+            user_agent: navigator.userAgent.slice(0, 200),
+            referrer: document.referrer.slice(0, 200) || null,
+          }).then(() => {});
+        }
 
         // 既存セッションを確認
         sb.auth.getSession().then(({ data: { session } }) => {
