@@ -1110,6 +1110,53 @@
     }
 
     /* ════════════════════════════════════
+       USER NOTEBOOK（○○からの便り）
+    ════════════════════════════════════ */
+    .notebook-screen { background: var(--bg); }
+    .notebook-header {
+      padding: 32px 22px 20px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--surface);
+      position: relative;
+    }
+    .notebook-back {
+      position: absolute; top: 14px; left: 14px;
+      background: none; border: none;
+      font-family: 'Yusei Magic', sans-serif;
+      font-size: 11px; color: var(--ink-3);
+      cursor: pointer; padding: 6px 10px;
+      letter-spacing: .12em;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .notebook-title {
+      font-family: 'RocknRoll One', sans-serif;
+      font-size: 18px; font-weight: 400;
+      color: var(--ink); text-align: center;
+      letter-spacing: .14em;
+    }
+    .notebook-section-label {
+      font-family: 'RocknRoll One', sans-serif;
+      font-size: 11px; color: var(--ink-3);
+      letter-spacing: .28em;
+      padding: 24px 22px 10px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--surface);
+    }
+    .notebook-empty {
+      text-align: center; padding: 32px 24px; color: var(--ink-3);
+      font-family: 'Yusei Magic', sans-serif;
+      font-size: 12px; letter-spacing: .08em; line-height: 2;
+    }
+    .letter-from-btn {
+      background: none; border: none; padding: 0;
+      font: inherit; color: inherit; cursor: pointer;
+      letter-spacing: inherit;
+      border-bottom: 1px dashed var(--rule);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .letter-from-btn:hover { color: var(--ocean); }
+
+    /* ════════════════════════════════════
        SMALL SCREEN ≤ 360px（iPhone SE等）
     ════════════════════════════════════ */
     @media (max-width: 360px) {
@@ -1533,7 +1580,73 @@
     }
 
     /* ── LetterCard ── 波が引くアニメーション付き */
-    function LetterCard({ data, index, receding, onTap, session }) {
+    /* ── UserNotebook ── ○○からの便り */
+    function UserNotebook({ handle, onBack }) {
+      const [posts, setPosts] = useState(null);
+      useEffect(() => {
+        sb.from('posts').select('*').eq('handle', handle).eq('dest', 'ocean')
+          .order('created_at', { ascending: false }).limit(100)
+          .then(({ data }) => setPosts(data || []));
+      }, [handle]);
+      const novels = (posts || []).filter(p => (p.body || '').startsWith('【'));
+      const shorts = (posts || []).filter(p => !(p.body || '').startsWith('【'));
+      return (
+        <div className="screen notebook-screen">
+          <div className="notebook-header">
+            <button className="notebook-back" onClick={onBack}>← 戻る</button>
+            <div className="notebook-title">{handle}からの便り</div>
+          </div>
+          {posts === null ? (
+            <p className="notebook-empty">読み込み中…</p>
+          ) : posts.length === 0 ? (
+            <p className="notebook-empty">まだ便りはありません。</p>
+          ) : (
+            <>
+              {novels.length > 0 && (
+                <>
+                  <div className="notebook-section-label">日記小説</div>
+                  <div className="novel-list">
+                    {novels.map(n => {
+                      const raw = n.body || '';
+                      const m = raw.match(/^【(.+?)】\n?([\s\S]*)/);
+                      return (
+                        <div key={n.id} className="novel-card">
+                          <div className="novel-body">
+                            <div className="novel-title">{m ? m[1] : raw.slice(0,30)}</div>
+                            <p className="novel-excerpt">{m ? m[2] : raw}</p>
+                          </div>
+                          <div className="novel-foot">
+                            <div><div className="novel-time">{timeAgo(n.created_at)}</div></div>
+                            <span className="novel-read">続きを読む →</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+              {shorts.length > 0 && (
+                <>
+                  <div className="notebook-section-label">綴ったもの</div>
+                  <div className="letter-list">
+                    {shorts.map((s, i) => (
+                      <div key={s.id} className="letter-card" data-v={i % 5}>
+                        <p className="letter-body">{s.body}</p>
+                        <div className="letter-foot">
+                          <span className="letter-time">{timeAgo(s.created_at)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      );
+    }
+
+    function LetterCard({ data, index, receding, onTap, session, onHandleClick }) {
       const [waved, setWaved] = useState(false);
       const [count, setCount] = useState(data.waves || 0);
 
@@ -1553,7 +1666,11 @@
           data-v={index % 5}
           onClick={() => onTap(data.id)}
         >
-          <div className="letter-from">{data.handle}</div>
+          <div className="letter-from">
+            {onHandleClick ? (
+              <button className="letter-from-btn" onClick={(e) => { e.stopPropagation(); onHandleClick(data.handle); }}>{data.handle}</button>
+            ) : data.handle}
+          </div>
           <p className="letter-body">{data.body || data.text}</p>
           <div className="letter-foot">
             <span className="letter-time">{data.time || timeAgo(data.created_at)}</span>
@@ -1580,7 +1697,7 @@
     }
 
     /* ── Ocean ── */
-    function Ocean({ session }) {
+    function Ocean({ session, onHandleClick }) {
       const [tab, setTab]             = useState('short');
       const [recedingId, setReceding] = useState(null);
       const [dbPosts,  setDbPosts]    = useState(null); // null = 読込中
@@ -1612,7 +1729,7 @@
         const nodes = [];
         shortItems.forEach((item, i) => {
           nodes.push(
-            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} session={session} />
+            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} session={session} onHandleClick={onHandleClick} />
           );
           const adKey = i + 1;
           if (ADS[adKey]) nodes.push(<AdCard key={ADS[adKey].id} data={ADS[adKey]} />);
@@ -1674,7 +1791,11 @@
                     </div>
                     <div className="novel-foot">
                       <div>
-                        <div className="novel-from">{n.handle}</div>
+                        <div className="novel-from">
+                          {onHandleClick ? (
+                            <button className="letter-from-btn" onClick={() => onHandleClick(n.handle)}>{n.handle}</button>
+                          ) : n.handle}
+                        </div>
                         <div className="novel-time">{n.time || timeAgo(n.created_at)}</div>
                       </div>
                       <span className="novel-read">続きを読む →</span>
@@ -2531,6 +2652,7 @@
       const [step,    setStep]    = useState('loading'); /* loading | splash | register | login | verify | app */
       const [session, setSession] = useState(null);
       const [tab,     setTab]     = useState('ocean');
+      const [viewedHandle, setViewedHandle] = useState(null);
 
       useEffect(() => {
         // 開発者モード設定（?dev=1 で開発者として永続マーク）
@@ -2583,21 +2705,27 @@
       if (step === 'login')
         return <div className="app-shell"><Login onLoggedIn={() => {}} onBack={() => setStep('register')} /></div>;
 
+      const changeTab = (t) => { setViewedHandle(null); setTab(t); };
+
       return (
         <div className="app-shell">
-          <Sidebar current={tab} onChange={setTab} />
+          <Sidebar current={tab} onChange={changeTab} />
           <div className="content-wrap">
             {tab === 'write' ? (
-              <Write session={session} onSent={dest => setTab(dest === '海' ? 'ocean' : 'bonfire')} />
+              <Write session={session} onSent={dest => changeTab(dest === '海' ? 'ocean' : 'bonfire')} />
             ) : (
-              <div className="screen">
-                {tab === 'ocean'    && <Ocean session={session} />}
-                {tab === 'bonfire'  && <Bonfire session={session} />}
-                {tab === 'naminoto' && <Naminoto />}
-                {tab === 'my'       && <MyPage session={session} onSignOut={handleSignOut} />}
-              </div>
+              viewedHandle ? (
+                <UserNotebook handle={viewedHandle} onBack={() => setViewedHandle(null)} />
+              ) : (
+                <div className="screen">
+                  {tab === 'ocean'    && <Ocean session={session} onHandleClick={setViewedHandle} />}
+                  {tab === 'bonfire'  && <Bonfire session={session} />}
+                  {tab === 'naminoto' && <Naminoto />}
+                  {tab === 'my'       && <MyPage session={session} onSignOut={handleSignOut} />}
+                </div>
+              )
             )}
-            <NavBar current={tab} onChange={setTab} />
+            <NavBar current={tab} onChange={changeTab} />
           </div>
         </div>
       );
