@@ -1111,6 +1111,20 @@
     }
 
     /* ════════════════════════════════════
+       BOOKMARK BUTTON（しおり・付箋）
+    ════════════════════════════════════ */
+    .bm-btn {
+      background: none; border: none; padding: 4px;
+      cursor: pointer; display: inline-flex; align-items: center;
+      color: var(--ink-3);
+      transition: color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bm-btn:hover { color: var(--ink); }
+    .bm-btn.active { color: var(--fire); }
+    .bm-btn svg { display: block; }
+
+    /* ════════════════════════════════════
        USER NOTEBOOK（○○からの便り）
     ════════════════════════════════════ */
     .notebook-screen { background: var(--bg); }
@@ -1581,8 +1595,30 @@
     }
 
     /* ── LetterCard ── 波が引くアニメーション付き */
+    /* ── BookmarkButton ── 付箋・しおり */
+    function BookmarkButton({ active, kind, onClick }) {
+      const path = kind === 'shiori'
+        ? "M6 3h12v18l-6-4-6 4z"
+        : "M5 4h11l4 4v12H5z";
+      return (
+        <button
+          className={`bm-btn${active ? ' active' : ''}`}
+          onClick={(e) => { e.stopPropagation(); onClick(); }}
+          title={kind === 'shiori' ? (active ? 'しおりを外す' : 'しおりを挟む') : (active ? '付箋を外す' : '付箋を貼る')}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24"
+            fill={active ? 'currentColor' : 'none'}
+            stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round">
+            <path d={path} />
+            {kind === 'fusen' && <path d="M16 4v4h4" />}
+          </svg>
+        </button>
+      );
+    }
+
     /* ── UserNotebook ── ○○からの便り */
-    function UserNotebook({ handle, onBack }) {
+    function UserNotebook({ handle, onBack, bookmarks, onToggleBookmark }) {
       const [posts, setPosts] = useState(null);
       useEffect(() => {
         sb.from('posts').select('*').eq('handle', handle).eq('dest', 'ocean')
@@ -1618,7 +1654,12 @@
                           </div>
                           <div className="novel-foot">
                             <div><div className="novel-time">{timeAgo(n.created_at)}</div></div>
-                            <span className="novel-read">続きを読む →</span>
+                            <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                              {onToggleBookmark && (
+                                <BookmarkButton active={bookmarks?.[n.id] === 'shiori'} kind="shiori" onClick={() => onToggleBookmark(n.id, 'shiori')} />
+                              )}
+                              <span className="novel-read">続きを読む →</span>
+                            </div>
                           </div>
                         </div>
                       );
@@ -1635,6 +1676,9 @@
                         <p className="letter-body">{s.body}</p>
                         <div className="letter-foot">
                           <span className="letter-time">{timeAgo(s.created_at)}</span>
+                          {onToggleBookmark && (
+                            <BookmarkButton active={bookmarks?.[s.id] === 'fusen'} kind="fusen" onClick={() => onToggleBookmark(s.id, 'fusen')} />
+                          )}
                         </div>
                       </div>
                     ))}
@@ -1647,7 +1691,7 @@
       );
     }
 
-    function LetterCard({ data, index, receding, onTap, session, onHandleClick }) {
+    function LetterCard({ data, index, receding, onTap, session, onHandleClick, bookmarked, onToggleBookmark }) {
       const [waved, setWaved] = useState(false);
       const [count, setCount] = useState(data.waves || 0);
 
@@ -1675,9 +1719,14 @@
           <p className="letter-body">{data.body || data.text}</p>
           <div className="letter-foot">
             <span className="letter-time">{data.time || timeAgo(data.created_at)}</span>
-            <button className={`wave-btn${waved ? ' waved' : ''}`} onClick={handleWave}>
-              <span>〰</span><span>{count}</span>
-            </button>
+            <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+              {onToggleBookmark && (
+                <BookmarkButton active={bookmarked} kind="fusen" onClick={() => onToggleBookmark(data.id, 'fusen')} />
+              )}
+              <button className={`wave-btn${waved ? ' waved' : ''}`} onClick={handleWave}>
+                <span>〰</span><span>{count}</span>
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -1698,7 +1747,7 @@
     }
 
     /* ── Ocean ── */
-    function Ocean({ session, onHandleClick }) {
+    function Ocean({ session, onHandleClick, bookmarks, onToggleBookmark }) {
       const [tab, setTab]             = useState('short');
       const [recedingId, setReceding] = useState(null);
       const [dbPosts,  setDbPosts]    = useState(null); // null = 読込中
@@ -1730,7 +1779,7 @@
         const nodes = [];
         shortItems.forEach((item, i) => {
           nodes.push(
-            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} session={session} onHandleClick={onHandleClick} />
+            <LetterCard key={item.id} data={item} index={i} receding={recedingId === item.id} onTap={handleTap} session={session} onHandleClick={onHandleClick} bookmarked={bookmarks?.[item.id] === 'fusen'} onToggleBookmark={onToggleBookmark} />
           );
           const adKey = i + 1;
           if (ADS[adKey]) nodes.push(<AdCard key={ADS[adKey].id} data={ADS[adKey]} />);
@@ -1799,7 +1848,12 @@
                         </div>
                         <div className="novel-time">{n.time || timeAgo(n.created_at)}</div>
                       </div>
-                      <span className="novel-read">続きを読む →</span>
+                      <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                        {onToggleBookmark && (
+                          <BookmarkButton active={bookmarks?.[n.id] === 'shiori'} kind="shiori" onClick={() => onToggleBookmark(n.id, 'shiori')} />
+                        )}
+                        <span className="novel-read">続きを読む →</span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -2500,13 +2554,14 @@
     }
 
     /* ── My Page ── */
-    function MyPage({ session, onSignOut }) {
+    function MyPage({ session, onSignOut, bookmarks, onToggleBookmark, onHandleClick }) {
       const [profile,    setProfile]    = useState(null);
       const [posts,      setPosts]      = useState([]);
       const [editingId,  setEditingId]  = useState(null);
       const [editText,   setEditText]   = useState('');
       const [deletingId, setDeletingId] = useState(null);
       const [showEdit,   setShowEdit]   = useState(false);
+      const [bmPosts,    setBmPosts]    = useState([]);
 
       useEffect(() => {
         if (!session) return;
@@ -2516,6 +2571,18 @@
           .order('created_at', { ascending: false }).limit(20)
           .then(({ data }) => setPosts(data || []));
       }, [session?.user?.id]);
+
+      // ブックマークした投稿を取得
+      useEffect(() => {
+        const ids = Object.keys(bookmarks || {});
+        if (ids.length === 0) { setBmPosts([]); return; }
+        sb.from('posts').select('*').in('id', ids)
+          .order('created_at', { ascending: false })
+          .then(({ data }) => setBmPosts(data || []));
+      }, [bookmarks]);
+
+      const shioriPosts = bmPosts.filter(p => bookmarks?.[p.id] === 'shiori');
+      const fusenPosts  = bmPosts.filter(p => bookmarks?.[p.id] === 'fusen');
 
       async function handleSaveEdit(postId) {
         if (!editText.trim()) return;
@@ -2619,6 +2686,52 @@
             </div>
           )}
 
+          {shioriPosts.length > 0 && (
+            <div className="my-section">
+              <p className="my-section-label">しおり（{shioriPosts.length}/50）</p>
+              <div className="novel-list">
+                {shioriPosts.map(n => {
+                  const m = (n.body || '').match(/^【(.+?)】\n?([\s\S]*)/);
+                  return (
+                    <div key={n.id} className="novel-card">
+                      <div className="novel-body">
+                        <div className="novel-title">{m ? m[1] : (n.body || '').slice(0,30)}</div>
+                        <p className="novel-excerpt">{m ? m[2] : n.body}</p>
+                      </div>
+                      <div className="novel-foot">
+                        <div>
+                          <div className="novel-from">
+                            {onHandleClick ? <button className="letter-from-btn" onClick={() => onHandleClick(n.handle)}>{n.handle}</button> : n.handle}
+                          </div>
+                          <div className="novel-time">{timeAgo(n.created_at)}</div>
+                        </div>
+                        <BookmarkButton active={true} kind="shiori" onClick={() => onToggleBookmark(n.id, 'shiori')} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {fusenPosts.length > 0 && (
+            <div className="my-section">
+              <p className="my-section-label">付箋（{fusenPosts.length}/50）</p>
+              {fusenPosts.map((s, i) => (
+                <div key={s.id} className="letter-card" data-v={i % 5} style={{ marginBottom: 10 }}>
+                  <div className="letter-from">
+                    {onHandleClick ? <button className="letter-from-btn" onClick={() => onHandleClick(s.handle)}>{s.handle}</button> : s.handle}
+                  </div>
+                  <p className="letter-body">{s.body}</p>
+                  <div className="letter-foot">
+                    <span className="letter-time">{timeAgo(s.created_at)}</span>
+                    <BookmarkButton active={true} kind="fusen" onClick={() => onToggleBookmark(s.id, 'fusen')} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="my-section">
             <p className="my-section-label">このアプリについて</p>
             <div className="settings-list">
@@ -2654,6 +2767,45 @@
       const [session, setSession] = useState(null);
       const [tab,     setTab]     = useState('ocean');
       const [viewedHandle, setViewedHandle] = useState(null);
+      const [bookmarks, setBookmarks] = useState({}); // { post_id: 'shiori'|'fusen' }
+      const [bmToast, setBmToast] = useState(null);
+
+      // ブックマーク取得
+      useEffect(() => {
+        if (!session) { setBookmarks({}); return; }
+        sb.from('bookmarks').select('post_id, kind').eq('user_id', session.user.id)
+          .then(({ data }) => {
+            const map = {};
+            (data || []).forEach(b => { map[b.post_id] = b.kind; });
+            setBookmarks(map);
+          });
+      }, [session?.user?.id]);
+
+      async function toggleBookmark(postId, kind) {
+        if (!session) {
+          setBmToast({ type: 'error', msg: 'ログインが必要です' });
+          setTimeout(() => setBmToast(null), 2400);
+          return;
+        }
+        if (bookmarks[postId]) {
+          // 外す
+          await sb.from('bookmarks').delete().eq('user_id', session.user.id).eq('post_id', postId);
+          setBookmarks(prev => { const n = {...prev}; delete n[postId]; return n; });
+        } else {
+          // 上限チェック
+          const sameKindCount = Object.values(bookmarks).filter(k => k === kind).length;
+          if (sameKindCount >= 50) {
+            const label = kind === 'shiori' ? 'しおり' : '付箋';
+            setBmToast({ type: 'limit', msg: `${label}は50枚まで。古いものを外してから挟んでください。` });
+            setTimeout(() => setBmToast(null), 3200);
+            return;
+          }
+          const { error } = await sb.from('bookmarks').insert({ user_id: session.user.id, post_id: postId, kind });
+          if (!error) {
+            setBookmarks(prev => ({ ...prev, [postId]: kind }));
+          }
+        }
+      }
 
       useEffect(() => {
         // 開発者モード設定（?dev=1 で開発者として永続マーク）
@@ -2716,17 +2868,25 @@
               <Write session={session} onSent={dest => changeTab(dest === '海' ? 'ocean' : 'bonfire')} />
             ) : (
               viewedHandle ? (
-                <UserNotebook handle={viewedHandle} onBack={() => setViewedHandle(null)} />
+                <UserNotebook handle={viewedHandle} onBack={() => setViewedHandle(null)} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} />
               ) : (
                 <div className="screen">
-                  {tab === 'ocean'    && <Ocean session={session} onHandleClick={setViewedHandle} />}
+                  {tab === 'ocean'    && <Ocean session={session} onHandleClick={setViewedHandle} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} />}
                   {tab === 'bonfire'  && <Bonfire session={session} />}
                   {tab === 'naminoto' && <Naminoto />}
-                  {tab === 'my'       && <MyPage session={session} onSignOut={handleSignOut} />}
+                  {tab === 'my'       && <MyPage session={session} onSignOut={handleSignOut} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} onHandleClick={setViewedHandle} />}
                 </div>
               )
             )}
             <NavBar current={tab} onChange={changeTab} />
+            {bmToast && (
+              <div className="filter-toast">
+                <span className="filter-toast-icon">📎</span>
+                <div className="filter-toast-body">
+                  <div className="filter-toast-msg" style={{ color: 'var(--ink)' }}>{bmToast.msg}</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       );

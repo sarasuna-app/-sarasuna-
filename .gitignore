@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+design/
+src/
+package*.json
+serve.py
+vite.config.js
