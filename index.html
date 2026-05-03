@@ -1679,7 +1679,7 @@
 
     /* ── LetterCard ── 波が引くアニメーション付き */
     /* ── NovelReader ── 日記小説の全文表示 */
-    function NovelReader({ novel, onClose, onHandleClick, bookmarked, onToggleBookmark }) {
+    function NovelReader({ novel, onClose, onHandleClick, bookmarked, onToggleBookmark, session }) {
       useEffect(() => {
         const onKey = (e) => { if (e.key === 'Escape') onClose(); };
         window.addEventListener('keydown', onKey);
@@ -1706,13 +1706,34 @@
               <div className="reader-time">{timeAgo(novel.created_at)}</div>
               <p className="reader-text">{text}</p>
             </div>
-            {onToggleBookmark && (
-              <div className="reader-foot">
+            <div className="reader-foot">
+              <WaveButton post={novel} session={session} />
+              {onToggleBookmark && (
                 <BookmarkButton active={bookmarked} kind="shiori" onClick={() => onToggleBookmark(novel.id, 'shiori')} />
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
+      );
+    }
+
+    /* ── WaveButton ── 波を送る（再利用可能） */
+    function WaveButton({ post, session }) {
+      const [waved, setWaved] = useState(false);
+      const [count, setCount] = useState(post.waves || 0);
+      async function handleWave(e) {
+        e.stopPropagation();
+        if (waved || !session) return;
+        setWaved(true);
+        setCount(c => c + 1);
+        if (post.id && typeof post.id === 'string' && post.id.includes('-')) {
+          await sb.from('posts').update({ waves: (post.waves || 0) + 1 }).eq('id', post.id);
+        }
+      }
+      return (
+        <button className={`wave-btn${waved ? ' waved' : ''}`} onClick={handleWave}>
+          <span>〰</span><span>{count}</span>
+        </button>
       );
     }
 
@@ -1739,7 +1760,7 @@
     }
 
     /* ── UserNotebook ── ○○からの便り */
-    function UserNotebook({ handle, onBack, bookmarks, onToggleBookmark, onReadNovel }) {
+    function UserNotebook({ handle, onBack, bookmarks, onToggleBookmark, onReadNovel, session }) {
       const [posts, setPosts] = useState(null);
       useEffect(() => {
         sb.from('posts').select('*').eq('handle', handle).eq('dest', 'ocean')
@@ -1776,6 +1797,7 @@
                           <div className="novel-foot">
                             <div><div className="novel-time">{timeAgo(n.created_at)}</div></div>
                             <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                              <WaveButton post={n} session={session} />
                               {onToggleBookmark && (
                                 <BookmarkButton active={bookmarks?.[n.id] === 'shiori'} kind="shiori" onClick={(e) => { e.stopPropagation && e.stopPropagation(); onToggleBookmark(n.id, 'shiori'); }} />
                               )}
@@ -1970,6 +1992,7 @@
                         <div className="novel-time">{n.time || timeAgo(n.created_at)}</div>
                       </div>
                       <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                        <WaveButton post={n} session={session} />
                         {onToggleBookmark && (
                           <BookmarkButton active={bookmarks?.[n.id] === 'shiori'} kind="shiori" onClick={() => onToggleBookmark(n.id, 'shiori')} />
                         )}
@@ -2990,7 +3013,7 @@
               <Write session={session} onSent={dest => changeTab(dest === '海' ? 'ocean' : 'bonfire')} />
             ) : (
               viewedHandle ? (
-                <UserNotebook handle={viewedHandle} onBack={() => setViewedHandle(null)} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} onReadNovel={setReadingNovel} />
+                <UserNotebook handle={viewedHandle} onBack={() => setViewedHandle(null)} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} onReadNovel={setReadingNovel} session={session} />
               ) : (
                 <div className="screen">
                   {tab === 'ocean'    && <Ocean session={session} onHandleClick={setViewedHandle} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} onReadNovel={setReadingNovel} />}
@@ -3008,6 +3031,7 @@
                 onHandleClick={setViewedHandle}
                 bookmarked={bookmarks?.[readingNovel.id] === 'shiori'}
                 onToggleBookmark={toggleBookmark}
+                session={session}
               />
             )}
             {bmToast && (
