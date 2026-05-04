@@ -1727,7 +1727,12 @@
         setWaved(true);
         setCount(c => c + 1);
         if (post.id && typeof post.id === 'string' && post.id.includes('-')) {
-          await sb.from('posts').update({ waves: (post.waves || 0) + 1 }).eq('id', post.id);
+          const { error } = await sb.rpc('add_wave', { p_post_id: post.id });
+          if (error) {
+            console.error('wave error:', error);
+            setWaved(false);
+            setCount(c => c - 1);
+          }
         }
       }
       return (
@@ -1844,7 +1849,12 @@
         setWaved(true);
         setCount(c => c + 1);
         if (data.id && typeof data.id === 'string' && data.id.includes('-')) {
-          await sb.from('posts').update({ waves: (data.waves || 0) + 1 }).eq('id', data.id);
+          const { error } = await sb.rpc('add_wave', { p_post_id: data.id });
+          if (error) {
+            console.error('wave error:', error);
+            setWaved(false);
+            setCount(c => c - 1);
+          }
         }
       }
 
