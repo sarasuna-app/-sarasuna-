@@ -2976,6 +2976,35 @@
           }).then(() => {});
         }
 
+        // ── グローバルエラー収集 ──
+        const logError = (info) => {
+          try {
+            sb.from('error_logs').insert({
+              message:    String(info.message || '').slice(0, 1000),
+              source:     String(info.source  || '').slice(0, 500),
+              line_no:    info.lineno || null,
+              col_no:     info.colno  || null,
+              stack:      String(info.stack || '').slice(0, 4000),
+              user_agent: navigator.userAgent.slice(0, 200),
+              url:        location.href.slice(0, 500),
+              user_id:    info.user_id || null,
+            }).then(() => {});
+          } catch (_) { /* swallow */ }
+        };
+        const onErr = (e) => logError({
+          message: e.message,
+          source: e.filename,
+          lineno: e.lineno,
+          colno: e.colno,
+          stack: e.error && e.error.stack,
+        });
+        const onRej = (e) => logError({
+          message: 'unhandledrejection: ' + (e.reason && (e.reason.message || e.reason)),
+          stack: e.reason && e.reason.stack,
+        });
+        window.addEventListener('error', onErr);
+        window.addEventListener('unhandledrejection', onRej);
+
         // 既存セッションを確認
         sb.auth.getSession().then(({ data: { session } }) => {
           setSession(session);
@@ -2987,7 +3016,11 @@
           if (event === 'SIGNED_IN' && session) setStep('app');
           if (event === 'SIGNED_OUT') { setSession(null); setStep('splash'); }
         });
-        return () => subscription.unsubscribe();
+        return () => {
+          subscription.unsubscribe();
+          window.removeEventListener('error', onErr);
+          window.removeEventListener('unhandledrejection', onRej);
+        };
       }, []);
 
       async function handleSignOut() {
