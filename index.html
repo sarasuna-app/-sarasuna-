@@ -256,6 +256,28 @@
     }
     .letter-card::after { display: none; }
 
+    /* 自分の投稿は薄い海色 */
+    .letter-card.is-mine {
+      background: var(--ocean-pale);
+      border-left: 3px solid var(--ocean);
+    }
+    .letter-card.is-mine .letter-from::after {
+      content: ' · 自分';
+      color: var(--ocean);
+      font-size: 9px;
+      letter-spacing: .08em;
+    }
+    .novel-card.is-mine {
+      background: var(--ocean-pale);
+      border-left: 3px solid var(--ocean);
+    }
+    .novel-card.is-mine .novel-from::after {
+      content: ' · 自分';
+      color: var(--ocean);
+      font-size: 9px;
+      letter-spacing: .08em;
+    }
+
     @keyframes waveRecede {
       0%   { opacity: 1; }
       30%  { opacity: .5; }
@@ -1794,7 +1816,7 @@
                       const raw = n.body || '';
                       const m = raw.match(/^【(.+?)】\n?([\s\S]*)/);
                       return (
-                        <div key={n.id} className="novel-card" onClick={() => onReadNovel && onReadNovel(n)} style={{ cursor: 'pointer' }}>
+                        <div key={n.id} className={`novel-card${session && n.user_id === session.user.id ? ' is-mine' : ''}`} onClick={() => onReadNovel && onReadNovel(n)} style={{ cursor: 'pointer' }}>
                           <div className="novel-body">
                             <div className="novel-title">{m ? m[1] : raw.slice(0,30)}</div>
                             <p className="novel-excerpt">{m ? m[2] : raw}</p>
@@ -1858,9 +1880,10 @@
         }
       }
 
+      const isMine = session && data.user_id && data.user_id === session.user.id;
       return (
         <div
-          className={`letter-card${receding ? ' receding' : ''}`}
+          className={`letter-card${receding ? ' receding' : ''}${isMine ? ' is-mine' : ''}`}
           data-v={index % 5}
           onClick={() => onTap(data.id)}
         >
@@ -1981,7 +2004,7 @@
             ) : (
               <div className="novel-list">
                 {novelItems.map(n => (
-                  <div key={n.id} className="novel-card" onClick={() => onReadNovel && onReadNovel(n)} style={{ cursor: 'pointer' }}>
+                  <div key={n.id} className={`novel-card${session && n.user_id === session.user.id ? ' is-mine' : ''}`} onClick={() => onReadNovel && onReadNovel(n)} style={{ cursor: 'pointer' }}>
                     <div className="novel-body">
                       {(() => {
                         const raw = n.body || n.text || '';
