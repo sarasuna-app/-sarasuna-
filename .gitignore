@@ -5,3 +5,5 @@ src/
 package*.json
 serve.py
 vite.config.js
+
+SARASUNA_INFO.md
