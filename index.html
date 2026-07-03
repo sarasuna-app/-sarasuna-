@@ -2614,6 +2614,14 @@
             <div className="register-login-wrap" style={{ marginTop:'20px' }}>
               <button className="register-login-btn" onClick={onBack}>← 登録画面に戻る</button>
             </div>
+
+            <p style={{ textAlign:'center', marginTop:'18px', fontSize:'12px', color:'var(--text-soft, #8a7f70)', lineHeight:1.7 }}>
+              ログインできない・登録を間違えた方は<br />
+              <a href="mailto:sarasuna.support@gmail.com?subject=%E3%81%95%E3%82%89%E7%A0%82%20%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&body=%0A%0A%E2%80%BB%E7%99%BB%E9%8C%B2%E6%99%82%E3%81%AE%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%88%E3%83%8F%E3%83%B3%E3%83%89%E3%83%AB%EF%BC%89%E3%81%A8%E3%80%81%E5%9B%B0%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%86%85%E5%AE%B9%E3%82%92%E3%81%94%E8%A8%98%E5%85%A5%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%E3%80%82%0A"
+                 style={{ color:'var(--ocean)', textDecoration:'underline' }}>
+                お問い合わせ
+              </a>
+            </p>
           </div>
         </div>
       );
@@ -2928,6 +2936,14 @@
                 <span className="settings-key">引用 / 拡散機能</span>
                 <span className="no-badge">持たない</span>
               </div>
+              <a
+                className="settings-row"
+                href="mailto:sarasuna.support@gmail.com?subject=%E3%81%95%E3%82%89%E7%A0%82%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B&body=%0A%0A%E2%80%BB%E3%81%94%E7%94%A8%E4%BB%B6%E3%82%92%E3%81%94%E8%A8%98%E5%85%A5%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%E3%80%82%0A%E2%80%BB%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84%E5%A0%B4%E5%90%88%E3%81%AF%E3%80%81%E7%99%BB%E9%8C%B2%E6%99%82%E3%81%AE%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%88%E3%83%8F%E3%83%B3%E3%83%89%E3%83%AB%EF%BC%89%E3%82%82%E6%9B%B8%E3%81%84%E3%81%A6%E3%81%84%E3%81%9F%E3%81%A0%E3%81%91%E3%82%8B%E3%81%A8%E5%8A%A9%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%0A"
+                style={{ textDecoration:'none', cursor:'pointer' }}
+              >
+                <span className="settings-key">お問い合わせ</span>
+                <span className="settings-arrow">→</span>
+              </a>
               <div className="settings-row" style={{ cursor:'pointer' }} onClick={onSignOut}>
                 <span className="settings-key" style={{ color:'#C04040' }}>ログアウト</span>
                 <span className="settings-arrow">→</span>
